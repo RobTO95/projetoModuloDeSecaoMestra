@@ -23,9 +23,11 @@ function addShape(position = [0, 0]) {
 	const shape = new Shape(drawScreen, listPath, position);
 	listShapes.push(shape);
 	console.log("Shapes na tela:", listShapes);
+	return shape;
 }
 
 // Listener do botão de adicionar shapes
 addButton.addEventListener("click", addShape);
 
-addShape();
+const shape = addShape();
+shape.move([100, 100]);

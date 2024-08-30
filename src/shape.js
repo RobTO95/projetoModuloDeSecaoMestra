@@ -6,7 +6,6 @@ export class Shape {
 		this.svg = d3.select(svg);
 		this.data = data;
 		this.position = position;
-		this.isSelected = false; // Estado de seleção do shape
 
 		// Gera a linha a partir dos dados
 		const lineGenerator = d3.line();
@@ -28,4 +27,10 @@ export class Shape {
 			.attr("fill", "steelblue")
 			.attr("stroke-width", 1);
 	}
+
+	move(position = [0, 0]) {
+		this.path.attr("transform", `translate(${position[0]}, ${position[1]})`);
+	}
+
+	edit(data) {}
 }
