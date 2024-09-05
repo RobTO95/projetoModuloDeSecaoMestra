@@ -2,35 +2,118 @@ import * as d3 from "d3";
 
 // Classe Shape
 export class Shape {
-	constructor(svg, data = [], position = [0, 0]) {
-		this.svg = d3.select(svg);
-		this.data = data;
-		this.position = position;
+	#data;
+	#position;
+	#angle;
+	#scale;
+	#strokeColor;
+	#strokeWidth;
+	#fill;
+
+	constructor(
+		objectDraw,
+		data = [],
+		position = [0, 0],
+		angle = 0,
+		scale = [1, 1]
+	) {
+		this.objectDraw = d3.select(objectDraw);
+		this.#data = data; // Armazena os dados internamente
+		this.#position = position; // Armazena a posição internamente
+		this.#angle = angle; // Armazena o ângulo de rotação internamente
+		this.#scale = scale; // Define a escala com valor padrão [1, 1]
+		this.#strokeColor = "black";
+		this.#strokeWidth = 1;
+		this.#fill = "steelblue";
 
 		// Gera a linha a partir dos dados
-		const lineGenerator = d3.line();
+		this.lineGenerator = d3.line();
 
-		// Translada os dados do shape para a posição definida
-		const translatedData = data.map(([x, y]) => [
-			x + position[0],
-			y + position[1],
-		]);
-
-		// Cria a string do caminho baseado nos pontos de dados
-		const pathString = lineGenerator(translatedData);
-
-		// Adiciona o path ao SVG
-		this.path = this.svg
+		// Cria o path inicial
+		this.path = this.objectDraw
 			.append("path")
-			.attr("d", pathString)
-			.attr("stroke", "black")
-			.attr("fill", "steelblue")
-			.attr("stroke-width", 1);
+			.attr("stroke", this.#strokeColor)
+			.attr("fill", this.#fill)
+			.attr("stroke-width", this.#strokeWidth);
+
+		// Desenha o shape inicial
+		this.updatePath();
 	}
 
-	move(position = [0, 0]) {
-		this.path.attr("transform", `translate(${position[0]}, ${position[1]})`);
+	// Método para atualizar o caminho do shape baseado nos dados, posição, rotação e escala atuais
+	updatePath() {
+		// Cria a string do caminho baseado nos pontos de dados
+		const pathString = this.lineGenerator(this.#data);
+
+		// Atualiza o atributo "d" do path e aplica transformações de rotação e escala
+		this.path.attr("d", pathString);
+		this.path
+			.attr(
+				"transform",
+				`translate(${this.#position[0]}, ${-this.#position[1]}) rotate(${-this
+					.#angle}) scale(${this.#scale[0]}, ${this.#scale[1]})`
+			)
+			.attr("stroke", this.#strokeColor)
+			.attr("fill", this.#fill)
+			.attr("stroke-width", this.#strokeWidth);
 	}
 
-	edit(data) {}
+	set fill(color) {
+		this.#fill = color;
+		this.updatePath();
+	}
+
+	set strokeWidth(width) {
+		this.#strokeWidth;
+		this.updatePath();
+	}
+
+	set strokeColor(color) {
+		this.#strokeColor = color;
+		this.updatePath();
+	}
+
+	// Método setter para os dados (atualiza os dados e redesenha o shape)
+	set data(newData) {
+		this.#data = newData; // Atualiza os dados internos
+		this.updatePath(); // Redesenha o shape
+	}
+
+	// Método getter para os dados (retorna os dados atuais)
+	get data() {
+		return this.#data;
+	}
+
+	// Método setter para a posição (atualiza a posição e redesenha o shape)
+	set position(newPosition) {
+		this.#position = newPosition; // Atualiza a posição interna
+		this.updatePath(); // Redesenha o shape na nova posição
+	}
+
+	// Método getter para a posição (retorna a posição atual)
+	get position() {
+		return this.#position; // Retorna a posição interna
+	}
+
+	// Método setter para o ângulo (atualiza o ângulo e redesenha o shape)
+	set angle(newAngle) {
+		this.#angle = newAngle; // Atualiza o ângulo interno
+		this.updatePath(); // Redesenha o shape com a nova rotação
+	}
+
+	// Método getter para o ângulo (retorna o ângulo atual)
+	get angle() {
+		return this.#angle; // Retorna o ângulo interno
+	}
+
+	// Método setter para a escala (atualiza a escala e redesenha o shape)
+	set scale(newScale) {
+		this.#scale = newScale; // Atualiza a escala interna
+		this.updatePath(); // Redesenha o shape com a nova escala
+	}
+
+	// Método getter para a escala (retorna a escala atual)
+	get scale() {
+		return this.#scale; // Retorna a escala interna
+	}
 }

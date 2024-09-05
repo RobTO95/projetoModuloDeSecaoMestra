@@ -3,31 +3,53 @@ import * as d3 from "d3";
 import { Shape } from "./src/shape.js";
 
 const addButton = document.getElementById("add-button");
-const drawScreen = document.getElementById("draw-screen");
+const drawScreen = document.getElementById("shapes-screen");
+
+d3.select(drawScreen).attr("transform", `translate(400,300)`);
 
 // d3.select(drawScreen).attr("transform", `translate(400,300)`);
 const listShapes = [];
 
-// Dados para o shape (retângulo)
-const listPath = [
-	[0, 0],
-	[10, 0],
-	[10, 90],
-	[90, 90],
-	[90, 100],
-	[0, 100],
-];
+// Adicionar um novo shape
+function addShape() {
+	// Dados para o shape (retângulo)
+	const listPath = [
+		[0, 0],
+		[10, 0],
+		[10, 90],
+		[90, 90],
+		[90, 100],
+		[0, 100],
+	];
 
-// Função para adicionar shapes
-function addShape(position = [0, 0]) {
-	const shape = new Shape(drawScreen, listPath, position);
-	listShapes.push(shape);
-	console.log("Shapes na tela:", listShapes);
-	return shape;
+	const newShape = Shape(listPath);
 }
+addButton.addEventListener("click", (event) => {
+	addShape();
+});
 
-// Listener do botão de adicionar shapes
-addButton.addEventListener("click", addShape);
+// Função externa para criar uma cópia espelhada do shape
+function mirror(shape, direction = "horizontal") {
+	// Cria uma nova instância do shape, copiando os dados e a escala do shape original
+	const mirroredShape = new Shape(
+		shape.objectDraw.node(),
+		shape.data,
+		[...shape.position],
+		shape.angle,
+		[...shape.scale] // Copia a escala do shape original
+	);
 
-const shape = addShape();
-shape.move([100, 100]);
+	// Aplica a transformação de espelhamento
+	if (direction === "horizontal") {
+		mirroredShape.scale = [-mirroredShape.scale[0], mirroredShape.scale[1]]; // Inverte o eixo X
+	} else if (direction === "vertical") {
+		mirroredShape.scale = [mirroredShape.scale[0], -mirroredShape.scale[1]]; // Inverte o eixo Y
+	} else if (direction === "both") {
+		mirroredShape.scale = [-mirroredShape.scale[0], -mirroredShape.scale[1]]; // Inverte ambos os eixos
+	}
+
+	// Redesenha a cópia espelhada
+	mirroredShape.updatePath();
+
+	return mirroredShape; // Retorna o novo shape espelhado
+}
