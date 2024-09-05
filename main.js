@@ -1,16 +1,31 @@
 import * as d3 from "d3";
-
 import { Shape } from "./src/shape.js";
 
+// Elementos DOM
 const addButton = document.getElementById("add-button");
-const drawScreen = document.getElementById("shapes-screen");
+const drawScreen = document.getElementById("draw-screen");
+const shapesScreen = document.getElementById("shapes-screen");
 
-d3.select(drawScreen).attr("transform", `translate(400,300)`);
+d3.select(shapesScreen).attr("transform", `translate(400,300)`);
 
-// d3.select(drawScreen).attr("transform", `translate(400,300)`);
+// Salvo na memória
 const listShapes = [];
 
-// Adicionar um novo shape
+// Funções
+function getDrawScreenDimensions(svgElement) {
+	const bbox = svgElement.getBoundingClientRect();
+	const width = bbox.width;
+	const height = bbox.height;
+	return { width, height };
+}
+
+function getMousePosition(svgElement, event) {
+	const position = d3.pointer(event, svgElement);
+	position[0] = position[0] - getDrawScreenDimensions(svgElement).width / 2;
+	position[1] = getDrawScreenDimensions(svgElement).height / 2 - position[1];
+	return [position[0], position[1]];
+}
+
 function addShape() {
 	// Dados para o shape (retângulo)
 	const listPath = [
@@ -22,34 +37,24 @@ function addShape() {
 		[0, 100],
 	];
 
-	const newShape = Shape(listPath);
-}
-addButton.addEventListener("click", (event) => {
-	addShape();
-});
+	const newShape = new Shape(shapesScreen);
 
-// Função externa para criar uma cópia espelhada do shape
-function mirror(shape, direction = "horizontal") {
-	// Cria uma nova instância do shape, copiando os dados e a escala do shape original
-	const mirroredShape = new Shape(
-		shape.objectDraw.node(),
-		shape.data,
-		[...shape.position],
-		shape.angle,
-		[...shape.scale] // Copia a escala do shape original
-	);
-
-	// Aplica a transformação de espelhamento
-	if (direction === "horizontal") {
-		mirroredShape.scale = [-mirroredShape.scale[0], mirroredShape.scale[1]]; // Inverte o eixo X
-	} else if (direction === "vertical") {
-		mirroredShape.scale = [mirroredShape.scale[0], -mirroredShape.scale[1]]; // Inverte o eixo Y
-	} else if (direction === "both") {
-		mirroredShape.scale = [-mirroredShape.scale[0], -mirroredShape.scale[1]]; // Inverte ambos os eixos
+	// Função para mover o shape
+	function moveShape(event) {
+		newShape.data = listPath;
+		newShape.position = getMousePosition(drawScreen, event);
 	}
 
-	// Redesenha a cópia espelhada
-	mirroredShape.updatePath();
+	// Adiciona o evento 'mousemove'
+	drawScreen.addEventListener("mousemove", moveShape);
 
-	return mirroredShape; // Retorna o novo shape espelhado
+	// Adiciona o evento 'click' que remove o 'mousemove' e fixa o shape
+	drawScreen.addEventListener("click", function handleClick(event) {
+		newShape.position = getMousePosition(drawScreen, event); // Fixa o shape na posição do clique
+		drawScreen.removeEventListener("mousemove", moveShape); // Remove o evento de movimentação
+		drawScreen.removeEventListener("click", handleClick); // Remove o evento de clique para não repetir
+	});
 }
+
+// Aplicação de eventos
+addButton.addEventListener("click", addShape);
