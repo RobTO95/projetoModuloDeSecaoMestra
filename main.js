@@ -9,7 +9,12 @@ const shapesScreen = document.getElementById("shapes-screen");
 d3.select(shapesScreen).attr("transform", `translate(400,300)`);
 
 // Salvo na memória
+
 const listShapes = [];
+let gridSize = 1;
+
+// Shapes selecionados
+const currentShapes = [];
 
 // Funções
 function getDrawScreenDimensions(svgElement) {
@@ -20,14 +25,23 @@ function getDrawScreenDimensions(svgElement) {
 }
 
 function getMousePosition(svgElement, event) {
-	const position = d3.pointer(event, svgElement);
+	const position = d3
+		.pointer(event, svgElement)
+		.map((value) => Number((value / gridSize).toFixed(0)) * gridSize);
+	// console.log(position);
 	position[0] = position[0] - getDrawScreenDimensions(svgElement).width / 2;
 	position[1] = getDrawScreenDimensions(svgElement).height / 2 - position[1];
 	return [position[0], position[1]];
 }
 
+function selectShape(event) {
+	const shape = event.target;
+	if (shape.tagName === "path") {
+	}
+}
+
 function addShape() {
-	// Dados para o shape (retângulo)
+	// Dados para o shape (perfil L)
 	const listPath = [
 		[0, 0],
 		[10, 0],
@@ -35,6 +49,7 @@ function addShape() {
 		[90, 90],
 		[90, 100],
 		[0, 100],
+		[0, 0],
 	];
 
 	const newShape = new Shape(shapesScreen);
@@ -54,7 +69,17 @@ function addShape() {
 		drawScreen.removeEventListener("mousemove", moveShape); // Remove o evento de movimentação
 		drawScreen.removeEventListener("click", handleClick); // Remove o evento de clique para não repetir
 	});
+	if (listShapes.length === 0) {
+		newShape.id = 1;
+	} else {
+		const lastShape = listShapes[listShapes.length - 1];
+		newShape.id = lastShape.id + 1;
+	}
+	newShape.path.attr("id", `shape-${newShape.id}`);
+	listShapes.push(newShape);
 }
 
 // Aplicação de eventos
 addButton.addEventListener("click", addShape);
+
+drawScreen.addEventListener("click", selectShape);

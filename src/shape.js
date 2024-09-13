@@ -9,7 +9,7 @@ export class Shape {
 	#strokeColor;
 	#strokeWidth;
 	#fill;
-
+	#id;
 	constructor(
 		objectDraw,
 		data = [],
@@ -115,5 +115,13 @@ export class Shape {
 	// Método getter para a escala (retorna a escala atual)
 	get scale() {
 		return this.#scale; // Retorna a escala interna
+	}
+
+	set id(value) {
+		this.#id = value;
+	}
+
+	get id() {
+		return this.#id;
 	}
 }
