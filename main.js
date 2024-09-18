@@ -14,7 +14,7 @@ const listShapes = [];
 let gridSize = 1;
 
 // Shapes selecionados
-const currentShapes = [];
+let selectedShapes = [];
 
 // Funções
 function getDrawScreenDimensions(svgElement) {
@@ -35,9 +35,50 @@ function getMousePosition(svgElement, event) {
 }
 
 function selectShape(event) {
-	const shape = event.target;
-	if (shape.tagName === "path") {
+	const shapeElement = event.target;
+
+	// Se o clique foi em um path (shape), tenta selecionar ou deselecionar
+	if (shapeElement.tagName === "path") {
+		const idShape = shapeElement.id.replace("shape-", "");
+
+		// Encontra o shape no array listShapes
+		const clickedShape = listShapes.find((shape) => shape.id == idShape);
+
+		// Verifica se Ctrl ou Cmd está pressionado para múltipla seleção
+		const isMultiSelect = event.ctrlKey || event.metaKey;
+
+		// Se o shape já está selecionado
+		if (selectedShapes.includes(clickedShape)) {
+			// Se múltipla seleção, apenas deseleciona o shape
+			if (isMultiSelect) {
+				selectedShapes = selectedShapes.filter(
+					(shape) => shape !== clickedShape
+				);
+				clickedShape.strokeColor = "black"; // Muda o contorno de volta ao normal
+			}
+		} else {
+			// Se não estiver selecionado, adiciona à lista de selecionados
+			if (isMultiSelect) {
+				selectedShapes.push(clickedShape);
+			} else {
+				// Deseleciona todos os outros se não for múltipla seleção
+				deselectAllShapes();
+				selectedShapes = [clickedShape];
+			}
+			clickedShape.strokeColor = "yellow"; // Muda o contorno para indicar seleção
+		}
+	} else {
+		// Se clicou fora de um shape, deseleciona todos
+		deselectAllShapes();
 	}
+}
+
+// Deseleciona todos os shapes e redefine suas cores
+function deselectAllShapes() {
+	selectedShapes.forEach((shape) => {
+		shape.strokeColor = "black"; // Redefine cor para não selecionado
+	});
+	selectedShapes = [];
 }
 
 function addShape() {
