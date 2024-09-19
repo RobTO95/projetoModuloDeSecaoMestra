@@ -3,6 +3,8 @@ import { Shape } from "./src/shape.js";
 
 // Elementos DOM
 const addButton = document.getElementById("add-button");
+const removeButton = document.getElementById("remove-button");
+
 const drawScreen = document.getElementById("draw-screen");
 const shapesScreen = document.getElementById("shapes-screen");
 
@@ -10,7 +12,7 @@ d3.select(shapesScreen).attr("transform", `translate(400,300)`);
 
 // Salvo na memória
 
-const listShapes = [];
+let listShapes = [];
 let gridSize = 1;
 
 // Shapes selecionados
@@ -73,7 +75,6 @@ function selectShape(event) {
 	}
 }
 
-// Deseleciona todos os shapes e redefine suas cores
 function deselectAllShapes() {
 	selectedShapes.forEach((shape) => {
 		shape.strokeColor = "black"; // Redefine cor para não selecionado
@@ -120,7 +121,60 @@ function addShape() {
 	listShapes.push(newShape);
 }
 
+function isThereShapeSelected() {
+	let selected = false;
+	if (selectedShapes.length !== 0) {
+		selected = true;
+	}
+	return selected;
+}
+let deleteMode = false; // Modo de exclusão ativado quando não há shapes selecionados
+
+function deletePath(shapeObject) {
+	const path = shapeObject.path.node();
+	path.remove();
+}
+
+function removeShape(event) {
+	if (isThereShapeSelected()) {
+		// Remover o shape da visualização
+		selectedShapes.forEach((shape) => {
+			deletePath(shape);
+		});
+		// Remover objetos shape da lista listShapes
+		listShapes = listShapes.filter((shape) => !selectedShapes.includes(shape));
+
+		// Limpar memória dos shapes selecionados
+		deselectAllShapes();
+	} else {
+		// Ativar o modo de exclusão para o próximo clique
+		deleteMode = true;
+		drawScreen.addEventListener("click", handleDeleteClick);
+	}
+}
+
+function handleDeleteClick(event) {
+	// Verificar se o clique foi em um shape
+	const shape = event.target;
+	if (shape.tagName === "path") {
+		const shapeId = shape.id.replace("shape-", "");
+		const shapeObject = listShapes.find((s) => s.id == shapeId);
+
+		// Remover o shape clicado
+		if (shapeObject) {
+			deletePath(shapeObject);
+			listShapes = listShapes.filter((s) => s.id != shapeId);
+		}
+	}
+
+	// Desativar o modo de exclusão e remover o evento de clique
+	deleteMode = false;
+	drawScreen.removeEventListener("click", handleDeleteClick);
+}
+
 // Aplicação de eventos
 addButton.addEventListener("click", addShape);
 
 drawScreen.addEventListener("click", selectShape);
+
+removeButton.addEventListener("click", removeShape);
