@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { Shape } from "./src/shape.js";
+import { Shape } from "../models/shape.js";
 
 // Elementos DOM
 const addButton = document.getElementById("add-button");
