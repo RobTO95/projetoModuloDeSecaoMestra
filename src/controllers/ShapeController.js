@@ -17,7 +17,7 @@ d3.select(shapesScreen).attr("transform", `translate(400,300)`);
 // Salvo na memória
 
 let listShapes = [];
-let gridSize = 50;
+let gridSize = 10;
 
 // Shapes selecionados
 let selectedShapes = [];
