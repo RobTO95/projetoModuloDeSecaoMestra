@@ -22,7 +22,7 @@ export class Shape {
 		this.#position = position; // Armazena a posição internamente
 		this.#angle = angle; // Armazena o ângulo de rotação internamente
 		this.#scale = scale; // Define a escala com valor padrão [1, 1]
-		this.#strokeColor = "black";
+		this.#strokeColor = "";
 		this.#strokeWidth = 1;
 		this.#fill = "steelblue";
 

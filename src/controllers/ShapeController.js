@@ -5,164 +5,150 @@ import { getDrawScreenDimensions } from "../utils/utils.js";
 
 import { getMousePosition } from "../utils/utils.js";
 
-// Elementos DOM
-const addButton = document.getElementById("add-button");
-const removeButton = document.getElementById("remove-button");
+export class ShapeController {
+	#strokeColor = "";
+	#strokeColorSeleted = "yellow";
+	constructor(drawScreen, shapesScreen, addButton, removeButton) {
+		this.drawScreen = drawScreen;
+		this.shapesScreen = shapesScreen;
+		this.addButton = addButton;
+		this.removeButton = removeButton;
+		this.gridSize = 10;
+		this.listShapes = [];
+		this.selectedShapes = [];
+		this.deleteMode = false;
 
-const drawScreen = document.getElementById("draw-screen");
-const shapesScreen = document.getElementById("shapes-screen");
+		d3.select(this.shapesScreen).attr(
+			"transform",
+			`translate(${getDrawScreenDimensions(this.drawScreen).width / 2}, ${
+				getDrawScreenDimensions(this.drawScreen).height / 2
+			}) scale(1,1)`
+		);
 
-d3.select(shapesScreen).attr("transform", `translate(400,300)`);
+		// configurar eventos
 
-// Salvo na memória
+		this.drawScreen.addEventListener("click", this.selectShape.bind(this));
+		this.addButton.addEventListener("click", this.addShape.bind(this));
+		this.removeButton.addEventListener("click", this.removeShape.bind(this));
+	}
 
-let listShapes = [];
-let gridSize = 10;
+	addShape() {
+		console.log(this.listShapes);
+		const listPath = [
+			[0, 0],
+			[10, 0],
+			[10, 90],
+			[90, 90],
+			[90, 100],
+			[0, 100],
+			[0, 0],
+		];
 
-// Shapes selecionados
-let selectedShapes = [];
+		const newShape = new Shape(this.shapesScreen);
 
-// Funções
+		const moveShape = (event) => {
+			newShape.data = listPath;
+			newShape.position = getMousePosition(
+				this.drawScreen,
+				this.gridSize,
+				event
+			);
+		};
 
-function selectShape(event) {
-	const shapeElement = event.target;
+		this.drawScreen.addEventListener("mousemove", moveShape);
 
-	// Se o clique foi em um path (shape), tenta selecionar ou deselecionar
-	if (shapeElement.tagName === "path") {
-		const idShape = shapeElement.id.replace("shape-", "");
+		const handleClick = (event) => {
+			newShape.position = getMousePosition(
+				this.drawScreen,
+				this.gridSize,
+				event
+			);
+			this.drawScreen.removeEventListener("mousemove", moveShape);
+			this.drawScreen.removeEventListener("click", handleClick);
+		};
+		this.drawScreen.addEventListener("click", handleClick);
 
-		// Encontra o shape no array listShapes
-		const clickedShape = listShapes.find((shape) => shape.id == idShape);
+		const lastShape = this.listShapes[this.listShapes.length - 1];
+		newShape.id = lastShape ? lastShape.id + 1 : 1;
+		newShape.path.attr("id", `shape-${newShape.id}`);
+		this.listShapes.push(newShape);
+	}
+	selectShape(event) {
+		const shapeElement = event.target;
 
-		// Verifica se Ctrl ou Cmd está pressionado para múltipla seleção
-		const isMultiSelect = event.ctrlKey || event.metaKey;
+		if (shapeElement.tagName === "path") {
+			const idShape = shapeElement.id.replace("shape-", "");
+			const clickedShape = this.listShapes.find((shape) => shape.id == idShape);
 
-		// Se o shape já está selecionado
-		if (selectedShapes.includes(clickedShape)) {
-			// Se múltipla seleção, apenas deseleciona o shape
-			if (isMultiSelect) {
-				selectedShapes = selectedShapes.filter(
-					(shape) => shape !== clickedShape
-				);
-				clickedShape.strokeColor = "black"; // Muda o contorno de volta ao normal
+			const isMultiSelect = event.ctrlKey || event.metaKey;
+
+			if (this.selectedShapes.includes(clickedShape)) {
+				if (isMultiSelect) {
+					this.selectedShapes = this.selectedShapes.filter(
+						(shape) => shape !== clickedShape
+					);
+					clickedShape.strokeColor = this.#strokeColor;
+				}
+			} else {
+				if (isMultiSelect) {
+					this.selectedShapes.push(clickedShape);
+				} else {
+					this.deselectAllShapes();
+					this.selectedShapes = [clickedShape];
+				}
+				clickedShape.strokeColor = this.#strokeColorSeleted;
 			}
 		} else {
-			// Se não estiver selecionado, adiciona à lista de selecionados
-			if (isMultiSelect) {
-				selectedShapes.push(clickedShape);
-			} else {
-				// Deseleciona todos os outros se não for múltipla seleção
-				deselectAllShapes();
-				selectedShapes = [clickedShape];
-			}
-			clickedShape.strokeColor = "yellow"; // Muda o contorno para indicar seleção
+			this.deselectAllShapes();
 		}
-	} else {
-		// Se clicou fora de um shape, deseleciona todos
-		deselectAllShapes();
 	}
-}
-
-function deselectAllShapes() {
-	selectedShapes.forEach((shape) => {
-		shape.strokeColor = "black"; // Redefine cor para não selecionado
-	});
-	selectedShapes = [];
-}
-
-function addShape() {
-	// Dados para o shape (perfil L)
-	const listPath = [
-		[0, 0],
-		[10, 0],
-		[10, 90],
-		[90, 90],
-		[90, 100],
-		[0, 100],
-		[0, 0],
-	];
-
-	const newShape = new Shape(shapesScreen);
-
-	// Função para mover o shape
-	function moveShape(event) {
-		newShape.data = listPath;
-		newShape.position = getMousePosition(drawScreen, gridSize, event);
-	}
-
-	// Adiciona o evento 'mousemove'
-	drawScreen.addEventListener("mousemove", moveShape);
-
-	// Adiciona o evento 'click' que remove o 'mousemove' e fixa o shape
-	drawScreen.addEventListener("click", function handleClick(event) {
-		newShape.position = getMousePosition(drawScreen, gridSize, event); // Fixa o shape na posição do clique
-		drawScreen.removeEventListener("mousemove", moveShape); // Remove o evento de movimentação
-		drawScreen.removeEventListener("click", handleClick); // Remove o evento de clique para não repetir
-	});
-	if (listShapes.length === 0) {
-		newShape.id = 1;
-	} else {
-		const lastShape = listShapes[listShapes.length - 1];
-		newShape.id = lastShape.id + 1;
-	}
-	newShape.path.attr("id", `shape-${newShape.id}`);
-	listShapes.push(newShape);
-}
-
-function isThereShapeSelected() {
-	let selected = false;
-	if (selectedShapes.length !== 0) {
-		selected = true;
-	}
-	return selected;
-}
-let deleteMode = false; // Modo de exclusão ativado quando não há shapes selecionados
-
-function deletePath(shapeObject) {
-	const path = shapeObject.path.node();
-	path.remove();
-}
-
-function removeShape(event) {
-	if (isThereShapeSelected()) {
-		// Remover o shape da visualização
-		selectedShapes.forEach((shape) => {
-			deletePath(shape);
+	deselectAllShapes() {
+		this.selectedShapes.forEach((shape) => {
+			shape.strokeColor = this.#strokeColor;
 		});
-		// Remover objetos shape da lista listShapes
-		listShapes = listShapes.filter((shape) => !selectedShapes.includes(shape));
-
-		// Limpar memória dos shapes selecionados
-		deselectAllShapes();
-	} else {
-		// Ativar o modo de exclusão para o próximo clique
-		deleteMode = true;
-		drawScreen.addEventListener("click", handleDeleteClick);
+		this.selectedShapes = [];
 	}
-}
 
-function handleDeleteClick(event) {
-	// Verificar se o clique foi em um shape
-	const shape = event.target;
-	if (shape.tagName === "path") {
-		const shapeId = shape.id.replace("shape-", "");
-		const shapeObject = listShapes.find((s) => s.id == shapeId);
+	isThereShapeSelected() {
+		return this.selectedShapes.length !== 0;
+	}
 
-		// Remover o shape clicado
-		if (shapeObject) {
-			deletePath(shapeObject);
-			listShapes = listShapes.filter((s) => s.id != shapeId);
+	deletePath(shapeObject) {
+		const path = shapeObject.path.node();
+		path.remove();
+	}
+
+	removeShape() {
+		if (this.isThereShapeSelected()) {
+			this.selectedShapes.forEach((shape) => {
+				this.deletePath(shape);
+			});
+			this.listShapes = this.listShapes.filter(
+				(shape) => !this.selectedShapes.includes(shape)
+			);
+			this.deselectAllShapes();
+		} else {
+			this.deleteMode = true;
+			this.drawScreen.addEventListener("click", (e) =>
+				this.handleDeleteClick(e)
+			);
 		}
 	}
 
-	// Desativar o modo de exclusão e remover o evento de clique
-	deleteMode = false;
-	drawScreen.removeEventListener("click", handleDeleteClick);
+	handleDeleteClick(event) {
+		if (!this.deleteMode) {
+			return;
+		}
+		const shape = event.target;
+		if (shape.tagName === "path") {
+			const shapeId = shape.id.replace("shape-", "");
+			const shapeObject = this.listShapes.find((s) => s.id == shapeId);
+			if (shapeObject) {
+				this.deletePath(shapeObject);
+				this.listShapes = this.listShapes.filter((s) => s.id != shapeId);
+			}
+		}
+		this.deleteMode = false;
+		this.drawScreen.removeEventListener("click", this.handleDeleteClick);
+	}
 }
-
-// Aplicação de eventos
-addButton.addEventListener("click", addShape);
-
-drawScreen.addEventListener("click", selectShape);
-
-removeButton.addEventListener("click", removeShape);
