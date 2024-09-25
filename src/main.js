@@ -1,4 +1,4 @@
-import { ShapeController } from "../controllers/ShapeController.js";
+import { ShapeController } from "/controllers/ShapeController.js";
 
 // Elementos DOM
 const drawScreen = document.getElementById("draw-screen");
