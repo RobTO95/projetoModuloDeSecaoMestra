@@ -58,11 +58,15 @@ body {
 	align-items: center;
 	justify-content: center;
 	width: 100dvw;
+	padding-top: 100px;
 }
 
 /* Estilização da navbar */
 /* Tags */
 nav {
+	position: fixed;
+	top: 0;
+	left: 0;
 	font-family: var(--font-primary);
 	font-size: var(--font-size-base);
 	font-weight: 300;
