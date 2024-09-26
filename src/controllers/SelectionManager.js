@@ -18,6 +18,7 @@ export class SelectionManager {
 					this.selectedShapes = this.selectedShapes.filter(
 						(shape) => shape !== clickedShape
 					);
+					console.log(clickedShape);
 					clickedShape.strokeColor = this.#strokeColor;
 				}
 			} else {

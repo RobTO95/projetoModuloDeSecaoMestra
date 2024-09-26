@@ -43,12 +43,14 @@ export class ShapeController {
 	}
 
 	selectShape(event) {
-		const shapeElement = event.target;
-		this.selectionManager.selectShape(
-			shapeElement,
-			this.addShapeManager.listShapes,
-			event
-		);
+		if (!this.addShapeManager.isAdding) {
+			const shapeElement = event.target;
+			this.selectionManager.selectShape(
+				shapeElement,
+				this.addShapeManager.listShapes,
+				event
+			);
+		}
 	}
 
 	removeShape() {
