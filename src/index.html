@@ -2,79 +2,90 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<!-- <link
+		<link
 			rel="icon"
 			type="image/svg+xml"
-			href="/vite.svg"
-		/> -->
+			href="./assets/mainImages/logo.svg"
+		/>
 		<meta
 			name="viewport"
 			content="width=device-width, initial-scale=1.0"
 		/>
 		<title>Módulo de Seção Mestra</title>
+
 		<link
 			rel="stylesheet"
 			href="./views/styles/mainStyles.css"
 		/>
+		<link
+			rel="stylesheet"
+			href="./views/styles/buttonStyles.css"
+		/>
 	</head>
 	<body>
-		<header></header>
-		<nav>
-			<a
-				href="#"
-				id="logo"
-			>
-				<img
-					src="./assets/mainImages/logo.svg"
-					alt="Section Módulus Calculator"
-				/>
-			</a>
-			<div>
-				<a href="#">Home</a>
-				<a href="#">Projects</a>
-				<a href="#">Help</a>
-
-				<button
-					id="login"
+		<header>
+			<nav>
+				<a
 					href="#"
+					id="logo"
 				>
-					Login
-				</button>
-			</div>
-		</nav>
-		<main>conteudo principal</main>
-		<!-- <div id="container">
-			<h1>Calculadora de Módulo de Seção Mestra</h1>
-			<div id="options-bar">
+					<img
+						src="./assets/mainImages/logo.svg"
+						alt="Section Módulus Calculator"
+					/>
+				</a>
+				<div>
+					<a href="#">Home</a>
+					<a href="#">Projects</a>
+					<a href="#">Help</a>
+
+					<button
+						id="login"
+						href="#"
+					>
+						Login
+					</button>
+				</div>
+			</nav>
+		</header>
+		<main>
+			<section id="option-bar">
 				<button
 					id="add-button"
-					class="btn"
+					class="button button-light"
 				>
 					Add
 				</button>
 				<button
 					id="remove-button"
-					class="btn"
+					class="button button-light"
 				>
 					Remove
 				</button>
 				<button
 					id="move-button"
-					class="btn"
+					class="button button-light"
 				>
 					Move
 				</button>
 				<button
 					id="edit-button"
-					class="btn"
+					class="button button-light"
 				>
 					Edit
 				</button>
+			</section>
+			<div id="project-area">
+				<section id="left-bar">Left bar</section>
+				<section id="draw">
+					<svg id="draw-screen">
+						<g id="shapes-screen"></g>
+					</svg>
+				</section>
 			</div>
-			<svg id="draw-screen">
-				<g id="shapes-screen"></g>
-			</svg>
-		</div> -->
+			<section id="down-bar">Down Bar</section>
+		</main>
+		<footer>TODOS OS DIREITOS RESERVADOS</footer>
 		<script
 			type="module"
 			src="main.js"

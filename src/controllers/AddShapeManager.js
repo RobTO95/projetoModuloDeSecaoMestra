@@ -28,10 +28,12 @@ export class AddShapeManager {
 	}
 
 	startAddingMode() {
+		this.#drawScreen.style.cursor = "none";
 		this.#isAdding = true;
 	}
 
 	exitAddingMode(event) {
+		this.#drawScreen.style.cursor = "default";
 		this.#isAdding = false;
 	}
 
@@ -80,6 +82,7 @@ export class AddShapeManager {
 			this.exitAddingMode();
 			temporaryShape.path.remove();
 			this.#drawScreen.removeEventListener("mousemove", moveTemporaryShape);
+
 			this.#drawScreen.removeEventListener("click", handleClick);
 			window.removeEventListener("keydown", exitMode);
 		};

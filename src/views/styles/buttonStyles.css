@@ -1,0 +1,49 @@
+.button {
+	text-transform: uppercase;
+	font-style: bold;
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 19px;
+	letter-spacing: 0;
+	border-radius: 5px;
+	padding: 8px 16px;
+	margin: 20px;
+	cursor: pointer;
+	border: 1px solid;
+	transition: background-color 0.3s;
+}
+
+.button-light {
+	background-color: transparent;
+	border: 1px solid #fff;
+	color: #fff;
+}
+
+.button-light:hover {
+	background-color: rgba(255, 255, 255, 0.2);
+	color: #fff;
+}
+.button-light:active {
+	background-color: #fff;
+	color: #000;
+	mix-blend-mode: lighten;
+	opacity: 0.3;
+}
+
+.button-dark {
+	background-color: transparent;
+	border: 1px solid #000;
+	color: #000;
+}
+
+.button-dark:hover {
+	background-color: rgba(0, 0, 0, 0.2);
+	color: #000;
+}
+.button-dark:active {
+	border: 1px solid #000;
+	background-color: #000;
+	color: #fff;
+	mix-blend-mode: darken;
+	opacity: 0.3;
+}
