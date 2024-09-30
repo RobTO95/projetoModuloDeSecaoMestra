@@ -21,6 +21,12 @@
 			rel="stylesheet"
 			href="./views/styles/buttonStyles.css"
 		/>
+		<style>
+			.selected {
+				stroke: red;
+				stroke-width: 2px;
+			}
+		</style>
 	</head>
 	<body>
 		<header>
@@ -50,6 +56,18 @@
 		</header>
 		<main>
 			<section id="option-bar">
+				<button
+					id="undo-button"
+					class="button button-light"
+				>
+					Undo
+				</button>
+				<button
+					id="redo-button"
+					class="button button-light"
+				>
+					Redo
+				</button>
 				<button
 					id="add-button"
 					class="button button-light"

@@ -2,12 +2,12 @@
 	text-transform: uppercase;
 	font-style: bold;
 	font-weight: 600;
-	font-size: 16px;
-	line-height: 19px;
+	font-size: auto;
+	line-height: 1.25rem;
 	letter-spacing: 0;
-	border-radius: 5px;
-	padding: 8px 16px;
-	margin: 20px;
+	border-radius: 0.25rem;
+	padding: 0.5rem 1rem;
+	/* margin: 1rem; */
 	cursor: pointer;
 	border: 1px solid;
 	transition: background-color 0.3s;

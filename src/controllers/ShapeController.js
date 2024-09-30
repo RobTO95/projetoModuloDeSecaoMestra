@@ -1,64 +1,57 @@
-import * as d3 from "d3";
-import { getDrawScreenDimensions } from "../utils/utils.js";
-import { AddShapeManager } from "./AddShapeManager.js";
-import { RemoveShapeManager } from "./RemoveShapeManager.js";
-import { SelectionManager } from "./SelectionManager.js";
+import CommandManager from "./commands/CommandManager.js";
+import AddShapeCommand from "./commands/AddShapeCommand.js";
+import RemoveShapeCommand from "./commands/RemoveShapeCommand.js";
+import AddShapeManager from "./managers/AddShapeManager.js";
+import RemoveShapeManager from "./managers/RemoveShapeManager.js";
+import SelectionManager from "./managers/SelectionManager.js";
 
 export class ShapeController {
-	constructor(drawScreen, shapesScreen, addButton, removeButton) {
+	constructor(drawScreen, shapesScreen) {
 		this.drawScreen = drawScreen;
 		this.shapesScreen = shapesScreen;
-		this.addButton = addButton;
-		this.removeButton = removeButton;
-		this.gridSize = 10;
 
-		this.addShapeManager = new AddShapeManager(
-			shapesScreen,
-			drawScreen,
-			this.gridSize
-		);
+		this.commandManager = new CommandManager();
+		this.addShapeManager = new AddShapeManager();
 		this.removeShapeManager = new RemoveShapeManager();
 		this.selectionManager = new SelectionManager();
-
-		d3.select(this.shapesScreen).attr(
-			"transform",
-			`translate(${getDrawScreenDimensions(this.drawScreen).width / 2}, ${
-				getDrawScreenDimensions(this.drawScreen).height / 2
-			}) scale(1,1)`
-		);
-
-		// Configurar eventos
-		this.drawScreen.addEventListener("click", this.selectShape.bind(this));
-		this.addButton.addEventListener("click", this.addShape.bind(this));
-		this.removeButton.addEventListener("click", this.removeShape.bind(this));
-
-		// Atualiza lista de shapes na RemoveShapeManager
-		this.removeShapeManager.listShapes = this.addShapeManager.listShapes;
 	}
-
-	addShape() {
-		this.addShapeManager.addShape();
-		// Atualiza a lista de shapes na RemoveShapeManager após adicionar um novo shape
-		this.removeShapeManager.listShapes = this.addShapeManager.listShapes;
-	}
-
 	selectShape(event) {
-		if (!this.addShapeManager.isAdding) {
-			const shapeElement = event.target;
-			this.selectionManager.selectShape(
-				shapeElement,
-				this.addShapeManager.listShapes,
-				event
-			);
-		}
+		throw "Implementar selectShape em ShapeController";
+		// if (!this.addShapeManager.isAdding) {
+		// 	const shapeElement = event.target;
+		// 	this.selectionManager.selectShape(
+		// 		shapeElement,
+		// 		this.addShapeManager.listShapes,
+		// 		event
+		// 	);
+		// }
+	}
+
+	addShape(shapeData) {
+		const command = new AddShapeCommand(
+			this.addShapeManager,
+			this.shapesScreen,
+			shapeData
+		);
+		this.commandManager.executeCommand(command);
 	}
 
 	removeShape() {
-		if (this.selectionManager.isThereShapeSelected()) {
-			this.removeShapeManager.removeShape(this.selectionManager.selectedShapes);
-			this.selectionManager.deselectAllShapes();
-			// Atualiza a lista de shapes após remoção
-			this.removeShapeManager.listShapes = this.addShapeManager.listShapes;
+		const selectedShape = this.selectionManager.getSelectedShape();
+		if (selectedShape) {
+			const command = new RemoveShapeCommand(
+				this.removeShapeManager,
+				selectedShape.id
+			);
+			this.commandManager.executeCommand(command);
 		}
+	}
+
+	undo() {
+		this.commandManager.undo();
+	}
+
+	redo() {
+		this.commandManager.redo();
 	}
 }

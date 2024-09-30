@@ -12,16 +12,16 @@ export class Shape {
 	#id;
 	constructor(
 		objectDraw,
-		data = [],
-		position = [0, 0],
-		angle = 0,
-		scale = [1, 1]
+		data = null,
+		position = null,
+		angle = null,
+		scale = null
 	) {
 		this.objectDraw = d3.select(objectDraw);
-		this.#data = data; // Armazena os dados internamente
-		this.#position = position; // Armazena a posição internamente
-		this.#angle = angle; // Armazena o ângulo de rotação internamente
-		this.#scale = scale; // Define a escala com valor padrão [1, 1]
+		this.#data = data || []; // Armazena os dados internamente
+		this.#position = position || [0, 0]; // Armazena a posição internamente
+		this.#angle = angle || 0; // Armazena o ângulo de rotação internamente
+		this.#scale = scale || [1, 1]; // Define a escala com valor padrão [1, 1]
 		this.#strokeColor = "";
 		this.#strokeWidth = 1;
 		this.#fill = "steelblue";
