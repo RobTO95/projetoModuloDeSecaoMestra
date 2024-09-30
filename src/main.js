@@ -24,14 +24,14 @@ const shapeController = new ShapeController(drawScreen, shapesScreen);
 // Eventos
 undoButton.addEventListener("click", () => {
 	shapeController.undo();
-	// console.log("Desfazer pilha:", shapeController.commandManager.undoStack);
-	// console.log("Refazer pilha:", shapeController.commandManager.redoStack);
+	console.log("Desfazer pilha:", shapeController.commandManager.undoStack);
+	console.log("Refazer pilha:", shapeController.commandManager.redoStack);
 });
 
 redoButton.addEventListener("click", () => {
 	shapeController.redo();
-	// console.log("Desfazer pilha:", shapeController.commandManager.undoStack);
-	// console.log("Refazer pilha:", shapeController.commandManager.redoStack);
+	console.log("Desfazer pilha:", shapeController.commandManager.undoStack);
+	console.log("Refazer pilha:", shapeController.commandManager.redoStack);
 });
 
 addButton.addEventListener("click", () => {

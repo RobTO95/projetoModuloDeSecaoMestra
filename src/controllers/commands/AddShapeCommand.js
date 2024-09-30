@@ -5,7 +5,7 @@ export default class AddShapeCommand extends Command {
 		super();
 		this.shapesScreen = shapesScreen;
 		this.shapeManager = shapeManager;
-		this.shapedata = shapeData;
+		this.shapeData = shapeData;
 		this.shape = null;
 	}
 	execute() {

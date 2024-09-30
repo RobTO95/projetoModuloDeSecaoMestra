@@ -15,7 +15,9 @@ export default class AddShapeManager {
 			[0, 0],
 		];
 		const newPosition = position;
+		const lastShape = this.listShapes[this.listShapes.length - 1];
 		const newShape = new Shape(shapesScreen, data, newPosition);
+		newShape.id = lastShape ? lastShape.id + 1 : 1;
 		this.listShapes.push(newShape);
 		return newShape;
 	}
@@ -23,10 +25,7 @@ export default class AddShapeManager {
 		const shape = this.listShapes.find((shape) => shape.path === path);
 		if (shape) {
 			shape.path.remove(); // Remove o elemento SVG
-			this.listShapes = this.listShapes.filter((obj) => {
-				obj !== shape;
-			}); // Remove da lista
-			return shape;
+			this.listShapes = this.listShapes.filter((obj) => obj !== shape); // Remove da lista corretamente
 		}
 	}
 }
