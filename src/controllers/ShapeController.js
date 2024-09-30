@@ -14,6 +14,7 @@ export class ShapeController {
 		this.addShapeManager = new AddShapeManager();
 		this.removeShapeManager = new RemoveShapeManager();
 		this.selectionManager = new SelectionManager();
+		this.listShapes = [];
 	}
 	selectShape(event) {
 		throw "Implementar selectShape em ShapeController";
@@ -27,11 +28,13 @@ export class ShapeController {
 		// }
 	}
 
-	addShape(shapeData) {
+	addShape(shapeData, position) {
 		const command = new AddShapeCommand(
 			this.addShapeManager,
+			this.listShapes,
 			this.shapesScreen,
-			shapeData
+			shapeData,
+			position
 		);
 		this.commandManager.executeCommand(command);
 	}

@@ -34,6 +34,10 @@ redoButton.addEventListener("click", () => {
 	console.log("Refazer pilha:", shapeController.commandManager.redoStack);
 });
 
+const position = [0, 100];
+const data = null;
+shapeController.addShape(data, position);
+
 addButton.addEventListener("click", () => {
 	shapeController.addShape();
 });

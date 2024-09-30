@@ -6,6 +6,7 @@ export class Shape {
 	#position;
 	#angle;
 	#scale;
+	#lineGenerator;
 	#strokeColor;
 	#strokeWidth;
 	#fill;
@@ -27,7 +28,7 @@ export class Shape {
 		this.#fill = "steelblue";
 
 		// Gera a linha a partir dos dados
-		this.lineGenerator = d3.line();
+		this.#lineGenerator = d3.line();
 
 		// Cria o path inicial
 		this.path = this.objectDraw
@@ -43,7 +44,7 @@ export class Shape {
 	// Método para atualizar o caminho do shape baseado nos dados, posição, rotação e escala atuais
 	updatePath() {
 		// Cria a string do caminho baseado nos pontos de dados
-		const pathString = this.lineGenerator(this.#data);
+		const pathString = this.#lineGenerator(this.#data);
 
 		// Atualiza o atributo "d" do path e aplica transformações de rotação e escala
 		this.path.attr("d", pathString);
@@ -56,6 +57,10 @@ export class Shape {
 			.attr("stroke", this.#strokeColor)
 			.attr("fill", this.#fill)
 			.attr("stroke-width", this.#strokeWidth);
+	}
+
+	get lineGenerator() {
+		return this.#lineGenerator;
 	}
 
 	set fill(color) {
