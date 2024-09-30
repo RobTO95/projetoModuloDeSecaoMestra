@@ -1,14 +1,20 @@
 export default class RemoveShapeManager {
 	constructor() {}
-	// removeShape() {
-	// 	throw new Error("Implementar comando removeShape em RemoveShapeManager");
-	// }
-	removeShape(listShapes, path) {
-		const shape = listShapes.find((shape) => shape.path === path);
-		if (shape) {
+
+	removeShape(selectedShapes = [], listShapes = []) {
+		selectedShapes.forEach((shape) => {
 			shape.path.remove(); // Remove o elemento SVG
-			listShapes = listShapes.filter((obj) => obj !== shape); // Remove da lista corretamente
-			return shape;
-		}
+			const index = listShapes.indexOf(shape);
+			if (index !== -1) {
+				listShapes.splice(index, 1); // Remove o shape da lista original
+			}
+		});
+	}
+
+	addShape(listShapes, shapeBackup = []) {
+		shapeBackup.forEach((shape) => {
+			listShapes.push(shape); // Adiciona de volta à lista original
+			shape.updatePath(); // Atualiza o path no SVG
+		});
 	}
 }

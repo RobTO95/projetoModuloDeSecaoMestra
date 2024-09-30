@@ -24,20 +24,28 @@ const shapeController = new ShapeController(drawScreen, shapesScreen);
 // Eventos
 undoButton.addEventListener("click", () => {
 	shapeController.undo();
-	console.log("Desfazer pilha:", shapeController.commandManager.undoStack);
-	console.log("Refazer pilha:", shapeController.commandManager.redoStack);
+	// console.log("Desfazer pilha:", shapeController.commandManager.undoStack);
+	// console.log("Refazer pilha:", shapeController.commandManager.redoStack);
 });
 
 redoButton.addEventListener("click", () => {
 	shapeController.redo();
-	console.log("Desfazer pilha:", shapeController.commandManager.undoStack);
-	console.log("Refazer pilha:", shapeController.commandManager.redoStack);
+	// console.log("Desfazer pilha:", shapeController.commandManager.undoStack);
+	// console.log("Refazer pilha:", shapeController.commandManager.redoStack);
 });
-
-const position = [0, 100];
-const data = null;
-shapeController.addShape(data, position);
 
 addButton.addEventListener("click", () => {
 	shapeController.addShape();
 });
+
+drawScreen.addEventListener("click", (event) => {
+	shapeController.selectShape(event);
+});
+
+removeButton.addEventListener("click", (event) => {
+	shapeController.removeShape();
+});
+
+const position = [100, 100];
+const data = null;
+shapeController.addShape(data, position);

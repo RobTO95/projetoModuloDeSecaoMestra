@@ -17,15 +17,8 @@ export class ShapeController {
 		this.listShapes = [];
 	}
 	selectShape(event) {
-		throw "Implementar selectShape em ShapeController";
-		// if (!this.addShapeManager.isAdding) {
-		// 	const shapeElement = event.target;
-		// 	this.selectionManager.selectShape(
-		// 		shapeElement,
-		// 		this.addShapeManager.listShapes,
-		// 		event
-		// 	);
-		// }
+		const shapeElement = event.target;
+		this.selectionManager.selectShape(shapeElement, this.listShapes, event);
 	}
 
 	addShape(shapeData, position) {
@@ -41,10 +34,11 @@ export class ShapeController {
 
 	removeShape() {
 		const selectedShape = this.selectionManager.getSelectedShape();
-		if (selectedShape) {
+		if (selectedShape && selectedShape.length > 0) {
 			const command = new RemoveShapeCommand(
 				this.removeShapeManager,
-				selectedShape.id
+				selectedShape,
+				this.listShapes
 			);
 			this.commandManager.executeCommand(command);
 		}

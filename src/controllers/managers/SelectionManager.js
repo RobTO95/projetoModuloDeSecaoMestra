@@ -2,6 +2,9 @@ export default class SelectionManager {
 	constructor() {
 		this.selectedShapes = [];
 	}
+	getSelectedShape() {
+		return this.selectedShapes;
+	}
 
 	// Seleciona um shape
 	selectShape(shapeElement, listShapes, event) {
@@ -16,6 +19,8 @@ export default class SelectionManager {
 				this.clearSelection(); // Limpa seleção atual se não houver múltipla seleção
 				this.addToSelection(shape);
 			}
+		} else {
+			this.deselectAllShapes();
 		}
 	}
 
