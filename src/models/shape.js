@@ -37,14 +37,11 @@ export class Shape {
 
 	// Método para atualizar o caminho do shape baseado nos dados, posição, rotação e escala atuais
 	updatePath() {
-		// Cria o path inicial
-		const path = this.objectDraw
-			.append("path")
-			.attr("stroke", this.#strokeColor)
-			.attr("fill", this.#fill)
-			.attr("stroke-width", this.#strokeWidth);
+		if (!this.path) {
+			// Cria o path inicial
+			this.path = this.objectDraw.append("path");
+		}
 		// Cria a string do caminho baseado nos pontos de dados
-		this.path = path;
 		const pathString = this.#lineGenerator(this.#data);
 
 		// Atualiza o atributo "d" do path e aplica transformações de rotação e escala
@@ -59,7 +56,10 @@ export class Shape {
 			.attr("fill", this.#fill)
 			.attr("stroke-width", this.#strokeWidth);
 	}
-
+	removePath() {
+		this.path.remove();
+		this.path = null;
+	}
 	get lineGenerator() {
 		return this.#lineGenerator;
 	}

@@ -8,19 +8,24 @@ export default class AddShapeCommand extends Command {
 		this.shapesScreen = shapesScreen;
 		this.shapeData = shapeData;
 		this.position = position;
-		this.shape = null;
+		this.backupShape = null;
 	}
 	execute() {
-		this.shape = this.shapeManager.addShape(
-			this.listShapes,
-			this.shapesScreen,
-			this.shapeData,
-			this.position
-		);
+		if (!this.backupShape) {
+			this.backupShape = this.shapeManager.addShape(
+				this.listShapes,
+				this.shapesScreen,
+				this.shapeData,
+				this.position
+			);
+		} else {
+			this.backupShape.updatePath();
+			this.listShapes.push(this.backupShape);
+		}
 	}
 	undo() {
-		if (this.shape) {
-			this.shapeManager.removeShape(this.listShapes, this.shape.path);
+		if (this.backupShape) {
+			this.shapeManager.removeShape(this.listShapes, this.backupShape);
 		}
 	}
 }

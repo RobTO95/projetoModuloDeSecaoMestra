@@ -15,12 +15,13 @@ export default class AddShapeManager {
 		const newShape = new Shape(shapesScreen, data, position);
 		newShape.id = lastShape ? lastShape.id + 1 : 1;
 		listShapes.push(newShape);
+		this.backUpShape = newShape;
 		return newShape;
 	}
-	removeShape(listShapes, path) {
-		const shape = listShapes.find((shape) => shape.path === path);
+	removeShape(listShapes, shape) {
+		console.log(shape);
 		if (shape) {
-			shape.path.remove(); // Remove o elemento SVG
+			shape.removePath();
 			listShapes = listShapes.filter((obj) => obj !== shape); // Remove da lista corretamente
 		}
 	}

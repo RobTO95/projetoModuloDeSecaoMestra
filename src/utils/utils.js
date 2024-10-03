@@ -7,7 +7,7 @@ export function getDrawScreenDimensions(svgElement) {
 	return { width, height };
 }
 
-export function getMousePosition(svgElement, gridSize, event) {
+export function getMousePosition(svgElement, gridSize = 10, event = null) {
 	let position = d3.pointer(event, svgElement);
 
 	// console.log(position);

@@ -1,12 +1,12 @@
 import Command from "./Command";
 
 export default class RemoveShapeCommand extends Command {
-	constructor(shapeManager, selectedShapes = [], listShapes) {
+	constructor(shapeManager, selectedShapes, listShapes) {
 		super();
 		this.shapeManager = shapeManager;
 		this.selectedShapes = selectedShapes;
 		this.listShapes = listShapes;
-		this.shapeBackup = [...selectedShapes]; // Clona os shapes selecionados para o backup
+		this.shapeBackup = selectedShapes; // Clona os shapes selecionados para o backup
 	}
 
 	execute() {
@@ -14,8 +14,6 @@ export default class RemoveShapeCommand extends Command {
 	}
 
 	undo() {
-		if (this.shapeBackup.length > 0) {
-			this.shapeManager.addShape(this.listShapes, this.shapeBackup); // Restaura os shapes removidos
-		}
+		this.shapeManager.addShape(this.listShapes, this.shapeBackup); // Restaura os shapes removidos
 	}
 }

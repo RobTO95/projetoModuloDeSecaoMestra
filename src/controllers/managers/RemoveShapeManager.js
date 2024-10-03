@@ -3,7 +3,7 @@ export default class RemoveShapeManager {
 
 	removeShape(selectedShapes = [], listShapes = []) {
 		selectedShapes.forEach((shape) => {
-			shape.path.remove(); // Remove o elemento SVG
+			shape.removePath(); // Remove o elemento SVG
 			const index = listShapes.indexOf(shape);
 			if (index !== -1) {
 				listShapes.splice(index, 1); // Remove o shape da lista original
