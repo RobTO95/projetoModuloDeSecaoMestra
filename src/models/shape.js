@@ -11,6 +11,7 @@ export class Shape {
 	#strokeWidth;
 	#fill;
 	#id;
+	#path;
 	constructor(
 		objectDraw,
 		data = null,
@@ -26,7 +27,7 @@ export class Shape {
 		this.#strokeColor = "";
 		this.#strokeWidth = 1;
 		this.#fill = "steelblue";
-		this.path = null;
+		this.#path = null;
 
 		// Gera a linha a partir dos dados
 		this.#lineGenerator = d3.line();
@@ -37,16 +38,16 @@ export class Shape {
 
 	// Método para atualizar o caminho do shape baseado nos dados, posição, rotação e escala atuais
 	updatePath() {
-		if (!this.path) {
+		if (!this.#path) {
 			// Cria o path inicial
-			this.path = this.objectDraw.append("path");
+			this.#path = this.objectDraw.append("path");
 		}
 		// Cria a string do caminho baseado nos pontos de dados
 		const pathString = this.#lineGenerator(this.#data);
 
 		// Atualiza o atributo "d" do path e aplica transformações de rotação e escala
-		this.path.attr("d", pathString);
-		this.path
+		this.#path
+			.attr("d", pathString)
 			.attr(
 				"transform",
 				`translate(${this.#position[0]}, ${-this.#position[1]}) rotate(${-this
@@ -54,11 +55,17 @@ export class Shape {
 			)
 			.attr("stroke", this.#strokeColor)
 			.attr("fill", this.#fill)
-			.attr("stroke-width", this.#strokeWidth);
+			.attr("stroke-width", this.#strokeWidth)
+			.attr("id", `shape-${this.#id}`);
 	}
 	removePath() {
-		this.path.remove();
-		this.path = null;
+		if (this.#path) {
+			this.objectDraw.node().removeChild(this.#path.node());
+			this.#path = null;
+		}
+	}
+	get path() {
+		return this.#path;
 	}
 	get lineGenerator() {
 		return this.#lineGenerator;
@@ -125,6 +132,7 @@ export class Shape {
 
 	set id(value) {
 		this.#id = value;
+		this.updatePath();
 	}
 
 	get id() {

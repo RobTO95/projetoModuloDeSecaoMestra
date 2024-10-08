@@ -1,10 +1,13 @@
 import * as d3 from "d3";
 import { getDrawScreenDimensions, getMousePosition } from "./utils/utils.js";
 import { ShapeController } from "./controllers/ShapeController.js";
+import MoveShapeCommand from "./controllers/commands/MoveShapeCommand.js";
+import ShapeMover from "./controllers/ShapeMover.js";
 
 // Elementos DOM
 const drawScreen = document.getElementById("draw-screen");
 const shapesScreen = document.getElementById("shapes-screen");
+const saveButton = document.getElementById("save-button");
 const addButton = document.getElementById("add-button");
 const removeButton = document.getElementById("remove-button");
 const moveButton = document.getElementById("move-button");
@@ -22,10 +25,15 @@ d3.select(shapesScreen).attr(
 	}) scale(1,1)`
 );
 
-// Instancia de controllers
+// Instancia de controllers --------------------------------------------------------------------------------------
 const shapeController = new ShapeController(drawScreen, shapesScreen);
+// shapeController.loadShapes();
+// Salvar projeto ------------------------------------------------------------------------------------------------
+saveButton.addEventListener("click", (event) => {
+	shapeController.saveShapes();
+});
 
-// Função para atualizar o estado dos botões de Undo e Redo
+// Função para atualizar o estado dos botões de Undo e Redo ------------------------------------------------------
 function updateUndoRedoButtons() {
 	// Desativa o botão de Undo se a pilha estiver vazia
 	if (shapeController.commandManager.undoStack.length === 0) {
@@ -46,19 +54,21 @@ function updateUndoRedoButtons() {
 	}
 }
 
-// Eventos
+// Eventos -------------------------------------------------------------------------------------------------------
 undoButton.addEventListener("click", () => {
 	shapeController.undo();
 	updateUndoRedoButtons();
-	console.log(shapeController.commandManager.redoStack);
-	console.log(shapeController.commandManager.undoStack);
+	// console.log("Shapes: ", shapeController.listShapes);
+	// console.log(shapeController.commandManager.redoStack);
+	// console.log(shapeController.commandManager.undoStack);
 });
 
 redoButton.addEventListener("click", () => {
 	shapeController.redo();
 	updateUndoRedoButtons();
-	console.log(shapeController.commandManager.redoStack);
-	console.log(shapeController.commandManager.undoStack);
+	// console.log("Shapes: ", shapeController.listShapes);
+	// console.log(shapeController.commandManager.redoStack);
+	// console.log(shapeController.commandManager.undoStack);
 });
 
 addButton.addEventListener("click", () => {
@@ -75,42 +85,18 @@ removeButton.addEventListener("click", (event) => {
 	updateUndoRedoButtons(); // Atualiza os botões após remover um shape
 });
 
-// Mover shapes ------------------------------------------------------------------------
-moveButton.addEventListener("click", (event) => {
-	let firstPosition = null;
-	let lastPosition = null;
+// // Inicializa o manipulador de movimentação de shapes ---------------------------------------------------------
+const moveShape = new ShapeMover(
+	drawScreen,
+	shapeController,
+	gridSize,
+	updateUndoRedoButtons
+);
 
-	function onMouseDown(event) {
-		firstPosition = getMousePosition(drawScreen, gridSize, event);
-		drawScreen.addEventListener("mouseup", onMouseUp);
-		drawScreen.removeEventListener("mousedown", onMouseDown);
-	}
+// Inicializa com o primeiro shape para fins de teste ------------------------------------------------------------
+// const position = [100, 100];
+// const data = null;
+// shapeController.addShape(data, position);
 
-	function onMouseUp(event) {
-		lastPosition = getMousePosition(drawScreen, gridSize, event);
-
-		// Verifica se ambas as posições foram capturadas antes de mover o shape
-		if (firstPosition && lastPosition) {
-			shapeController.moveShape(firstPosition, lastPosition);
-			updateUndoRedoButtons();
-			// Remove o evento de mouseup após o movimento
-			drawScreen.removeEventListener("mouseup", onMouseUp);
-			firstPosition = null;
-			lastPosition = null;
-		}
-	}
-
-	// Adiciona o evento de mousedown e mouseup
-	// console.log(
-	// 	"Modo de movimento ativado. Clique e arraste para mover o shape."
-	// );
-	drawScreen.addEventListener("mousedown", onMouseDown);
-});
-
-// Inicializa com o primeiro shape para fins de teste
-const position = [100, 100];
-const data = null;
-shapeController.addShape(data, position);
-
-// Inicializa o estado dos botões
+// Inicializa o estado dos botões --------------------------------------------------------------------------------
 updateUndoRedoButtons();

@@ -19,11 +19,20 @@ export class ShapeController {
 		this.moveShapeManager = new MoveShapeManager();
 		this.listShapes = [];
 	}
+	loadShapes() {
+		throw "Implementar método loadShapes";
+	}
+	saveShapes() {
+		throw "Implementar método saveShapes";
+	}
 	selectShape(event) {
 		const shapeElement = event.target;
 		this.selectionManager.selectShape(shapeElement, this.listShapes, event);
 	}
 
+	getSelectShape() {
+		return this.selectionManager.selectedShapes;
+	}
 	addShape(shapeData, position) {
 		const command = new AddShapeCommand(
 			this.addShapeManager,

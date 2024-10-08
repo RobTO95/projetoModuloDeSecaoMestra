@@ -11,18 +11,25 @@ export default class AddShapeManager {
 			[0, 100],
 			[0, 0],
 		];
-		const lastShape = listShapes[listShapes.length - 1];
+		// Encontra o shape com o maior id na lista
+		const maxIdShape = listShapes.reduce(
+			(maxShape, currentShape) => {
+				return currentShape.id > maxShape.id ? currentShape : maxShape;
+			},
+			{ id: 0 }
+		); // Inicia com id 0 caso a lista esteja vazia
+
+		// Cria um novo shape com o id incrementado
 		const newShape = new Shape(shapesScreen, data, position);
-		newShape.id = lastShape ? lastShape.id + 1 : 1;
+		newShape.id = maxIdShape.id + 1; // Usa o maior id + 1
 		listShapes.push(newShape);
 		this.backUpShape = newShape;
 		return newShape;
 	}
 	removeShape(listShapes, shape) {
-		console.log(shape);
 		if (shape) {
 			shape.removePath();
-			listShapes = listShapes.filter((obj) => obj !== shape); // Remove da lista corretamente
+			listShapes.pop(shape); // Remove da lista corretamente
 		}
 	}
 }

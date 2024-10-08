@@ -7,11 +7,10 @@ export default class SelectionManager {
 	}
 
 	// Seleciona um shape
-	selectShape(shapeElement, listShapes, event) {
+	selectShape(shapeElement, listShapes = [], event) {
 		const shape = listShapes.find(
-			(shape) => shape.path.node() === shapeElement
+			(shape) => shape.id === Number(shapeElement.id.replace("shape-", ""))
 		);
-
 		if (shape) {
 			if (event.ctrlKey || event.metaKey) {
 				this.toggleSelection(shape); // Seleção múltipla com Ctrl ou Cmd
@@ -52,9 +51,12 @@ export default class SelectionManager {
 
 	// Limpa toda a seleção
 	clearSelection() {
-		this.selectedShapes.forEach((shape) =>
-			shape.path.classed("selected", false)
-		);
+		this.selectedShapes.forEach((shape) => {
+			if (shape.path) {
+				// Verifique se o path ainda existe
+				shape.path.classed("selected", false);
+			}
+		});
 		this.selectedShapes = [];
 	}
 

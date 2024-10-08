@@ -4,14 +4,16 @@ export default class RemoveShapeManager {
 	removeShape(selectedShapes = [], listShapes = []) {
 		selectedShapes.forEach((shape) => {
 			shape.removePath(); // Remove o elemento SVG
-			const index = listShapes.indexOf(shape);
-			if (index !== -1) {
-				listShapes.splice(index, 1); // Remove o shape da lista original
+			let indexShape = listShapes.indexOf(shape);
+			if (indexShape > -1) {
+				listShapes.splice(indexShape, 1);
 			}
 		});
+		// Limpa a seleção após a remoção
+		selectedShapes.length = 0;
 	}
 
-	addShape(listShapes, shapeBackup = []) {
+	addShape(listShapes, shapeBackup) {
 		shapeBackup.forEach((shape) => {
 			listShapes.push(shape); // Adiciona de volta à lista original
 			shape.updatePath(); // Atualiza o path no SVG
