@@ -1,6 +1,11 @@
 import * as d3 from "d3";
 
-// Classe Shape
+/**
+ * Classe Shape
+ *
+ * Representa um shape SVG parametrizado com dados, permitindo transformações como rotação, escala e movimentação.
+ * Utiliza D3.js para manipulação de SVGs e geração de caminhos baseados em dados.
+ */
 export class Shape {
 	#data;
 	#position;
@@ -12,6 +17,15 @@ export class Shape {
 	#fill;
 	#id;
 	#path;
+
+	/**
+	 * @constructor
+	 * @param {SVGElement} objectDraw - Elemento SVG onde o shape será desenhado.
+	 * @param {Array} [data=null] - Dados que descrevem os pontos do shape.
+	 * @param {Array<number>} [position=[0, 0]] - Posição inicial do shape no SVG.
+	 * @param {number} [angle=0] - Ângulo de rotação inicial do shape (em graus).
+	 * @param {Array<number>} [scale=[1, 1]] - Escala inicial do shape no eixo X e Y.
+	 */
 	constructor(
 		objectDraw,
 		data = null,
@@ -20,32 +34,35 @@ export class Shape {
 		scale = null
 	) {
 		this.objectDraw = d3.select(objectDraw);
-		this.#data = data || []; // Armazena os dados internamente
-		this.#position = position || [0, 0]; // Armazena a posição internamente
-		this.#angle = angle || 0; // Armazena o ângulo de rotação internamente
-		this.#scale = scale || [1, 1]; // Define a escala com valor padrão [1, 1]
+		this.#data = data || []; // Armazena os dados internamente.
+		this.#position = position || [0, 0]; // Armazena a posição internamente.
+		this.#angle = angle || 0; // Armazena o ângulo de rotação internamente.
+		this.#scale = scale || [1, 1]; // Define a escala com valor padrão [1, 1].
 		this.#strokeColor = "";
 		this.#strokeWidth = 1;
 		this.#fill = "steelblue";
 		this.#path = null;
 
-		// Gera a linha a partir dos dados
+		// Gera a linha a partir dos dados.
 		this.#lineGenerator = d3.line();
 
-		// Desenha o shape inicial
+		// Desenha o shape inicial.
 		this.updatePath();
 	}
 
-	// Método para atualizar o caminho do shape baseado nos dados, posição, rotação e escala atuais
+	/**
+	 * Atualiza o caminho do shape no SVG, aplicando as transformações de posição, rotação e escala.
+	 */
 	updatePath() {
 		if (!this.#path) {
-			// Cria o path inicial
+			// Cria o caminho inicial se ainda não existir.
 			this.#path = this.objectDraw.append("path");
 		}
-		// Cria a string do caminho baseado nos pontos de dados
+
+		// Cria a string do caminho baseado nos pontos de dados.
 		const pathString = this.#lineGenerator(this.#data);
 
-		// Atualiza o atributo "d" do path e aplica transformações de rotação e escala
+		// Atualiza o atributo "d" do caminho e aplica as transformações.
 		this.#path
 			.attr("d", pathString)
 			.attr(
@@ -58,83 +75,155 @@ export class Shape {
 			.attr("stroke-width", this.#strokeWidth)
 			.attr("id", `shape-${this.#id}`);
 	}
+
+	/**
+	 * Remove o caminho (path) do shape do SVG.
+	 */
 	removePath() {
 		if (this.#path) {
 			this.objectDraw.node().removeChild(this.#path.node());
 			this.#path = null;
 		}
 	}
+
+	/**
+	 * @type {SVGPathElement} - Retorna o elemento path do shape no SVG.
+	 */
 	get path() {
 		return this.#path;
 	}
+
+	/**
+	 * @type {Function} - Retorna o gerador de linha do D3.js utilizado para criar o caminho do shape.
+	 */
 	get lineGenerator() {
 		return this.#lineGenerator;
 	}
 
+	/**
+	 * Define a cor de preenchimento do shape.
+	 * @param {string} color - Cor de preenchimento (ex: 'red', '#000000').
+	 */
 	set fill(color) {
 		this.#fill = color;
 		this.updatePath();
 	}
 
+	/**
+	 * @type {string} - Retorna a cor de preenchimento do shape.
+	 */
+	get fill() {
+		return this.#fill;
+	}
+
+	/**
+	 * Define a espessura da borda do shape.
+	 * @param {number} width - Espessura da borda.
+	 */
 	set strokeWidth(width) {
-		this.#strokeWidth;
+		this.#strokeWidth = width;
 		this.updatePath();
 	}
 
+	/**
+	 * @type {number} - Retorna a espessura da borda do shape.
+	 */
+	get strokeWidth() {
+		return this.#strokeWidth;
+	}
+
+	/**
+	 * Define a cor da borda do shape.
+	 * @param {string} color - Cor da borda (ex: 'blue', '#ff0000').
+	 */
 	set strokeColor(color) {
 		this.#strokeColor = color;
 		this.updatePath();
 	}
 
-	// Método setter para os dados (atualiza os dados e redesenha o shape)
-	set data(newData) {
-		this.#data = newData; // Atualiza os dados internos
-		this.updatePath(); // Redesenha o shape
+	/**
+	 * @type {string} - Retorna a cor da borda do shape.
+	 */
+	get strokeColor() {
+		return this.#strokeColor;
 	}
 
-	// Método getter para os dados (retorna os dados atuais)
+	/**
+	 * Define os dados (pontos) do shape.
+	 * @param {Array} newData - Um array de pontos representando o shape.
+	 */
+	set data(newData) {
+		this.#data = newData;
+		this.updatePath();
+	}
+
+	/**
+	 * @type {Array} - Retorna os dados atuais do shape.
+	 */
 	get data() {
 		return this.#data;
 	}
 
-	// Método setter para a posição (atualiza a posição e redesenha o shape)
+	/**
+	 * Define a posição do shape no SVG.
+	 * @param {Array<number>} newPosition - Array [x, y] representando a nova posição do shape.
+	 */
 	set position(newPosition) {
-		this.#position = newPosition; // Atualiza a posição interna
-		this.updatePath(); // Redesenha o shape na nova posição
+		this.#position = newPosition;
+		this.updatePath();
 	}
 
-	// Método getter para a posição (retorna a posição atual)
+	/**
+	 * @type {Array<number>} - Retorna a posição atual do shape.
+	 */
 	get position() {
-		return this.#position; // Retorna a posição interna
+		return this.#position;
 	}
 
-	// Método setter para o ângulo (atualiza o ângulo e redesenha o shape)
+	/**
+	 * Define o ângulo de rotação do shape.
+	 * @param {number} newAngle - Novo ângulo de rotação (em graus).
+	 */
 	set angle(newAngle) {
-		this.#angle = newAngle; // Atualiza o ângulo interno
-		this.updatePath(); // Redesenha o shape com a nova rotação
+		this.#angle = newAngle;
+		this.updatePath();
 	}
 
-	// Método getter para o ângulo (retorna o ângulo atual)
+	/**
+	 * @type {number} - Retorna o ângulo de rotação atual do shape.
+	 */
 	get angle() {
-		return this.#angle; // Retorna o ângulo interno
+		return this.#angle;
 	}
 
-	// Método setter para a escala (atualiza a escala e redesenha o shape)
+	/**
+	 * Define a escala do shape.
+	 * @param {Array<number>} newScale - Array [escalaX, escalaY] representando a nova escala do shape.
+	 */
 	set scale(newScale) {
-		this.#scale = newScale; // Atualiza a escala interna
-		this.updatePath(); // Redesenha o shape com a nova escala
+		this.#scale = newScale;
+		this.updatePath();
 	}
 
-	// Método getter para a escala (retorna a escala atual)
+	/**
+	 * @type {Array<number>} - Retorna a escala atual do shape.
+	 */
 	get scale() {
-		return this.#scale; // Retorna a escala interna
+		return this.#scale;
 	}
 
+	/**
+	 * Define o ID do shape.
+	 * @param {string} value - O ID único para o shape.
+	 */
 	set id(value) {
 		this.#id = value;
 		this.updatePath();
 	}
 
+	/**
+	 * @type {string} - Retorna o ID do shape.
+	 */
 	get id() {
 		return this.#id;
 	}

@@ -6,7 +6,7 @@ import AddShapeManager from "./managers/AddShapeManager.js";
 import RemoveShapeManager from "./managers/RemoveShapeManager.js";
 import SelectionManager from "./managers/SelectionManager.js";
 import MoveShapeManager from "./managers/MoveShapeManager.js";
-
+import { Shape } from "../models/shape.js";
 export class ShapeController {
 	constructor(drawScreen, shapesScreen) {
 		this.drawScreen = drawScreen;
@@ -20,11 +20,40 @@ export class ShapeController {
 		this.listShapes = [];
 	}
 	loadShapes() {
-		throw "Implementar método loadShapes";
+		const listShapesOnLC = JSON.parse(localStorage.getItem("shapes"));
+		if (listShapesOnLC) {
+			this.listShapes = listShapesOnLC.map((shapeData) => {
+				const shape = new Shape(
+					this.shapesScreen,
+					shapeData.data,
+					shapeData.position,
+					shapeData.angle,
+					shapeData.scale
+				);
+				shape.fill = shapeData.fill;
+				shape.strokeColor = shapeData.strokeColor;
+				shape.strokeWidth = shapeData.strokeWidth;
+				shape.id = shapeData.id;
+				return shape;
+			});
+			this.listShapes.forEach((shape) => shape.updatePath());
+		}
 	}
+
 	saveShapes() {
-		throw "Implementar método saveShapes";
+		const listObjectsShape = this.listShapes.map((shape) => ({
+			data: shape.data,
+			position: shape.position,
+			angle: shape.angle,
+			scale: shape.scale,
+			fill: shape.fill,
+			strokeColor: shape.strokeColor,
+			strokeWidth: shape.strokeWidth,
+			id: shape.id,
+		}));
+		localStorage.setItem("shapes", JSON.stringify(listObjectsShape));
 	}
+
 	selectShape(event) {
 		const shapeElement = event.target;
 		this.selectionManager.selectShape(shapeElement, this.listShapes, event);

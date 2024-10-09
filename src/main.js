@@ -27,7 +27,7 @@ d3.select(shapesScreen).attr(
 
 // Instancia de controllers --------------------------------------------------------------------------------------
 const shapeController = new ShapeController(drawScreen, shapesScreen);
-// shapeController.loadShapes();
+shapeController.loadShapes();
 // Salvar projeto ------------------------------------------------------------------------------------------------
 saveButton.addEventListener("click", (event) => {
 	shapeController.saveShapes();
