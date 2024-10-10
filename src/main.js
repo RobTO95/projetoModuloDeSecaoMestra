@@ -100,3 +100,13 @@ const moveShape = new ShapeMover(
 
 // Inicializa o estado dos botões --------------------------------------------------------------------------------
 updateUndoRedoButtons();
+
+// Redimensionamento da janela -----------------------------------------------------------------------------------
+window.addEventListener("resize", (event) => {
+	d3.select(shapesScreen).attr(
+		"transform",
+		`translate(${getDrawScreenDimensions(drawScreen).width / 2}, ${
+			getDrawScreenDimensions(drawScreen).height / 2
+		}) scale(1,1)`
+	);
+});
