@@ -42,7 +42,7 @@ export default class ShapeMover {
 	 * @param {PointerEvent} event - O evento de movimento do ponteiro (mouse ou touch).
 	 */
 	onPointerMove(event) {
-		event.preventDefault(); // Previne o comportamento padrão do navegador em dispositivos móveis.
+		// event.preventDefault(); // Previne o comportamento padrão do navegador em dispositivos móveis.
 
 		// Obtém a nova posição do ponteiro (mouse ou touch).
 		const currentPointerPosition = this.getPointerPosition(event);
@@ -68,7 +68,7 @@ export default class ShapeMover {
 	 * @param {PointerEvent} event - O evento de toque ou clique.
 	 */
 	onPointerDown(event) {
-		event.preventDefault(); // Previne o comportamento padrão do navegador.
+		// event.preventDefault(); // Previne o comportamento padrão do navegador.
 
 		// Obtém os shapes atualmente selecionados.
 		this.selectedShapes = this.shapeController.getSelectShape();
