@@ -303,4 +303,72 @@ export default class CustomShape {
 		});
 		this.updatePath(); // Atualiza o caminho no SVG
 	}
+
+	/**
+	 * Adiciona um ponto âncora ao caminho.
+	 * @param {number} x - Coordenada x do ponto.
+	 * @param {number} y - Coordenada y do ponto.
+	 */
+	anchor(x, y) {
+		this.#path.moveTo(x, y);
+		this.#data.push({ type: "moveTo", x: x, y: y });
+		this.updatePath();
+	}
+
+	/**
+	 * Adiciona uma linha ao caminho.
+	 * @param {number} x - Coordenada x do ponto final.
+	 * @param {number} y - Coordenada y do ponto final.
+	 */
+	line(x, y) {
+		this.#path.lineTo(x, y);
+		this.#data.push({ type: "lineTo", x: x, y: y });
+		this.updatePath();
+	}
+
+	/**
+	 * Adiciona um arco ao caminho.
+	 * @param {number} x - Coordenada x do centro do arco.
+	 * @param {number} y - Coordenada y do centro do arco.
+	 * @param {number} radius - Raio do arco.
+	 * @param {number} startAngle - Ângulo inicial do arco.
+	 * @param {number} endAngle - Ângulo final do arco.
+	 */
+	arc(x, y, radius, startAngle, endAngle) {
+		this.#path.arc(x, y, radius, startAngle, endAngle);
+		this.#data.push({ type: "arc", x, y, radius, startAngle, endAngle });
+		this.updatePath();
+	}
+
+	/**
+	 * Adiciona uma curva bezier ao caminho.
+	 * @param {number} cp1x - Coordenada x do primeiro ponto de controle.
+	 * @param {number} cp1y - Coordenada y do primeiro ponto de controle.
+	 * @param {number} cp2x - Coordenada x do segundo ponto de controle.
+	 * @param {number} cp2y - Coordenada y do segundo ponto de controle.
+	 * @param {number} x - Coordenada x do ponto final.
+	 * @param {number} y - Coordenada y do ponto final.
+	 */
+	bezierCurve(cp1x, cp1y, cp2x, cp2y, x, y) {
+		this.#path.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
+		this.#data.push({
+			type: "bezierCurveTo",
+			cp1x,
+			cp1y,
+			cp2x,
+			cp2y,
+			x,
+			y,
+		});
+		this.updatePath();
+	}
+
+	/**
+	 * Fecha o caminho.
+	 */
+	close() {
+		this.#path.closePath();
+		this.#data.push({ type: "closePath" });
+		this.updatePath();
+	}
 }
