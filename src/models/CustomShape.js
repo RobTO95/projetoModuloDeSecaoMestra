@@ -286,6 +286,14 @@ export default class CustomShape {
 						command.endAngle
 					);
 					break;
+				case "arcTo":
+					this.#path.arcTo(
+						command.x1,
+						command.y1,
+						command.x2,
+						command.y2,
+						command.radius
+					);
 				case "bezierCurveTo":
 					this.#path.bezierCurveTo(
 						command.cp1x,
@@ -333,10 +341,47 @@ export default class CustomShape {
 	 * @param {number} radius - Raio do arco.
 	 * @param {number} startAngle - Ângulo inicial do arco.
 	 * @param {number} endAngle - Ângulo final do arco.
+	 * @param {boolean} orientation - Sentido de criação do arco.
 	 */
-	arc(x, y, radius, startAngle, endAngle) {
-		this.#path.arc(x, y, radius, startAngle, endAngle);
-		this.#data.push({ type: "arc", x, y, radius, startAngle, endAngle });
+	arc(x, y, radius, startAngle, endAngle, anticlockwise) {
+		this.#path.arc(
+			x,
+			y,
+			radius,
+			(Math.PI / 180) * startAngle,
+			(Math.PI / 180) * endAngle,
+			anticlockwise
+		);
+		this.#data.push({
+			type: "arc",
+			x,
+			y,
+			radius,
+			startAngle,
+			endAngle,
+			anticlockwise,
+		});
+		this.updatePath();
+	}
+
+	/**
+	 *
+	 * @param {number} x1 - Coordenada x do primeiro ponto tangente ao arco
+	 * @param {number} y1 - Coordenada y do primeiro ponto tangente ao arco
+	 * @param {number} x2 - Coordenada x do segundo ponto tangente ao arco
+	 * @param {number} y2 - Coordenada y do segundo ponto tangente ao arco
+	 * @param {number} radius - Raio do arco
+	 */
+	arcTo(x1, y1, x2, y2, radius) {
+		this.#path.arcTo(x1, y1, x2, y2, radius);
+		this.#data.push({
+			type: "arcTo",
+			x1,
+			y1,
+			x2,
+			y2,
+			radius,
+		});
 		this.updatePath();
 	}
 
@@ -370,5 +415,176 @@ export default class CustomShape {
 		this.#path.closePath();
 		this.#data.push({ type: "closePath" });
 		this.updatePath();
+	}
+
+	/**
+	 * Calcula a área do caminho atual.
+	 * Apenas formas fechadas podem ter a área calculada.
+	 * @returns {number} - A área da forma ou 0 se o caminho não estiver fechado.
+	 */
+	calculateArea() {
+		if (!this.isClosed()) {
+			console.warn(
+				"O caminho não está fechado, a área não pode ser calculada."
+			);
+			return 0;
+		}
+
+		const points = this.#generatePointsPolygon();
+
+		// Usamos o d3.polygonArea para calcular a área do polígono resultante
+		/**
+		 * -----------------------------
+		 * Verifica o poligono
+		 * -----------------------------
+		 */
+
+		// const lineGerator = d3.line();
+		// const pathString = lineGerator(points);
+		// const path = d3
+		// 	.select(this.#drawScreen)
+		// 	.append("path")
+		// 	.attr("d", pathString)
+		// 	.attr("fill", "none")
+		// 	.attr("stroke", "red");
+		/**
+		 * -------------------------------
+		 * fim da verificação do poligono
+		 * -------------------------------
+		 */
+
+		const area = d3.polygonArea(points);
+		return Math.abs(area); // A área pode ser negativa dependendo da ordem dos pontos, então tomamos o valor absoluto
+	}
+
+	calculateCentroid() {
+		if (!this.isClosed()) {
+			console.warn(
+				"O caminho não está fechado, o centroid não pode ser calculado."
+			);
+			return 0;
+		}
+		const points = this.#generatePointsPolygon();
+		const centroid = d3.polygonCentroid(points);
+		return centroid;
+	}
+
+	/**
+	 * Gera pontos discretos ao longo do path para aproximar sua forma.
+	 * @returns {Array} - Um array de pontos ao longo do path
+	 */
+	#generatePointsPolygon() {
+		const points = [];
+		this.#data.forEach((command) => {
+			switch (command.type) {
+				case "moveTo":
+					points.push([command.x, command.y]);
+					break;
+				case "lineTo":
+					points.push([command.x, command.y]);
+					break;
+				case "arc":
+					// Dividimos o arco em pequenos segmentos para aproximar a área
+					const arcPoints = this.#getArcPoints(
+						command.x,
+						command.y,
+						command.radius,
+						command.startAngle,
+						command.endAngle,
+						command.anticlockwise
+					);
+					points.push(...arcPoints);
+					break;
+				case "bezierCurveTo":
+					// Dividimos a curva Bézier em segmentos
+					const bezierPoints = this.#getBezierCurvePoints(
+						points[points.length - 1], // Último ponto como início
+						[command.cp1x, command.cp1y],
+						[command.cp2x, command.cp2y],
+						[command.x, command.y]
+					);
+					points.push(...bezierPoints);
+					break;
+				// Não há necessidade de manipular closePath
+			}
+		});
+		return points;
+	}
+
+	/**
+	 * Gera pontos discretos ao longo de um arco para aproximar sua forma.
+	 * @param {number} cx - Coordenada x do centro do arco.
+	 * @param {number} cy - Coordenada y do centro do arco.
+	 * @param {number} radius - Raio do arco.
+	 * @param {number} startAngle - Ângulo inicial do arco (em graus).
+	 * @param {number} endAngle - Ângulo final do arco (em graus).
+	 * @param {boolean} anticlockwise - Direção do arco.
+	 * @returns {Array} - Um array de pontos ao longo do arco.
+	 */
+	#getArcPoints(cx, cy, radius, startAngle, endAngle, anticlockwise) {
+		const points = [];
+		const step = 1; // Define a resolução do arco (quanto menor, mais preciso)
+		const angleDirection = anticlockwise ? -1 : 1;
+
+		// Normalizar ângulos para o intervalo 0 a 360 graus
+		startAngle = startAngle % 360;
+		endAngle = endAngle % 360;
+
+		// Lidar com a lógica para casos onde startAngle > endAngle
+		if (anticlockwise && startAngle < endAngle) {
+			// Se anti-horário e startAngle é menor, adiciona 360 ao final para completar o arco
+			endAngle -= 360;
+		} else if (!anticlockwise && startAngle > endAngle) {
+			// Se horário e startAngle é maior, adiciona 360 ao final para completar o arco
+			endAngle += 360;
+		}
+
+		// Direção do loop conforme anti-horário ou horário
+		if (anticlockwise) {
+			// Caso anti-horário, decremente o ângulo
+			for (let angle = startAngle; angle >= endAngle; angle -= step) {
+				const rad = (Math.PI / 180) * angle;
+				const x = cx + radius * Math.cos(rad);
+				const y = cy + radius * Math.sin(rad);
+				points.push([x, y]);
+			}
+		} else {
+			// Caso horário, incremente o ângulo
+			for (let angle = startAngle; angle <= endAngle; angle += step) {
+				const rad = (Math.PI / 180) * angle;
+				const x = cx + radius * Math.cos(rad);
+				const y = cy + radius * Math.sin(rad);
+				points.push([x, y]);
+			}
+		}
+
+		return points;
+	}
+
+	/**
+	 * Gera pontos discretos ao longo de uma curva Bézier para aproximar sua forma.
+	 * @param {Array} start - Ponto inicial da curva [x, y].
+	 * @param {Array} cp1 - Primeiro ponto de controle [x, y].
+	 * @param {Array} cp2 - Segundo ponto de controle [x, y].
+	 * @param {Array} end - Ponto final da curva [x, y].
+	 * @returns {Array} - Um array de pontos ao longo da curva.
+	 */
+	#getBezierCurvePoints(start, cp1, cp2, end) {
+		const points = [];
+		const tStep = 0.05; // Define a resolução da curva Bézier (quanto menor, mais preciso)
+		for (let t = 0; t <= 1; t += tStep) {
+			const x =
+				Math.pow(1 - t, 3) * start[0] +
+				3 * Math.pow(1 - t, 2) * t * cp1[0] +
+				3 * (1 - t) * Math.pow(t, 2) * cp2[0] +
+				Math.pow(t, 3) * end[0];
+			const y =
+				Math.pow(1 - t, 3) * start[1] +
+				3 * Math.pow(1 - t, 2) * t * cp1[1] +
+				3 * (1 - t) * Math.pow(t, 2) * cp2[1] +
+				Math.pow(t, 3) * end[1];
+			points.push([x, y]);
+		}
+		return points;
 	}
 }
