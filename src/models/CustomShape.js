@@ -4,6 +4,7 @@ import * as d3 from "d3";
  * Classe CustomShape para criar e manipular formas personalizadas em um SVG.
  * Esta classe permite a criação de formas com caminhos customizados, como linhas, arcos e curvas Bézier.
  * Ela também suporta manipulações como translações, rotações e escalonamento.
+ * Também pode-se obter o centróide e a área do shape desenhado.
  */
 export default class CustomShape {
 	#data; // Armazena os comandos de desenho da forma
@@ -40,7 +41,6 @@ export default class CustomShape {
 	}
 
 	// Getters e setters para manipular as propriedades da forma
-
 	/**
 	 * Obtém o elemento SVG onde a forma será desenhada.
 	 * @returns {HTMLElement} - O elemento SVG do desenho.
@@ -241,6 +241,11 @@ export default class CustomShape {
 		return pathString[pathString.length - 1] === "Z";
 	}
 
+	removePath() {
+		this.#drawScreen.removeChild(this.#shape.node());
+		this.#shape = null;
+	}
+
 	/**
 	 * Atualiza o caminho da forma no SVG com base nas propriedades atuais.
 	 * Aplica atributos como posição, rotação, escala, cor de preenchimento e borda.
@@ -365,12 +370,12 @@ export default class CustomShape {
 	}
 
 	/**
-	 *
-	 * @param {number} x1 - Coordenada x do primeiro ponto tangente ao arco
-	 * @param {number} y1 - Coordenada y do primeiro ponto tangente ao arco
-	 * @param {number} x2 - Coordenada x do segundo ponto tangente ao arco
-	 * @param {number} y2 - Coordenada y do segundo ponto tangente ao arco
-	 * @param {number} radius - Raio do arco
+	 * Desenha um segmento de arco circular com o raio especificado.
+	 * @param {number} x1 - Coordenada x do primeiro ponto do arco.
+	 * @param {number} y1 - Coordenada y do primeiro ponto do arco.
+	 * @param {number} x2 - Coordenada x do segundo ponto do arco.
+	 * @param {number} y2 - Coordenada y do segundo ponto do arco.
+	 * @param {number} radius - Raio do arco.
 	 */
 	arcTo(x1, y1, x2, y2, radius) {
 		this.#path.arcTo(x1, y1, x2, y2, radius);
@@ -430,29 +435,9 @@ export default class CustomShape {
 			return 0;
 		}
 
-		const points = this.#generatePointsPolygon();
+		let points = this.shapePoints();
 
 		// Usamos o d3.polygonArea para calcular a área do polígono resultante
-		/**
-		 * -----------------------------
-		 * Verifica o poligono
-		 * -----------------------------
-		 */
-
-		// const lineGerator = d3.line();
-		// const pathString = lineGerator(points);
-		// const path = d3
-		// 	.select(this.#drawScreen)
-		// 	.append("path")
-		// 	.attr("d", pathString)
-		// 	.attr("fill", "none")
-		// 	.attr("stroke", "red");
-		/**
-		 * -------------------------------
-		 * fim da verificação do poligono
-		 * -------------------------------
-		 */
-
 		const area = d3.polygonArea(points);
 		return Math.abs(area); // A área pode ser negativa dependendo da ordem dos pontos, então tomamos o valor absoluto
 	}
@@ -464,126 +449,43 @@ export default class CustomShape {
 			);
 			return 0;
 		}
-		const points = this.#generatePointsPolygon();
+		const points = this.shapePoints();
 		const centroid = d3.polygonCentroid(points);
 		return centroid;
 	}
 
 	/**
-	 * Gera pontos discretos ao longo do path para aproximar sua forma.
-	 * @returns {Array} - Um array de pontos ao longo do path
+	 * Converte o shape em uma lista de pontos discretos.
+	 * @param {number} resolution - A resolução para discretizar o caminho (quanto menor, mais preciso).
+	 * @returns {Array} - Um array de pontos [x, y] ao longo do caminho.
 	 */
-	#generatePointsPolygon() {
-		const points = [];
-		this.#data.forEach((command) => {
-			switch (command.type) {
-				case "moveTo":
-					points.push([command.x, command.y]);
-					break;
-				case "lineTo":
-					points.push([command.x, command.y]);
-					break;
-				case "arc":
-					// Dividimos o arco em pequenos segmentos para aproximar a área
-					const arcPoints = this.#getArcPoints(
-						command.x,
-						command.y,
-						command.radius,
-						command.startAngle,
-						command.endAngle,
-						command.anticlockwise
-					);
-					points.push(...arcPoints);
-					break;
-				case "bezierCurveTo":
-					// Dividimos a curva Bézier em segmentos
-					const bezierPoints = this.#getBezierCurvePoints(
-						points[points.length - 1], // Último ponto como início
-						[command.cp1x, command.cp1y],
-						[command.cp2x, command.cp2y],
-						[command.x, command.y]
-					);
-					points.push(...bezierPoints);
-					break;
-				// Não há necessidade de manipular closePath
+	shapePoints(resolution = 1) {
+		let points = [];
+		if (this.#shape) {
+			const path = this.#shape.node();
+			const totalLength = path.getTotalLength();
+
+			// Gera pontos ao longo do caminho com base na resolução
+			for (let i = 0; i <= totalLength; i += resolution) {
+				const point = path.getPointAtLength(i);
+				points.push([point.x, point.y]);
 			}
-		});
-		return points;
-	}
 
-	/**
-	 * Gera pontos discretos ao longo de um arco para aproximar sua forma.
-	 * @param {number} cx - Coordenada x do centro do arco.
-	 * @param {number} cy - Coordenada y do centro do arco.
-	 * @param {number} radius - Raio do arco.
-	 * @param {number} startAngle - Ângulo inicial do arco (em graus).
-	 * @param {number} endAngle - Ângulo final do arco (em graus).
-	 * @param {boolean} anticlockwise - Direção do arco.
-	 * @returns {Array} - Um array de pontos ao longo do arco.
-	 */
-	#getArcPoints(cx, cy, radius, startAngle, endAngle, anticlockwise) {
-		const points = [];
-		const step = 1; // Define a resolução do arco (quanto menor, mais preciso)
-		const angleDirection = anticlockwise ? -1 : 1;
+			// Aplica escala, posição e rotação aos pontos
+			const angleRad = (Math.PI / 180) * this.#angle; // Converte o ângulo para radianos
+			points = points.map((point) => {
+				const xScaled = point[0] * this.#scale[0];
+				const yScaled = point[1] * this.#scale[1];
 
-		// Normalizar ângulos para o intervalo 0 a 360 graus
-		startAngle = startAngle % 360;
-		endAngle = endAngle % 360;
+				// Aplica rotação usando matriz de rotação
+				const xRotated =
+					xScaled * Math.cos(angleRad) - yScaled * Math.sin(angleRad);
+				const yRotated =
+					xScaled * Math.sin(angleRad) + yScaled * Math.cos(angleRad);
 
-		// Lidar com a lógica para casos onde startAngle > endAngle
-		if (anticlockwise && startAngle < endAngle) {
-			// Se anti-horário e startAngle é menor, adiciona 360 ao final para completar o arco
-			endAngle -= 360;
-		} else if (!anticlockwise && startAngle > endAngle) {
-			// Se horário e startAngle é maior, adiciona 360 ao final para completar o arco
-			endAngle += 360;
-		}
-
-		// Direção do loop conforme anti-horário ou horário
-		if (anticlockwise) {
-			// Caso anti-horário, decremente o ângulo
-			for (let angle = startAngle; angle >= endAngle; angle -= step) {
-				const rad = (Math.PI / 180) * angle;
-				const x = cx + radius * Math.cos(rad);
-				const y = cy + radius * Math.sin(rad);
-				points.push([x, y]);
-			}
-		} else {
-			// Caso horário, incremente o ângulo
-			for (let angle = startAngle; angle <= endAngle; angle += step) {
-				const rad = (Math.PI / 180) * angle;
-				const x = cx + radius * Math.cos(rad);
-				const y = cy + radius * Math.sin(rad);
-				points.push([x, y]);
-			}
-		}
-
-		return points;
-	}
-
-	/**
-	 * Gera pontos discretos ao longo de uma curva Bézier para aproximar sua forma.
-	 * @param {Array} start - Ponto inicial da curva [x, y].
-	 * @param {Array} cp1 - Primeiro ponto de controle [x, y].
-	 * @param {Array} cp2 - Segundo ponto de controle [x, y].
-	 * @param {Array} end - Ponto final da curva [x, y].
-	 * @returns {Array} - Um array de pontos ao longo da curva.
-	 */
-	#getBezierCurvePoints(start, cp1, cp2, end) {
-		const points = [];
-		const tStep = 0.05; // Define a resolução da curva Bézier (quanto menor, mais preciso)
-		for (let t = 0; t <= 1; t += tStep) {
-			const x =
-				Math.pow(1 - t, 3) * start[0] +
-				3 * Math.pow(1 - t, 2) * t * cp1[0] +
-				3 * (1 - t) * Math.pow(t, 2) * cp2[0] +
-				Math.pow(t, 3) * end[0];
-			const y =
-				Math.pow(1 - t, 3) * start[1] +
-				3 * Math.pow(1 - t, 2) * t * cp1[1] +
-				3 * (1 - t) * Math.pow(t, 2) * cp2[1] +
-				Math.pow(t, 3) * end[1];
-			points.push([x, y]);
+				// Aplica a translação
+				return [xRotated + this.#position[0], yRotated + this.#position[1]];
+			});
 		}
 		return points;
 	}

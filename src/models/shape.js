@@ -67,8 +67,9 @@ export class Shape {
 			.attr("d", pathString)
 			.attr(
 				"transform",
-				`translate(${this.#position[0]}, ${-this.#position[1]}) rotate(${-this
-					.#angle}) scale(${this.#scale[0]}, ${this.#scale[1]})`
+				`translate(${this.#position[0]}, ${this.#position[1]}) rotate(${
+					this.#angle
+				}) scale(${this.#scale[0]}, ${this.#scale[1]})`
 			)
 			.attr("stroke", this.#strokeColor)
 			.attr("fill", this.#fill)
