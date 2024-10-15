@@ -3,6 +3,7 @@ import { getDrawScreenDimensions, getMousePosition } from "./utils/utils.js";
 import { ShapeController } from "./controllers/ShapeController.js";
 import MoveShapeCommand from "./controllers/commands/MoveShapeCommand.js";
 import ShapeMover from "./controllers/ShapeMover.js";
+import CustomShape from "./models/CustomShape.js";
 
 // Elementos DOM
 const drawScreen = document.getElementById("draw-screen");
@@ -11,18 +12,19 @@ const saveButton = document.getElementById("save-button");
 const addButton = document.getElementById("add-button");
 const removeButton = document.getElementById("remove-button");
 const moveButton = document.getElementById("move-button");
+const addCustomShapeButton = document.getElementById("addCustomShape-button");
 const undoButton = document.getElementById("undo-button");
 const redoButton = document.getElementById("redo-button");
 
 // Grid
-let gridSize = 10;
+let gridSize = 1;
 
 // Desloca o ponto zero para o centro de drawScreen
 d3.select(shapesScreen).attr(
 	"transform",
 	`translate(${getDrawScreenDimensions(drawScreen).width / 2}, ${
 		getDrawScreenDimensions(drawScreen).height / 2
-	}) scale(1,1)`
+	}) scale(1,-1)`
 );
 
 // Instancia de controllers --------------------------------------------------------------------------------------
@@ -93,11 +95,6 @@ const moveShape = new ShapeMover(
 	updateUndoRedoButtons
 );
 
-// Inicializa com o primeiro shape para fins de teste ------------------------------------------------------------
-// const position = [100, 100];
-// const data = null;
-// shapeController.addShape(data, position);
-
 // Inicializa o estado dos botões --------------------------------------------------------------------------------
 updateUndoRedoButtons();
 
@@ -107,6 +104,60 @@ window.addEventListener("resize", (event) => {
 		"transform",
 		`translate(${getDrawScreenDimensions(drawScreen).width / 2}, ${
 			getDrawScreenDimensions(drawScreen).height / 2
-		}) scale(1,1)`
+		}) scale(1,-1)`
 	);
 });
+
+// Criação de shapes ---------------------------------------------------------------------------------------------
+const customShape = new CustomShape(shapesScreen);
+// customShape.arc(0, 0, 25, 45, 10);
+const width1 = 100;
+const thickness1 = 10;
+const width2 = 100;
+const thickness2 = 10;
+const radius = 10;
+
+// customShape.anchor(0, 0);
+// customShape.line(200, 0);
+// customShape.line(200, 10);
+// customShape.arcTo(10, 10, 10, 15, 10);
+// customShape.arc(15, 15, 5, 270, 180, true);
+// customShape.line(10, 10);
+// customShape.line(10, 200);
+// customShape.line(0, 200);
+// customShape.line(0, 0);
+
+customShape.close();
+
+customShape.angle = 45;
+// customShape.position = [0, 100];
+// customShape.scale = [-1, 1];
+
+// console.log("Área = ", customShape.calculateArea());
+// console.log("Centroide = ", customShape.calculateCentroid());
+
+// customShape.angle = 45;
+// customShape.position = [100, 100];
+// customShape.scale = [2, 2];
+// // customShape.line(10, 90);
+
+// customShape.line(90, 90);
+// customShape.line(90, 100);
+// customShape.line(0, 100);
+
+// customShape.close();
+
+// function generatePath(drawScreen, line, gridSize, event) {
+// 	const point = getMousePosition(drawScreen, gridSize, event);
+// 	const listData = line.data || [];
+// 	listData.push([point[0], -point[1]]);
+// 	line.data = listData;
+// }
+
+// addCustomShapeButton.addEventListener("click", (event) => {
+// 	drawScreen.style.cursor = "move";
+// 	const line = new CustomShape([], shapesScreen);
+// 	drawScreen.addEventListener("click", (event) => {
+// 		generatePath(drawScreen, line, gridSize, event);
+// 	});
+// });
