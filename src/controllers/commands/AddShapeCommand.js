@@ -15,7 +15,6 @@ export default class AddShapeCommand extends Command {
 			this.backupShape = this.shapeManager.addShape(
 				this.listShapes,
 				this.shapesScreen,
-				this.shapeData,
 				this.position
 			);
 		} else {

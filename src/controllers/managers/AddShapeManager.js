@@ -1,16 +1,7 @@
-import { Shape } from "../../models/shape";
+import CustomShape from "../../models/CustomShape";
 
 export default class AddShapeManager {
 	addShape(listShapes, shapesScreen, shapeData = null, position = null) {
-		const data = shapeData || [
-			[0, 0],
-			[10, 0],
-			[10, 90],
-			[90, 90],
-			[90, 100],
-			[0, 100],
-			[0, 0],
-		];
 		// Encontra o shape com o maior id na lista
 		const maxIdShape = listShapes.reduce(
 			(maxShape, currentShape) => {
@@ -20,8 +11,20 @@ export default class AddShapeManager {
 		); // Inicia com id 0 caso a lista esteja vazia
 
 		// Cria um novo shape com o id incrementado
-		const newShape = new Shape(shapesScreen, data, position);
+		const newShape = new CustomShape(shapesScreen);
+
+		newShape.anchor(0, 0);
+		newShape.line(100, 0);
+		newShape.line(100, 10);
+		// newShape.arcTo(10, 10, 10, 15, 10);
+		newShape.line(10, 10);
+		newShape.line(10, 100);
+		newShape.line(0, 100);
+		newShape.close();
 		newShape.id = maxIdShape.id + 1; // Usa o maior id + 1
+
+		newShape.position = position || newShape.position;
+
 		listShapes.push(newShape);
 		this.backUpShape = newShape;
 		return newShape;
