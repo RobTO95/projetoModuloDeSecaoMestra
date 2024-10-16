@@ -109,7 +109,7 @@ window.addEventListener("resize", (event) => {
 });
 
 // Criação de shapes ---------------------------------------------------------------------------------------------
-const customShape = new CustomShape(shapesScreen);
+// const customShape = new CustomShape(shapesScreen);
 // customShape.arc(0, 0, 25, 45, 10);
 const width1 = 100;
 const thickness1 = 10;
@@ -127,9 +127,9 @@ const radius = 10;
 // customShape.line(0, 200);
 // customShape.line(0, 0);
 
-customShape.close();
+// customShape.close();
 
-customShape.angle = 45;
+// customShape.angle = 45;
 // customShape.position = [0, 100];
 // customShape.scale = [-1, 1];
 

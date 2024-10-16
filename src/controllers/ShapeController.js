@@ -7,6 +7,7 @@ import RemoveShapeManager from "./managers/RemoveShapeManager.js";
 import SelectionManager from "./managers/SelectionManager.js";
 import MoveShapeManager from "./managers/MoveShapeManager.js";
 import { Shape } from "../models/shape.js";
+import CustomShape from "../models/CustomShape.js";
 export class ShapeController {
 	constructor(drawScreen, shapesScreen) {
 		this.drawScreen = drawScreen;
@@ -23,20 +24,20 @@ export class ShapeController {
 		const listShapesOnLC = JSON.parse(localStorage.getItem("shapes"));
 		if (listShapesOnLC) {
 			this.listShapes = listShapesOnLC.map((shapeData) => {
-				const shape = new Shape(
-					this.shapesScreen,
-					shapeData.data,
-					shapeData.position,
-					shapeData.angle,
-					shapeData.scale
-				);
+				const shape = new CustomShape(this.shapesScreen);
+				shape.data = shapeData.data;
+				shape.position = shapeData.position;
+				shape.angle = shapeData.angle;
+				shape.scale = shapeData.scale;
 				shape.fill = shapeData.fill;
 				shape.strokeColor = shapeData.strokeColor;
 				shape.strokeWidth = shapeData.strokeWidth;
 				shape.id = shapeData.id;
 				return shape;
 			});
-			this.listShapes.forEach((shape) => shape.updatePath());
+			this.listShapes.forEach((shape) => {
+				shape.regeneratePath();
+			});
 		}
 	}
 

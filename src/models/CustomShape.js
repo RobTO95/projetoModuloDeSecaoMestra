@@ -314,6 +314,7 @@ export default class CustomShape {
 					break;
 			}
 		});
+
 		this.updatePath(); // Atualiza o caminho no SVG
 	}
 

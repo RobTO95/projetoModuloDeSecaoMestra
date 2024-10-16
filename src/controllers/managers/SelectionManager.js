@@ -1,3 +1,4 @@
+import * as d3 from "d3";
 export default class SelectionManager {
 	constructor() {
 		this.selectedShapes = [];
@@ -27,7 +28,7 @@ export default class SelectionManager {
 	addToSelection(shape) {
 		if (!this.selectedShapes.includes(shape)) {
 			this.selectedShapes.push(shape);
-			shape.path.classed("selected", true); // Aplica classe CSS para visualização
+			d3.select(shape.shape).classed("selected", true); // Aplica classe CSS para visualização
 		}
 	}
 
@@ -36,7 +37,7 @@ export default class SelectionManager {
 		const index = this.selectedShapes.indexOf(shape);
 		if (index > -1) {
 			this.selectedShapes.splice(index, 1);
-			shape.path.classed("selected", false);
+			d3.select(shape.shape).classed("selected", false);
 		}
 	}
 
@@ -52,9 +53,9 @@ export default class SelectionManager {
 	// Limpa toda a seleção
 	clearSelection() {
 		this.selectedShapes.forEach((shape) => {
-			if (shape.path) {
+			if (shape.shape) {
 				// Verifique se o path ainda existe
-				shape.path.classed("selected", false);
+				d3.select(shape.shape).classed("selected", false);
 			}
 		});
 		this.selectedShapes = [];
