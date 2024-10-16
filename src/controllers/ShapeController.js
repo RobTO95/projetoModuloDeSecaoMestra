@@ -6,7 +6,6 @@ import AddShapeManager from "./managers/AddShapeManager.js";
 import RemoveShapeManager from "./managers/RemoveShapeManager.js";
 import SelectionManager from "./managers/SelectionManager.js";
 import MoveShapeManager from "./managers/MoveShapeManager.js";
-import { Shape } from "../models/shape.js";
 import CustomShape from "../models/CustomShape.js";
 export class ShapeController {
 	constructor(drawScreen, shapesScreen) {
