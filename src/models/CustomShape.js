@@ -287,8 +287,9 @@ export default class CustomShape {
 						command.x,
 						command.y,
 						command.radius,
-						command.startAngle,
-						command.endAngle
+						command.startAngle * (Math.PI / 180),
+						command.endAngle * (Math.PI / 180),
+						command.anticlockwise
 					);
 					break;
 				case "arcTo":
