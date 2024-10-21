@@ -1,5 +1,4 @@
-import CustomShape from "../../models/CustomShape";
-import LShapedBeam from "../../models/LShapedBeam";
+import { LShapedBeam, TShapeBeam } from "../../models/ShapesDefault";
 export default class AddShapeManager {
 	addShape(listShapes, shapesScreen, position = null) {
 		// Encontra o shape com o maior id na lista
@@ -11,26 +10,19 @@ export default class AddShapeManager {
 		); // Inicia com id 0 caso a lista esteja vazia
 
 		// Cria um novo shape com o id incrementado
-		const newShape = new LShapedBeam(
-			shapesScreen,
-			100,
-			100,
-			10,
-			10,
-			5,
-			10,
-			5,
-			10
-		);
+		// const newShape = new LShapedBeam(
+		// 	shapesScreen,
+		// 	100,
+		// 	100,
+		// 	10,
+		// 	10,
+		// 	5,
+		// 	10,
+		// 	5,
+		// 	10
+		// );
+		const newShape = new TShapeBeam(shapesScreen, 100, 10, 100, 10);
 
-		// newShape.anchor(0, 0);
-		// newShape.line(100, 0);
-		// newShape.line(100, 10);
-		// // newShape.arcTo(10, 10, 10, 15, 10);
-		// newShape.line(10, 10);
-		// newShape.line(10, 100);
-		// newShape.line(0, 100);
-		// newShape.close();
 		newShape.id = maxIdShape.id + 1; // Usa o maior id + 1
 
 		newShape.position = position || newShape.position;

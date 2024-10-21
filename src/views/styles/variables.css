@@ -1,0 +1,44 @@
+:root {
+	/* Títulos, ícones, botões */
+	--p1-color: #385787;
+	--p2-color: #7796c6;
+	--p3-color: #b7cef1;
+	--p4-color: #d3dff2;
+
+	/* Textos em geral */
+	--b1-color: #4b505d;
+	--b2-color: #203f6f;
+	--b3-color: #edf4ff;
+	--b4-color: #f6fdff;
+	--white: #fff;
+	--black: #000;
+
+	/* Cores semânticas */
+	--success-color: #32ec45;
+	--warning-color: #f0dd35;
+	--error-color: #e43838;
+	--notification-color: #3431cf;
+
+	/* Fontes */
+	--font-primary: "Roboto", sans-serif;
+	--font-size-tiny: 0.5rem;
+	--font-size-small: 0.75rem;
+	--font-size-base: 1rem;
+	--font-size-large: 1.5rem;
+	--line-height-base: 1.5;
+
+	/* Espaçamentos */
+	--spacing-small: 0.5rem;
+	--spacing-medium: 1rem;
+	--spacing-large: 1.5rem;
+	--spacing-xlarge: 2rem;
+	--spacing-xxlarge: 4rem;
+
+	/* Bordas */
+	--border-width: 1px;
+	--border-radius: 4px;
+	--border-radius-large: 8px;
+
+	/* Opacidade */
+	--opacity-level: 0.1;
+}

@@ -21,6 +21,10 @@
 			rel="stylesheet"
 			href="./views/styles/buttonStyles.css"
 		/>
+		<link
+			rel="stylesheet"
+			href="./views/styles/insertShapeArea.css"
+		/>
 		<style>
 			.selected {
 				stroke: yellow;
@@ -104,6 +108,27 @@
 				</button>
 			</section>
 			<div id="project-area">
+				<section id="insert-shape-area">
+					<div id="added-shape-area">
+						<div>
+							<h2>Shape Add Current</h2>
+							<select
+								name="shape-add-current"
+								id="shape-add-current"
+							>
+								<option value="LShape">L-Shape</option>
+								<option value="TShape">T-Shape</option>
+							</select>
+						</div>
+						<svg id="added-shape"></svg>
+					</div>
+					<div id="added-shape-dimensions">
+						dimensões do shape
+						<form></form>
+						<button class="button button-light">cancel</button>
+						<button class="button button-dark">add</button>
+					</div>
+				</section>
 				<section id="top-bar">
 					<button
 						id="insert-line-button"

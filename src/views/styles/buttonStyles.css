@@ -1,3 +1,18 @@
+@import url("variables.css");
+
+/* Resets */
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+button {
+	all: unset;
+	cursor: pointer;
+}
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 .button {
 	text-transform: uppercase;
 	font-style: bold;
@@ -10,40 +25,57 @@
 	/* margin: 1rem; */
 	cursor: pointer;
 	border: 1px solid;
-	transition: background-color 0.3s;
+	transition: 0.3s ease;
 }
 
 .button-light {
 	background-color: transparent;
-	border: 1px solid #fff;
-	color: #fff;
+	border: 1px solid var(--white);
+	color: var(--white);
 }
 
 .button-light:hover {
 	background-color: rgba(255, 255, 255, 0.2);
-	color: #fff;
+	color: var(--white);
 }
 .button-light:active {
-	background-color: #fff;
-	color: #000;
+	background-color: var(--white);
+	color: var(--black);
 	mix-blend-mode: lighten;
 	opacity: 0.3;
 }
 
 .button-dark {
 	background-color: transparent;
-	border: 1px solid #000;
-	color: #000;
+	border: 1px solid var(--black);
+	color: var(--black);
 }
 
 .button-dark:hover {
 	background-color: rgba(0, 0, 0, 0.2);
-	color: #000;
+	color: var(--black);
 }
 .button-dark:active {
-	border: 1px solid #000;
-	background-color: #000;
-	color: #fff;
+	border: 1px solid var(--black);
+	background-color: var(--black);
+	color: var(--white);
 	mix-blend-mode: darken;
 	opacity: 0.3;
+}
+
+.button-cancel {
+	background-color: var(--error-color);
+	opacity: 0.6;
+}
+
+.button-cancel:hover {
+	opacity: 1;
+}
+.button-success {
+	background-color: var(--success-color);
+}
+
+select {
+	padding: var(--spacing-small);
+	border: var(--border-width) solid var(--black);
 }
