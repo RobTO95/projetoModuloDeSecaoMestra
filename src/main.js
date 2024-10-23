@@ -198,12 +198,12 @@ function updateShape() {
 	});
 
 	// Verifica o tipo de shape e atualiza o path correspondente
-
 	if (shapeType === "LShapeBeam") {
 		currentShape = createLShapedBeam(dimensions);
 	} else if (shapeType === "TShapeBeam") {
 		currentShape = createTShapeBeam(dimensions);
 	}
+	centerShape(addedShapeDrawScreen, addedShapeDrawScreen.querySelector("g"));
 }
 
 // Detecta quando o usuário muda o tipo de shape no select
