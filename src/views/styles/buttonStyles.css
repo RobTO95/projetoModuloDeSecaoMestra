@@ -26,6 +26,7 @@ button {
 	cursor: pointer;
 	border: 1px solid;
 	transition: 0.3s ease;
+	text-align: center;
 }
 
 .button-light {
@@ -77,5 +78,6 @@ button {
 
 select {
 	padding: var(--spacing-small);
-	border: var(--border-width) solid var(--black);
+	border: var(--border-width) solid var(--p3-color);
+	border-radius: var(--border-radius);
 }

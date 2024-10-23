@@ -1,3 +1,5 @@
+import { LShapedBeam, TShapeBeam } from "./ShapesDefault";
+
 export default class ShapeStrategy {
 	createShape(drawScreen, position) {
 		throw new Error("This method must be overridden by subclasses");

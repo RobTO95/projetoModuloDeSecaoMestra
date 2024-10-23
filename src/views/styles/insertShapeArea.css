@@ -17,7 +17,7 @@ button {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: top;
+	justify-content: flex-start;
 	width: 40%;
 	height: 100%;
 	background-color: var(--p4-color);
@@ -27,6 +27,7 @@ button {
 	z-index: 1;
 	padding: var(--spacing-small);
 	gap: var(--spacing-small);
+	transition: 1s ease;
 }
 #added-shape-area {
 	display: flex;
@@ -39,4 +40,46 @@ button {
 	width: 100%;
 	height: 100%;
 	background-color: var(--white);
+}
+
+#type-shape-add-current {
+	min-width: 100%;
+}
+#added-shape-area div {
+	display: flex;
+	justify-content: space-between;
+	margin: var(--spacing-small) 0;
+}
+
+#added-shape-dimensions {
+	width: 100%;
+	margin: var(--spacing-small) 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-small);
+	overflow: hidden;
+}
+
+#confirm-add-shape-button {
+	background-color: var(--success-color);
+	opacity: 0.8;
+	border-color: var(--success-color);
+}
+#confirm-add-shape-button:hover {
+	opacity: 1;
+}
+
+#cancel-add-shape-button {
+	background-color: var(--error-color);
+	opacity: 0.8;
+	border-color: var(--error-color);
+}
+#cancel-add-shape-button:hover {
+	opacity: 1;
+}
+
+#shape-dimensions-form {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 }

@@ -8,10 +8,10 @@ export class LShapedBeam extends CustomShape {
 		legLength2,
 		thickness1,
 		thickness2,
-		radius1 = 0,
-		radius2 = 0,
-		radius3 = 0,
-		radius4 = 0
+		radius1,
+		radius2,
+		radius3,
+		radius4
 	) {
 		super(drawScreen);
 		this.setDimensions(
@@ -41,7 +41,7 @@ export class LShapedBeam extends CustomShape {
 		this.legLength2 = legLength2;
 		this.thickness1 = thickness1;
 		this.thickness2 = thickness2;
-		this.radius = radius1;
+		this.radius1 = radius1;
 		this.radius2 = radius2;
 		this.radius3 = radius3;
 		this.radius4 = radius4;
@@ -56,7 +56,7 @@ export class LShapedBeam extends CustomShape {
 		this.clear();
 
 		// Redesenha o shape com as dimensões atuais
-		this.arc(this.radius, this.radius, this.radius, 180, 270, false);
+		this.arc(this.radius1, this.radius1, this.radius1, 180, 270, false);
 		this.line(this.legLength1, 0);
 		this.arc(
 			this.legLength1 - this.radius2,
