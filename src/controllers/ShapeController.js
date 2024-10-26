@@ -62,12 +62,13 @@ export class ShapeController {
 	getSelectShape() {
 		return this.selectionManager.selectedShapes;
 	}
-	addShape(shapeData, position) {
+	addShape(shapeStrategy, dimensions, position) {
 		const command = new AddShapeCommand(
 			this.addShapeManager,
 			this.listShapes,
 			this.shapesScreen,
-			shapeData,
+			shapeStrategy,
+			dimensions,
 			position
 		);
 		this.commandManager.executeCommand(command);

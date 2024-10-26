@@ -1,7 +1,7 @@
 import CustomShape from "./CustomShape";
 
 // ---------------------------------------------------------------------------------------------------------
-export class LShapedBeam extends CustomShape {
+export class LShapeBeam extends CustomShape {
 	constructor(
 		drawScreen,
 		legLength1,
@@ -90,6 +90,20 @@ export class LShapedBeam extends CustomShape {
 	clear() {
 		this.removePath(); // Remova o caminho anterior do SVG
 	}
+
+	// método getDimensions para retornar as dimensões do perfil L
+	getDimensions() {
+		return {
+			legLength1: this.legLength1,
+			legLength2: this.legLength2,
+			thickness1: this.thickness1,
+			thickness2: this.thickness2,
+			radius1: this.radius1,
+			radius2: this.radius2,
+			radius3: this.radius3,
+			radius4: this.radius4,
+		};
+	}
 }
 
 // ---------------------------------------------------------------------------------------------------------
@@ -138,10 +152,20 @@ export class TShapeBeam extends CustomShape {
 		this.line(-(this.soulThickness / 2), this.soulLength);
 		this.line(-(this.soulThickness / 2), 0);
 		this.close();
+		this.position = [this.flangeLength / 2, 0];
 	}
 
 	// Método para limpar o desenho existente
 	clear() {
 		this.removePath(); // Remove o caminho anterior do SVG
+	}
+	// Método getDimensions para retornar as dimensões do perfil T
+	getDimensions() {
+		return {
+			soulLength: this.soulLength,
+			soulThickness: this.soulThickness,
+			flangeLength: this.flangeLength,
+			flangeThickness: this.flangeThickness,
+		};
 	}
 }

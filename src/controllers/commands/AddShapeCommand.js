@@ -1,12 +1,20 @@
 import Command from "./Command";
 
 export default class AddShapeCommand extends Command {
-	constructor(shapeManager, listShapes, shapesScreen, shapeData, position) {
+	constructor(
+		shapeManager,
+		listShapes,
+		shapesScreen,
+		shapeStrategy,
+		dimensions,
+		position
+	) {
 		super();
 		this.shapeManager = shapeManager;
 		this.listShapes = listShapes;
 		this.shapesScreen = shapesScreen;
-		this.shapeData = shapeData;
+		this.shapeStrategy = shapeStrategy;
+		this.dimensions = dimensions;
 		this.position = position;
 		this.backupShape = null;
 	}
@@ -15,6 +23,8 @@ export default class AddShapeCommand extends Command {
 			this.backupShape = this.shapeManager.addShape(
 				this.listShapes,
 				this.shapesScreen,
+				this.shapeStrategy,
+				this.dimensions,
 				this.position
 			);
 		} else {

@@ -4,8 +4,8 @@ import { ShapeController } from "./controllers/ShapeController.js";
 import MoveShapeCommand from "./controllers/commands/MoveShapeCommand.js";
 import ShapeMover from "./controllers/ShapeMover.js";
 import CustomShape from "./models/CustomShape.js";
-import { LShapedBeam, TShapeBeam } from "./models/ShapesDefault.js";
-import { LShapeStrategy } from "./models/ShapeStrategy.js";
+import { LShapeBeam, TShapeBeam } from "./models/ShapesDefault.js";
+import { LShapeStrategy, TShapeStrategy } from "./models/ShapeStrategy.js";
 
 // Elementos DOM
 // - Option bar
@@ -84,8 +84,10 @@ redoButton.addEventListener("click", () => {
 
 const addedShapeDrawScreen = document.getElementById("added-shape");
 const shapeForm = document.getElementById("shape-dimensions-form");
+const shapeSelect = document.getElementById("type-shape-add-current");
 
 let currentShape = null; // Para armazenar o shape atualmente desenhado
+let currentStrategyCreateShape = null;
 
 // Função para limpar o SVG de shapes anteriores
 function clearDrawScreen(drawScreen) {
@@ -99,6 +101,7 @@ function createShapeInputs(shapeType) {
 	shapeForm.innerHTML = ""; // Limpa os inputs existentes
 
 	if (shapeType === "LShapeBeam") {
+		currentStrategyCreateShape = new LShapeStrategy();
 		shapeForm.innerHTML = `
 			<label>Leg Length 1: <input type="number" id="legLength1" value="100"></label>
 			<label>Leg Length 2: <input type="number" id="legLength2" value="100"></label>
@@ -110,10 +113,11 @@ function createShapeInputs(shapeType) {
 			<label>Radius 4: <input type="number" id="radius4" value="5"></label>
 		`;
 	} else if (shapeType === "TShapeBeam") {
+		currentStrategyCreateShape = new TShapeStrategy();
 		shapeForm.innerHTML = `
 			<label>Soul Length: <input type="number" id="soulLength" value="100"></label>
 			<label>Soul Thickness: <input type="number" id="soulThickness" value="6.35"></label>
-			<label>Flange Length: <input type="number" id="flangeLength" value="50"></label>
+			<label>Flange Length: <input type="number" id="flangeLength" value="100"></label>
 			<label>Flange Thickness: <input type="number" id="flangeThickness" value="6.35"></label>
 		`;
 	}
@@ -137,7 +141,7 @@ function createLShapedBeam(dimensions) {
 		radius4,
 	} = dimensions;
 	const gElement = d3.select(addedShapeDrawScreen).append("g").node();
-	const shape = new LShapedBeam(
+	const shape = new LShapeBeam(
 		gElement,
 		legLength1,
 		legLength2,
@@ -148,8 +152,6 @@ function createLShapedBeam(dimensions) {
 		radius3,
 		radius4
 	);
-
-	centerShape(addedShapeDrawScreen, gElement);
 	return shape;
 }
 
@@ -166,8 +168,6 @@ function createTShapeBeam(dimensions) {
 		flangeLength,
 		flangeThickness
 	);
-
-	centerShape(addedShapeDrawScreen, gElement);
 	return shape;
 }
 
@@ -175,12 +175,21 @@ function createTShapeBeam(dimensions) {
 function centerShape(drawScreen, shapeGroup) {
 	const drawScreenDims = getDrawScreenDimensions(drawScreen);
 	const shapeDims = getDrawScreenDimensions(shapeGroup);
+	// Calcula a escala com base nas dimensões máximas
+	const scale =
+		Math.min(
+			drawScreenDims.width / shapeDims.width,
+			drawScreenDims.height / shapeDims.height
+		) * 0.95;
 
+	// Centraliza o shape considerando o "bounding box" e sua origem
+	const xOffset = (drawScreenDims.width - shapeDims.width * scale) / 2;
+	const yOffset = (drawScreenDims.height + shapeDims.height * scale) / 2;
+
+	// Aplica a centralização e escala ajustada
 	d3.select(shapeGroup).attr(
 		"transform",
-		`translate(${drawScreenDims.width / 2 - shapeDims.width / 2}, 
-		${drawScreenDims.height / 2 + shapeDims.height / 2}) 
-		scale(1.5, -1.5)`
+		`translate(${xOffset}, ${yOffset}) scale(${scale}, -${scale})`
 	);
 }
 
@@ -216,73 +225,40 @@ document
 
 // Inicializa a página com o shape e inputs correspondentes ao primeiro tipo selecionado
 createShapeInputs(document.getElementById("type-shape-add-current").value);
-updateShape();
 
-// const addedShapeDrawScreen = document.getElementById("added-shape");
+const confirmAddShapeButton = document.getElementById(
+	"confirm-add-shape-button"
+);
+const cancelAddShapeButton = document.getElementById("cancel-add-shape-button");
 
-// const confirmAddShapeButton = document.getElementById(
-// 	"confirm-add-shape-button"
-// );
-// const cancelAddShapeButton = document.getElementById("cancel-add-shape-button");
+const addShapeArea = document.getElementById("insert-shape-area");
 
-// const addShapeArea = document.getElementById("insert-shape-area");
+addButton.addEventListener("click", () => {
+	if (addShapeArea.style.display === "flex") {
+		addShapeArea.style.display = "none";
+	} else {
+		addShapeArea.style.display = "flex";
+		updateShape();
+	}
+});
 
-// function insertShapeControl() {
-// 	addedShapeDrawScreen.querySelectorAll("g").forEach((g) => {
-// 		addedShapeDrawScreen.removeChild(g);
-// 	});
-
-// 	const gAddedShapeDrawScreen = d3
-// 		.select(addedShapeDrawScreen)
-// 		.append("g")
-// 		.node();
-
-// 	const shapeAdded = new LShapedBeam(
-// 		gAddedShapeDrawScreen,
-// 		100,
-// 		100,
-// 		6.35,
-// 		6.35,
-// 		0,
-// 		0,
-// 		0,
-// 		0
-// 	);
-
-// 	d3.select(gAddedShapeDrawScreen).attr(
-// 		"transform",
-// 		`translate(${
-// 			getDrawScreenDimensions(addedShapeDrawScreen).width / 2 -
-// 			getDrawScreenDimensions(gAddedShapeDrawScreen).width / 2
-// 		}, ${
-// 			getDrawScreenDimensions(addedShapeDrawScreen).height / 2 +
-// 			getDrawScreenDimensions(gAddedShapeDrawScreen).height / 2
-// 		}) scale(1.5,-1.5)`
-// 	);
-// }
-
-// addButton.addEventListener("click", () => {
-// 	if (addShapeArea.style.display === "flex") {
-// 		addShapeArea.style.display = "none";
-// 	} else {
-// 		addShapeArea.style.display = "flex";
-// 		insertShapeControl();
-// 	}
-// });
-
-// confirmAddShapeButton.addEventListener("click", () => {
-// 	shapeController.addShape();
-// 	updateUndoRedoButtons(); // Atualiza os botões após adicionar um shape
-// });
-// cancelAddShapeButton.addEventListener("click", () => {
-// 	addShapeArea.style.display = "none";
-// });
+confirmAddShapeButton.addEventListener("click", () => {
+	shapeController.addShape(
+		currentStrategyCreateShape,
+		currentShape.getDimensions()
+	);
+	updateUndoRedoButtons(); // Atualiza os botões após adicionar um shape
+});
+cancelAddShapeButton.addEventListener("click", () => {
+	addShapeArea.style.display = "none";
+});
 // ---------------------------------------------------------------------------------------------------------------
-
+/** Seleção de shapes */
 drawScreen.addEventListener("click", (event) => {
 	shapeController.selectShape(event);
 });
 
+/** Remoção de shapes */
 removeButton.addEventListener("click", (event) => {
 	shapeController.removeShape();
 	updateUndoRedoButtons(); // Atualiza os botões após remover um shape
@@ -307,59 +283,5 @@ window.addEventListener("resize", (event) => {
 			getDrawScreenDimensions(drawScreen).height / 2
 		}) scale(1,-1)`
 	);
+	updateShape();
 });
-
-// Criação de shapes ---------------------------------------------------------------------------------------------
-
-// const customShape = new CustomShape(shapesScreen);
-// customShape.arc(0, 0, 25, 45, 10);
-// const width1 = 100;
-// const thickness1 = 10;
-// const width2 = 100;
-// const thickness2 = 10;
-// const radius = 10;
-
-// customShape.anchor(0, 0);
-// customShape.line(200, 0);
-// customShape.line(200, 10);
-// customShape.arcTo(10, 10, 10, 15, 10);
-// customShape.arc(15, 15, 5, 270, 180, true);
-// customShape.line(10, 10);
-// customShape.line(10, 200);
-// customShape.line(0, 200);
-// customShape.line(0, 0);
-
-// customShape.close();
-
-// customShape.angle = 45;
-// customShape.position = [0, 100];
-// customShape.scale = [-1, 1];
-
-// console.log("Área = ", customShape.calculateArea());
-// console.log("Centroide = ", customShape.calculateCentroid());
-
-// customShape.angle = 45;
-// customShape.position = [100, 100];
-// customShape.scale = [2, 2];
-// // customShape.line(10, 90);
-
-// customShape.line(90, 90);
-// customShape.line(90, 100);
-// customShape.line(0, 100);
-
-// customShape.close();
-
-// function generatePath(drawScreen, line, gridSize, event) {
-// 	const point = getMousePosition(drawScreen, gridSize, event);
-// 	const listData = line.data || [];
-// 	listData.push([point[0], -point[1]]);
-// 	line.data = listData;
-// }
-
-// addCustomShapeButton.addEventListener("click", (event) => {
-// 	drawScreen.style.cursor = "move";
-// 	const line = new CustomShape([], shapesScreen);
-// 	drawScreen.addEventListener("click", (event) => {
-// 		generatePath(drawScreen, line, gridSize, event);
-// 	});
-// });

@@ -1,30 +1,34 @@
-import { LShapedBeam, TShapeBeam } from "../../models/ShapesDefault";
+import { LShapeBeam, TShapeBeam } from "../../models/ShapesDefault";
+import { LShapeStrategy, TShapeStrategy } from "../../models/ShapeStrategy";
 export default class AddShapeManager {
-	addShape(listShapes, shapesScreen, position = null) {
+	constructor(shapeStrategy) {
+		this.shapeStrategy = shapeStrategy; // Estratégia de shape escolhida
+	}
+
+	setShapeStrategy(shapeStrategy) {
+		this.shapeStrategy = shapeStrategy;
+	}
+
+	addShape(
+		listShapes,
+		shapesScreen,
+		shapeStrategy,
+		dimensions,
+		position = null
+	) {
+		if (shapeStrategy) {
+			this.setShapeStrategy(shapeStrategy);
+		}
 		// Encontra o shape com o maior id na lista
 		const maxIdShape = listShapes.reduce(
-			(maxShape, currentShape) => {
-				return currentShape.id > maxShape.id ? currentShape : maxShape;
-			},
+			(maxShape, currentShape) =>
+				currentShape.id > maxShape.id ? currentShape : maxShape,
 			{ id: 0 }
-		); // Inicia com id 0 caso a lista esteja vazia
+		);
 
-		// Cria um novo shape com o id incrementado
-		// const newShape = new LShapedBeam(
-		// 	shapesScreen,
-		// 	100,
-		// 	100,
-		// 	10,
-		// 	10,
-		// 	5,
-		// 	10,
-		// 	5,
-		// 	10
-		// );
-		const newShape = new TShapeBeam(shapesScreen, 100, 10, 100, 10);
-
-		newShape.id = maxIdShape.id + 1; // Usa o maior id + 1
-
+		// Cria um novo shape com a estratégia selecionada
+		const newShape = this.shapeStrategy.createShape(shapesScreen, dimensions);
+		newShape.id = maxIdShape.id + 1;
 		newShape.position = position || newShape.position;
 
 		listShapes.push(newShape);

@@ -1,4 +1,4 @@
-import { LShapedBeam, TShapeBeam } from "./ShapesDefault";
+import { LShapeBeam, TShapeBeam } from "./ShapesDefault";
 
 export default class ShapeStrategy {
 	createShape(drawScreen, position) {
@@ -18,7 +18,7 @@ export class LShapeStrategy extends ShapeStrategy {
 			radius3,
 			radius4,
 		} = dimensions;
-		return new LShapedBeam(
+		return new LShapeBeam(
 			drawScreen,
 			legLength1,
 			legLength2,
