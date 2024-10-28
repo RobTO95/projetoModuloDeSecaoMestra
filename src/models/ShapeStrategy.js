@@ -1,8 +1,15 @@
-import { LShapeBeam, TShapeBeam } from "./ShapesDefault";
+import { LShapeBeam, Plate, TShapeBeam } from "./ShapesDefault";
 
 export default class ShapeStrategy {
 	createShape(drawScreen, position) {
 		throw new Error("This method must be overridden by subclasses");
+	}
+}
+
+export class PlateStrategy extends ShapeStrategy {
+	createShape(drawScreen, dimensions) {
+		const { length, thickness } = dimensions;
+		return new Plate(drawScreen, length, thickness);
 	}
 }
 

@@ -4,8 +4,12 @@ import { ShapeController } from "./controllers/ShapeController.js";
 import MoveShapeCommand from "./controllers/commands/MoveShapeCommand.js";
 import ShapeMover from "./controllers/ShapeMover.js";
 import CustomShape from "./models/CustomShape.js";
-import { LShapeBeam, TShapeBeam } from "./models/ShapesDefault.js";
-import { LShapeStrategy, TShapeStrategy } from "./models/ShapeStrategy.js";
+import { LShapeBeam, Plate, TShapeBeam } from "./models/ShapesDefault.js";
+import {
+	LShapeStrategy,
+	PlateStrategy,
+	TShapeStrategy,
+} from "./models/ShapeStrategy.js";
 
 // Elementos DOM
 // - Option bar
@@ -100,32 +104,55 @@ function clearDrawScreen(drawScreen) {
 function createShapeInputs(shapeType) {
 	shapeForm.innerHTML = ""; // Limpa os inputs existentes
 
-	if (shapeType === "LShapeBeam") {
-		currentStrategyCreateShape = new LShapeStrategy();
-		shapeForm.innerHTML = `
-			<label>Leg Length 1: <input type="number" id="legLength1" value="100"></label>
-			<label>Leg Length 2: <input type="number" id="legLength2" value="100"></label>
-			<label>Thickness 1: <input type="number" id="thickness1" value="6.35"></label>
-			<label>Thickness 2: <input type="number" id="thickness2" value="6.35"></label>
-			<label>Radius 1: <input type="number" id="radius1" value="5"></label>
-			<label>Radius 2: <input type="number" id="radius2" value="5"></label>
-			<label>Radius 3: <input type="number" id="radius3" value="5"></label>
-			<label>Radius 4: <input type="number" id="radius4" value="5"></label>
-		`;
-	} else if (shapeType === "TShapeBeam") {
-		currentStrategyCreateShape = new TShapeStrategy();
-		shapeForm.innerHTML = `
-			<label>Soul Length: <input type="number" id="soulLength" value="100"></label>
-			<label>Soul Thickness: <input type="number" id="soulThickness" value="6.35"></label>
-			<label>Flange Length: <input type="number" id="flangeLength" value="100"></label>
-			<label>Flange Thickness: <input type="number" id="flangeThickness" value="6.35"></label>
-		`;
+	switch (shapeType) {
+		case "Plate":
+			currentStrategyCreateShape = new PlateStrategy();
+			shapeForm.innerHTML = `
+				<label>Length: <input type="number" id="length" value="100"></label>
+				<label>Thickness: <input type="number" id="thickness" value="6.35"></label>
+			`;
+			break;
+		case "LShapeBeam":
+			currentStrategyCreateShape = new LShapeStrategy();
+			shapeForm.innerHTML = `
+				<label>Leg Length 1: <input type="number" id="legLength1" value="100"></label>
+				<label>Leg Length 2: <input type="number" id="legLength2" value="100"></label>
+				<label>Thickness 1: <input type="number" id="thickness1" value="6.35"></label>
+				<label>Thickness 2: <input type="number" id="thickness2" value="6.35"></label>
+				<label>Radius 1: <input type="number" id="radius1" value="5"></label>
+				<label>Radius 2: <input type="number" id="radius2" value="5"></label>
+				<label>Radius 3: <input type="number" id="radius3" value="5"></label>
+				<label>Radius 4: <input type="number" id="radius4" value="5"></label>
+			`;
+			break;
+		case "TShapeBeam":
+			currentStrategyCreateShape = new TShapeStrategy();
+			shapeForm.innerHTML = `
+				<label>Soul Length: <input type="number" id="soulLength" value="100"></label>
+				<label>Soul Thickness: <input type="number" id="soulThickness" value="6.35"></label>
+				<label>Flange Length: <input type="number" id="flangeLength" value="100"></label>
+				<label>Flange Thickness: <input type="number" id="flangeThickness" value="6.35"></label>
+			`;
+			break;
+		// Adicione outros cases aqui para novos tipos de shapes
+		default:
+			console.error("Shape type não reconhecido:", shapeType);
+			break;
 	}
 
 	// Atualiza o shape ao alterar qualquer valor do input
 	shapeForm.querySelectorAll("input").forEach((input) => {
 		input.addEventListener("input", () => updateShape());
 	});
+}
+
+// Função para criar uma chapa
+function createPlate(dimensions) {
+	const { length, thickness } = dimensions;
+	const gElement = d3.select(addedShapeDrawScreen).append("g").node();
+	const shape = new Plate(gElement, length, thickness);
+	shape.position = [length / 2, thickness / 2];
+	return shape;
 }
 
 // Função para criar um shape L
@@ -168,11 +195,12 @@ function createTShapeBeam(dimensions) {
 		flangeLength,
 		flangeThickness
 	);
+	shape.position = [flangeLength / 2, 0];
 	return shape;
 }
 
 // Função para centralizar o shape no SVG
-function centerShape(drawScreen, shapeGroup) {
+function centerShape(drawScreen, shape, shapeGroup) {
 	const drawScreenDims = getDrawScreenDimensions(drawScreen);
 	const shapeDims = getDrawScreenDimensions(shapeGroup);
 	// Calcula a escala com base nas dimensões máximas
@@ -185,7 +213,6 @@ function centerShape(drawScreen, shapeGroup) {
 	// Centraliza o shape considerando o "bounding box" e sua origem
 	const xOffset = (drawScreenDims.width - shapeDims.width * scale) / 2;
 	const yOffset = (drawScreenDims.height + shapeDims.height * scale) / 2;
-
 	// Aplica a centralização e escala ajustada
 	d3.select(shapeGroup).attr(
 		"transform",
@@ -207,12 +234,26 @@ function updateShape() {
 	});
 
 	// Verifica o tipo de shape e atualiza o path correspondente
-	if (shapeType === "LShapeBeam") {
-		currentShape = createLShapedBeam(dimensions);
-	} else if (shapeType === "TShapeBeam") {
-		currentShape = createTShapeBeam(dimensions);
+	switch (shapeType) {
+		case "Plate":
+			currentShape = createPlate(dimensions);
+			break;
+		case "LShapeBeam":
+			currentShape = createLShapedBeam(dimensions);
+			break;
+		case "TShapeBeam":
+			currentShape = createTShapeBeam(dimensions);
+			break;
+		// Adicione outros cases aqui para novos tipos de shapes
+		default:
+			console.error("Shape type não reconhecido:", shapeType);
+			break;
 	}
-	centerShape(addedShapeDrawScreen, addedShapeDrawScreen.querySelector("g"));
+	centerShape(
+		addedShapeDrawScreen,
+		currentShape,
+		addedShapeDrawScreen.querySelector("g")
+	);
 }
 
 // Detecta quando o usuário muda o tipo de shape no select
@@ -283,5 +324,45 @@ window.addEventListener("resize", (event) => {
 			getDrawScreenDimensions(drawScreen).height / 2
 		}) scale(1,-1)`
 	);
-	updateShape();
+	if (addShapeArea.style.display === "flex") {
+		updateShape();
+	}
+});
+let zoomLevel = 1;
+const zoomStep = 0.05;
+
+function applyZoom(objectSVG, mouseX, mouseY) {
+	const drawScreenDims = getDrawScreenDimensions(drawScreen);
+
+	// Converte a posição do mouse para coordenadas relativas ao centro do SVG
+	const offsetX = (mouseX - drawScreenDims.width / 2) / zoomLevel;
+	const offsetY = (mouseY - drawScreenDims.height / 2) / zoomLevel;
+
+	// Atualiza o transform do SVG, centralizando o zoom no ponto do mouse
+	d3.select(objectSVG).attr(
+		"transform",
+		`translate(${drawScreenDims.width / 2 - offsetX * (zoomLevel - 1)}, 
+                   ${drawScreenDims.height / 2 - offsetY * (zoomLevel - 1)}) 
+                   scale(${zoomLevel}, -${zoomLevel})`
+	);
+	gridSize = gridSize / zoomLevel;
+	console.log(gridSize);
+}
+
+// Evento de scroll para ajustar o nível de zoom
+drawScreen.addEventListener("wheel", (event) => {
+	event.preventDefault();
+
+	// Obtém a posição do mouse relativa ao drawScreen
+	const mouseX = event.clientX - drawScreen.getBoundingClientRect().left;
+	const mouseY = event.clientY - drawScreen.getBoundingClientRect().top;
+
+	// Ajusta o nível de zoom
+	if (event.deltaY < 0) {
+		zoomLevel += zoomStep;
+	} else {
+		zoomLevel = Math.max(zoomLevel - zoomStep, 0.1);
+	}
+
+	applyZoom(shapesScreen, mouseX, mouseY);
 });
