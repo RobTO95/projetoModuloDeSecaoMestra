@@ -4,10 +4,16 @@ import { ShapeController } from "./controllers/ShapeController.js";
 import MoveShapeCommand from "./controllers/commands/MoveShapeCommand.js";
 import ShapeMover from "./controllers/ShapeMover.js";
 import CustomShape from "./models/CustomShape.js";
-import { LShapeBeam, Plate, TShapeBeam } from "./models/ShapesDefault.js";
+import {
+	LShapeBeam,
+	Plate,
+	RadiusPlate,
+	TShapeBeam,
+} from "./models/ShapesDefault.js";
 import {
 	LShapeStrategy,
 	PlateStrategy,
+	RadiusPlateStrategy,
 	TShapeStrategy,
 } from "./models/ShapeStrategy.js";
 
@@ -24,7 +30,7 @@ const undoButton = document.getElementById("undo-button");
 const redoButton = document.getElementById("redo-button");
 
 // Grid
-let gridSize = 5;
+let gridSize = 1;
 
 // Desloca o ponto zero para o centro de drawScreen
 d3.select(shapesScreen).attr(
@@ -112,6 +118,16 @@ function createShapeInputs(shapeType) {
 				<label>Thickness: <input type="number" id="thickness" value="6.35"></label>
 			`;
 			break;
+		case "RadiusPlate":
+			currentStrategyCreateShape = new RadiusPlateStrategy();
+			shapeForm.innerHTML = `
+				<label>Radius: <input type="number" id="radius" value="100"></label>
+				<label>Thickness: <input type="number" id="thickness" value="6.35"></label>
+				<label>Start angle: <input type="number" id="startAngle" value="180"></label>
+				<label>End angle: <input type="number" id="endAngle" value="270"></label>
+				<label>Clockwise Orientation: <input type="checkbox" id="orientation"></label>
+			`;
+			break;
 		case "LShapeBeam":
 			currentStrategyCreateShape = new LShapeStrategy();
 			shapeForm.innerHTML = `
@@ -152,6 +168,21 @@ function createPlate(dimensions) {
 	const gElement = d3.select(addedShapeDrawScreen).append("g").node();
 	const shape = new Plate(gElement, length, thickness);
 	shape.position = [length / 2, thickness / 2];
+	return shape;
+}
+
+function createRadiusPlate(dimensions) {
+	const { radius, thickness, startAngle, endAngle, orientation } = dimensions;
+	const gElement = d3.select(addedShapeDrawScreen).append("g").node();
+	const shape = new RadiusPlate(
+		gElement,
+		radius,
+		thickness,
+		startAngle,
+		endAngle,
+		orientation
+	);
+	shape.position = [radius + thickness, radius + thickness];
 	return shape;
 }
 
@@ -230,13 +261,21 @@ function updateShape() {
 	// Coleta os valores dos inputs de dimensões
 	let dimensions = {};
 	shapeForm.querySelectorAll("input").forEach((input) => {
-		dimensions[input.id] = parseFloat(input.value);
+		// Verifica se é um checkbox e usa "checked" ao invés de "parseFloat"
+		if (input.type === "checkbox") {
+			dimensions[input.id] = input.checked; // Captura true ou false
+		} else {
+			dimensions[input.id] = parseFloat(input.value);
+		}
 	});
 
 	// Verifica o tipo de shape e atualiza o path correspondente
 	switch (shapeType) {
 		case "Plate":
 			currentShape = createPlate(dimensions);
+			break;
+		case "RadiusPlate":
+			currentShape = createRadiusPlate(dimensions);
 			break;
 		case "LShapeBeam":
 			currentShape = createLShapedBeam(dimensions);
@@ -329,7 +368,7 @@ window.addEventListener("resize", (event) => {
 	}
 });
 let zoomLevel = 1;
-const zoomStep = 0.05;
+const zoomStep = 0.1;
 
 function applyZoom(objectSVG, mouseX, mouseY) {
 	const drawScreenDims = getDrawScreenDimensions(drawScreen);
@@ -345,8 +384,8 @@ function applyZoom(objectSVG, mouseX, mouseY) {
                    ${drawScreenDims.height / 2 - offsetY * (zoomLevel - 1)}) 
                    scale(${zoomLevel}, -${zoomLevel})`
 	);
-	gridSize = gridSize / zoomLevel;
-	console.log(gridSize);
+	// moveShape.gridSize = gridSize / zoomLevel;
+	// console.log(gridSize / zoomLevel);
 }
 
 // Evento de scroll para ajustar o nível de zoom

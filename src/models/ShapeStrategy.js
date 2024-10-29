@@ -1,4 +1,4 @@
-import { LShapeBeam, Plate, TShapeBeam } from "./ShapesDefault";
+import { LShapeBeam, Plate, RadiusPlate, TShapeBeam } from "./ShapesDefault";
 
 export default class ShapeStrategy {
 	createShape(drawScreen, position) {
@@ -10,6 +10,19 @@ export class PlateStrategy extends ShapeStrategy {
 	createShape(drawScreen, dimensions) {
 		const { length, thickness } = dimensions;
 		return new Plate(drawScreen, length, thickness);
+	}
+}
+export class RadiusPlateStrategy extends ShapeStrategy {
+	createShape(drawScreen, dimensions) {
+		const { radius, thickness, startAngle, endAngle, orientation } = dimensions;
+		return new RadiusPlate(
+			drawScreen,
+			radius,
+			thickness,
+			startAngle,
+			endAngle,
+			orientation
+		);
 	}
 }
 

@@ -248,29 +248,63 @@ export class Plate extends DefaultShape {
 
 // ---------------------------------------------------------------------------------------------------------
 export class RadiusPlate extends DefaultShape {
-	constructor(drawScreen, thickness, firstPoint, secondPoint, endPoint) {
+	constructor(
+		drawScreen,
+		radius,
+		thickness,
+		startAngle,
+		endAngle,
+		orientation
+	) {
 		super(drawScreen);
+		this.radius = radius;
 		this.thickness = thickness;
-		this.firstPoint = firstPoint;
-		this.secondPoint = secondPoint;
-		this.endPoint = endPoint;
+		this.startAngle = startAngle;
+		this.endAngle = endAngle;
+		this.orientation = orientation;
+		this.setDimensions(
+			this.radius,
+			this.thickness,
+			this.startAngle,
+			this.endAngle,
+			this.orientation
+		);
 	}
-	setDimensions(thickness, firstPoint, secondPoint, endPoint) {
+	setDimensions(radius, thickness, startAngle, endAngle, orientation) {
+		this.radius = radius;
 		this.thickness = thickness;
-		this.firstPoint = firstPoint;
-		this.secondPoint = secondPoint;
-		this.endPoint = endPoint;
+		this.startAngle = startAngle;
+		this.endAngle = endAngle;
+		this.orientation = orientation;
 		this.redraw();
 	}
 	getDimensions() {
 		return {
+			radius: this.radius,
 			thickness: this.thickness,
-			firstPoint: this.firstPoint,
-			secondPoint: this.secondPoint,
-			endPoint: this.endPoint,
+			startAngle: this.startAngle,
+			endAngle: this.endAngle,
+			orientation: this.orientation,
 		};
 	}
 	redraw() {
 		this.clear();
+		this.arc(
+			0,
+			0,
+			this.radius,
+			this.startAngle,
+			this.endAngle,
+			this.orientation
+		);
+		this.arc(
+			0,
+			0,
+			this.radius + this.thickness,
+			this.endAngle,
+			this.startAngle,
+			!this.orientation
+		);
+		this.close();
 	}
 }
