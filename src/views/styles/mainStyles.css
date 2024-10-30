@@ -150,10 +150,23 @@ main {
 	width: 100%;
 }
 #down-bar {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-small);
 	width: 100%;
 	height: 6dvh;
 	background-color: var(--p1-color);
 	border-radius: var(--border-radius-large);
+	padding: var(--spacing-small);
+}
+#command-input-bar {
+	width: 60%;
+	padding: var(--spacing-small);
+	border: none;
+	outline: none;
+	border-radius: var(--border-radius);
+	font-family: var(--font-primary);
+	font-size: var(--font-size-base);
 }
 
 /* classes */
