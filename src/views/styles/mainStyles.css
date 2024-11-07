@@ -149,6 +149,7 @@ main {
 	height: 100%;
 	width: 100%;
 }
+
 #down-bar {
 	display: flex;
 	align-items: center;
@@ -158,15 +159,51 @@ main {
 	background-color: var(--p1-color);
 	border-radius: var(--border-radius-large);
 	padding: var(--spacing-small);
+	position: relative; /* Para manter a posição de seus filhos */
 }
-#command-input-bar {
+
+.command-input-container {
+	position: relative;
 	width: 60%;
+}
+
+#command-input-bar {
+	width: 100%;
 	padding: var(--spacing-small);
 	border: none;
 	outline: none;
 	border-radius: var(--border-radius);
 	font-family: var(--font-primary);
 	font-size: var(--font-size-base);
+}
+
+/* Estilo para a lista de sugestões como dropdown */
+.suggestions-list {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	border: 1px solid #ccc;
+	background-color: #fff;
+	position: absolute;
+	bottom: 100%; /* Posiciona logo abaixo do input */
+	left: 0;
+	width: 100%;
+	max-height: 150px;
+	overflow-y: auto;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	z-index: 1000; /* Certifique-se de que fica sobre outros elementos */
+	border-radius: var(--border-radius);
+	display: none; /* Oculta até o usuário começar a digitar */
+	/* flex-direction: column-reverse; */
+}
+
+.suggestions-list li {
+	padding: 8px;
+	cursor: pointer;
+}
+
+.suggestions-list li:hover {
+	background-color: #e6e6e6;
 }
 
 /* classes */

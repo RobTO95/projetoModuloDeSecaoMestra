@@ -16,7 +16,7 @@ import {
 	RadiusPlateStrategy,
 	TShapeStrategy,
 } from "./models/ShapeStrategy.js";
-
+import { initializeCommandBar } from "./views/command-bar.js";
 // Elementos DOM
 // - Option bar
 const drawScreen = document.getElementById("draw-screen");
@@ -85,6 +85,13 @@ redoButton.addEventListener("click", () => {
 	// console.log(shapeController.commandManager.redoStack);
 	// console.log(shapeController.commandManager.undoStack);
 });
+
+// ---------------------------------------------------------------------------------------------------------------
+
+/**
+ * Command Bar
+ */
+initializeCommandBar(shapeController);
 
 // ---------------------------------------------------------------------------------------------------------------
 
