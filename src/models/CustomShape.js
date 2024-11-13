@@ -31,7 +31,7 @@ export default class CustomShape {
 		this.#data = []; // Armazena os comandos de desenho
 		this.#shape = null; // O elemento SVG será criado ao adicionar a forma
 		this.#stroke = "red"; // Cor da borda padrão
-		this.#strokeWidth = 1; // Espessura padrão da borda
+		this.#strokeWidth = 0.25; // Espessura padrão da borda
 		this.#fill = "steelblue"; // Cor de preenchimento padrão
 		this.#position = [0, 0]; // Posição inicial da forma
 		this.#angle = 0; // Ângulo de rotação inicial
@@ -258,6 +258,7 @@ export default class CustomShape {
 			.attr("d", this.#path.toString())
 			.attr("fill", this.isClosed() ? this.#fill : "none")
 			.attr("stroke", this.isClosed() ? "none" : this.#stroke)
+			// .attr("stroke", this.#stroke)
 			.attr("stroke-width", this.#strokeWidth)
 			.attr(
 				"transform",

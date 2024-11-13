@@ -7,6 +7,7 @@ import RemoveShapeManager from "./managers/RemoveShapeManager.js";
 import SelectionManager from "./managers/SelectionManager.js";
 import MoveShapeManager from "./managers/MoveShapeManager.js";
 import CustomShape from "../models/CustomShape.js";
+import Snap from "../models/OSnap.js";
 export class ShapeController {
 	constructor(drawScreen, shapesScreen) {
 		this.drawScreen = drawScreen;
@@ -17,8 +18,14 @@ export class ShapeController {
 		this.removeShapeManager = new RemoveShapeManager();
 		this.selectionManager = new SelectionManager();
 		this.moveShapeManager = new MoveShapeManager();
+		this.snap = new Snap(this.shapesScreen);
 		this.listShapes = [];
 	}
+
+	get shapes() {
+		return this.listShapes;
+	}
+
 	loadShapes() {
 		const listShapesOnLC = JSON.parse(localStorage.getItem("shapes"));
 		if (listShapesOnLC) {

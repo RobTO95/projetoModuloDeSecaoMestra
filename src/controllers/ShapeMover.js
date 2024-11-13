@@ -1,5 +1,4 @@
-// Funciona para dispositivos móveis e pc's
-import { getDrawScreenDimensions, getMousePosition } from "../utils/utils";
+import { getMousePosition } from "../utils/utils";
 import MoveShapeCommand from "./commands/MoveShapeCommand";
 
 /**

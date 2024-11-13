@@ -1,5 +1,9 @@
 import * as d3 from "d3";
-import { getDrawScreenDimensions, getMousePosition } from "./utils/utils.js";
+import {
+	getDrawScreenDimensions,
+	getMousePosition,
+	getMouseSnapPosition,
+} from "./utils/utils.js";
 import { ShapeController } from "./controllers/ShapeController.js";
 import MoveShapeCommand from "./controllers/commands/MoveShapeCommand.js";
 import ShapeMover from "./controllers/ShapeMover.js";
@@ -17,6 +21,9 @@ import {
 	TShapeStrategy,
 } from "./models/ShapeStrategy.js";
 import { initializeCommandBar } from "./views/command-bar.js";
+import Snap from "./models/OSnap.js";
+import { ShapeMoverSnap } from "./controllers/ShapeMoverSnap.js";
+
 // Elementos DOM
 // - Option bar
 const drawScreen = document.getElementById("draw-screen");
@@ -30,7 +37,7 @@ const undoButton = document.getElementById("undo-button");
 const redoButton = document.getElementById("redo-button");
 
 // Grid
-let gridSize = 1;
+let gridSize = 0.001;
 
 // Desloca o ponto zero para o centro de drawScreen
 d3.select(shapesScreen).attr(
@@ -352,12 +359,12 @@ removeButton.addEventListener("click", (event) => {
 });
 
 // // Inicializa o manipulador de movimentação de shapes ---------------------------------------------------------
-const moveShape = new ShapeMover(
-	drawScreen,
-	shapeController,
-	gridSize,
-	updateUndoRedoButtons
-);
+// const moveShape = new ShapeMover(
+// 	drawScreen,
+// 	shapeController,
+// 	gridSize,
+// 	updateUndoRedoButtons
+// );
 
 // Inicializa o estado dos botões --------------------------------------------------------------------------------
 updateUndoRedoButtons();
@@ -409,6 +416,98 @@ drawScreen.addEventListener("wheel", (event) => {
 	} else {
 		zoomLevel = Math.max(zoomLevel - zoomStep, 0.1);
 	}
-
 	applyZoom(shapesScreen, mouseX, mouseY);
+	shapeController.snap.snapRadius = 10 / zoomLevel;
 });
+
+// ------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------
+/**
+ * OSnap
+ *
+ *
+ *
+ */
+
+// Exemplo de como usar a classe Snap ao mover shapes
+// const snapInstance = new Snap(shapesScreen);
+// drawScreen.addEventListener("mousemove", (event) => {
+// 	const positionMouse = getMousePosition(drawScreen, gridSize, event);
+// 	const cursorPosition = {
+// 		x: positionMouse[0],
+// 		y: positionMouse[1],
+// 	};
+// 	let snapPosition = snapInstance.snapTo(cursorPosition);
+// 	// console.log(snapPosition);
+// 	const shape = event.target;
+// 	const obShape = shapeController.selectionManager.selectedShapes.find(
+// 		(shapeOfList) => shapeOfList.shape === shape
+// 	);
+
+// 	snapInstance.detectSnapPoints(obShape);
+// 	if (snapPosition) {
+// 		renderSnapFeedback(snapPosition, shapesScreen);
+// 	}
+// });
+// Exemplo de renderização visual de pontos de snap
+
+function renderSnapFeedback(snapPoint, svgContainer) {
+	if (snapPoint) {
+		let snapElement = svgContainer.querySelectorAll(".snap");
+		snapElement.forEach((circle) => circle.remove());
+
+		d3.select(svgContainer)
+			.append("circle")
+			.attr("cx", snapPoint.point.x)
+			.attr("cy", snapPoint.point.y)
+			.attr("r", 5 / zoomLevel)
+			.attr("fill", "none")
+			.attr("stroke", "red")
+			.attr("stroke-width", 1 / zoomLevel)
+			.attr("class", "snap");
+	}
+}
+
+function mousePosition() {
+	drawScreen.addEventListener("mousemove", (event) => {
+		let point = d3.pointer(event, shapesScreen);
+		const x = point[0];
+		const y = point[1];
+		const cursorPosition = { x, y };
+		const shape = event.target;
+		const obShape = shapeController.listShapes.find(
+			(shapeOfList) => shapeOfList.shape === shape
+		);
+		// shapeController.snap.clearSnapPoints();
+		shapeController.snap.detectSnapPoints(obShape);
+
+		let snapPosition = shapeController.snap.snapTo(cursorPosition);
+		if (snapPosition) {
+			point = [snapPosition.x, snapPosition.y];
+			renderSnapFeedback(snapPosition, shapesScreen);
+		}
+		// console.log(point);
+		return point;
+	});
+}
+// mousePosition();
+
+const shapeMoverSnap = new ShapeMoverSnap(
+	shapeController,
+	updateUndoRedoButtons
+);
+
+// drawScreen.addEventListener("mousemove", (event) => {
+// 	console.log(
+// 		getMouseSnapPosition(
+// 			shapesScreen,
+// 			event,
+// 			shapeController.listShapes,
+// 			snapInstance
+// 		)
+// 	);
+// });
+// ------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------
