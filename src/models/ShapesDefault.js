@@ -168,36 +168,17 @@ export class TShapeBeam extends DefaultShape {
 		// Limpa o desenho existente
 		this.clear();
 
-		// Redesenha o shape com as dimensões atuais
-		// this.anchor(0, 0);
-		// this.line(this.soulThickness / 2, 0);
-		// this.line(this.soulThickness / 2, this.soulLength);
-		// this.line(this.flangeLength / 2, this.soulLength);
-		// this.line(this.flangeLength / 2, this.soulLength + this.flangeThickness);
-		// this.line(0, this.soulLength + this.flangeThickness);
-		// this.line(-(this.flangeLength / 2), this.soulLength + this.flangeThickness);
-		// this.line(-(this.flangeLength / 2), this.soulLength);
-		// this.line(-(this.soulThickness / 2), this.soulLength);
-		// this.line(-(this.soulThickness / 2), 0);
-		// this.close();
-		this.anchor(0, 0);
+		this.anchor(-this.soulThickness / 2, 0);
 		this.line(this.soulThickness / 2, 0);
 		this.line(this.soulThickness / 2, this.soulLength);
 		this.line(this.flangeLength / 2, this.soulLength);
-		this.line(
-			this.flangeLength / 2,
-			this.soulLength + this.flangeThickness / 2
-		);
+
 		this.line(this.flangeLength / 2, this.soulLength + this.flangeThickness);
-		this.line(0, this.soulLength + this.flangeThickness);
+
 		this.line(-this.flangeLength / 2, this.soulLength + this.flangeThickness);
-		this.line(
-			-this.flangeLength / 2,
-			this.soulLength + this.flangeThickness / 2
-		);
+
 		this.line(-this.flangeLength / 2, this.soulLength);
 		this.line(-this.soulThickness / 2, this.soulLength);
-		this.line(-this.soulThickness / 2, 0);
 
 		this.close();
 	}

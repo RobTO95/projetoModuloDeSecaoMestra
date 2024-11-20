@@ -31,7 +31,7 @@ export default class CustomShape {
 		this.#data = []; // Armazena os comandos de desenho
 		this.#shape = null; // O elemento SVG será criado ao adicionar a forma
 		this.#stroke = "red"; // Cor da borda padrão
-		this.#strokeWidth = 0.25; // Espessura padrão da borda
+		this.#strokeWidth = 1; // Espessura padrão da borda
 		this.#fill = "steelblue"; // Cor de preenchimento padrão
 		this.#position = [0, 0]; // Posição inicial da forma
 		this.#angle = 0; // Ângulo de rotação inicial
@@ -290,7 +290,7 @@ export default class CustomShape {
 						command.radius,
 						command.startAngle * (Math.PI / 180),
 						command.endAngle * (Math.PI / 180),
-						command.anticlockwise
+						command.orientation
 					);
 					break;
 				case "arcTo":
@@ -303,12 +303,14 @@ export default class CustomShape {
 					);
 				case "bezierCurveTo":
 					this.#path.bezierCurveTo(
+						command.x,
+						command.y,
 						command.cp1x,
 						command.cp1y,
 						command.cp2x,
 						command.cp2y,
-						command.x,
-						command.y
+						command.x2,
+						command.y2
 					);
 					break;
 				case "closePath":
@@ -349,17 +351,21 @@ export default class CustomShape {
 	 * @param {number} radius - Raio do arco.
 	 * @param {number} startAngle - Ângulo inicial do arco.
 	 * @param {number} endAngle - Ângulo final do arco.
-	 * @param {boolean} orientation - Sentido de criação do arco.
+	 * @param {boolean} orientation - Sentido de criação do arco true horário.
 	 */
-	arc(x, y, radius, startAngle, endAngle, anticlockwise) {
-		this.#path.arc(
-			x,
-			y,
-			radius,
-			(Math.PI / 180) * startAngle,
-			(Math.PI / 180) * endAngle,
-			anticlockwise
-		);
+	arc(x, y, radius, startAngle, endAngle, orientation) {
+		const startRadians = (Math.PI / 180) * startAngle;
+		const endRadians = (Math.PI / 180) * endAngle;
+
+		// this.#path.moveTo(
+		// 	x + radius * Math.cos(startRadians),
+		// 	y + radius * Math.sin(startRadians)
+		// );
+		this.#path.arc(x, y, radius, startRadians, endRadians, orientation);
+		// this.#path.moveTo(
+		// 	x + radius * Math.cos(endRadians),
+		// 	y + radius * Math.sin(endRadians)
+		// );
 		this.#data.push({
 			type: "arc",
 			x,
@@ -367,7 +373,7 @@ export default class CustomShape {
 			radius,
 			startAngle,
 			endAngle,
-			anticlockwise,
+			orientation,
 		});
 		this.updatePath();
 	}
@@ -381,7 +387,9 @@ export default class CustomShape {
 	 * @param {number} radius - Raio do arco.
 	 */
 	arcTo(x1, y1, x2, y2, radius) {
+		// this.#path.moveTo(x1, y1);
 		this.#path.arcTo(x1, y1, x2, y2, radius);
+		// this.#path.moveTo(x2, y2);
 		this.#data.push({
 			type: "arcTo",
 			x1,
@@ -402,7 +410,7 @@ export default class CustomShape {
 	 * @param {number} x - Coordenada x do ponto final.
 	 * @param {number} y - Coordenada y do ponto final.
 	 */
-	bezierCurve(cp1x, cp1y, cp2x, cp2y, x, y) {
+	bezierCurve(cp1x, cp1y, cp2x, cp2y, x2, y2) {
 		this.#path.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
 		this.#data.push({
 			type: "bezierCurveTo",
@@ -462,7 +470,7 @@ export default class CustomShape {
 	 * @param {number} resolution - A resolução para discretizar o caminho (quanto menor, mais preciso).
 	 * @returns {Array} - Um array de pontos [x, y] ao longo do caminho.
 	 */
-	shapePoints(resolution = 1) {
+	shapePoints(resolution = 0.001) {
 		let points = [];
 		if (this.#shape) {
 			const path = this.#shape.node();

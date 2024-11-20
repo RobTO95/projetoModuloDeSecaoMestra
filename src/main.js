@@ -23,6 +23,8 @@ import {
 import { initializeCommandBar } from "./views/command-bar.js";
 import Snap from "./models/OSnap.js";
 import { ShapeMoverSnap } from "./controllers/ShapeMoverSnap.js";
+import ShapeSelectionBrush from "./controllers/managers/SelectionBrushManager.js";
+import MouseTracker from "./models/MouseTracker.js";
 
 // Elementos DOM
 // - Option bar
@@ -511,3 +513,72 @@ const shapeMoverSnap = new ShapeMoverSnap(
 // ------------------------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------
+
+// **********************************************************************************************************************************
+class PathCustom {
+	/**@param {HTMLElement} svgContainer  */
+	constructor(svgContainer) {
+		this.svgContainer = svgContainer;
+	}
+}
+
+// **********************************************************************************************************************************
+
+const shapeCustom = new PathCustom(shapesScreen);
+
+// shapeCustom.arc(50, 50, 100, 45, 135, false);
+
+const mouseTracker = shapeController.mouseTracker;
+const mousePositionScreen = document.getElementById("position-mouse");
+drawScreen.addEventListener("pointermove", (event) => {
+	const positionSnap = shapeController.snap.snapTo(mouseTracker.mousePosition);
+	// const x = mouseTracker.mousePosition.x;
+	// const y = mouseTracker.mousePosition.y;
+	// const dataLength = shapeCustom.data.length - 1;
+	if (positionSnap) {
+		mouseTracker.mousePosition = { ...positionSnap.point };
+		renderSnapPoints([positionSnap], shapesScreen);
+	}
+	mousePositionScreen.innerHTML = `<p>horizontal:${mouseTracker.mousePosition.x} <br> vertical:${mouseTracker.mousePosition.y}</p>`;
+});
+
+function renderSnapPoints(snapPoints, svgContainer) {
+	if (snapPoints) {
+		let snapElements = svgContainer.querySelectorAll(".snap");
+		snapElements.forEach((snapElement) => snapElement.remove());
+		snapPoints.forEach((snapPoint) => {
+			if (snapPoint.type === "endPoint" || snapPoint.type === "controlPoint") {
+				d3.select(svgContainer)
+					.append("rect")
+					.attr("x", snapPoint.point.x - 10 / zoomLevel / 2)
+					.attr("y", snapPoint.point.y - 10 / zoomLevel / 2)
+					.attr("width", 10 / zoomLevel)
+					.attr("height", 10 / zoomLevel)
+					.attr("fill", "none")
+					.attr("stroke", "red")
+					.attr("stroke-width", 1 / zoomLevel)
+					.attr("class", "snap");
+			}
+			if (snapPoint.type === "centroid") {
+				d3.select(svgContainer)
+					.append("circle")
+					.attr("cx", snapPoint.point.x)
+					.attr("cy", snapPoint.point.y)
+					.attr("r", 5 / zoomLevel)
+					.attr("fill", "none")
+					.attr("stroke", "red")
+					.attr("stroke-width", 1 / zoomLevel)
+					.attr("class", "snap");
+			}
+		});
+	}
+}
+
+// drawScreen.addEventListener("mousemove", (event) => {
+// 	const element = event.target;
+// 	if (element.tagName === "path") {
+// 		console.log(element.getAttribute("d"));
+// 		console.log(element.getAttribute("transform"));
+
+// 	}
+// });

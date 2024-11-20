@@ -8,6 +8,7 @@ import SelectionManager from "./managers/SelectionManager.js";
 import MoveShapeManager from "./managers/MoveShapeManager.js";
 import CustomShape from "../models/CustomShape.js";
 import Snap from "../models/OSnap.js";
+import MouseTracker from "../models/MouseTracker.js";
 export class ShapeController {
 	constructor(drawScreen, shapesScreen) {
 		this.drawScreen = drawScreen;
@@ -19,6 +20,7 @@ export class ShapeController {
 		this.selectionManager = new SelectionManager();
 		this.moveShapeManager = new MoveShapeManager();
 		this.snap = new Snap(this.shapesScreen);
+		this.mouseTracker = new MouseTracker(shapesScreen);
 		this.listShapes = [];
 	}
 

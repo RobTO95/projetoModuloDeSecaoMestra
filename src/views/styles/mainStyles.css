@@ -141,13 +141,31 @@ main {
 	background-color: var(--white);
 	border-radius: var(--border-radius-large);
 	box-shadow: 0px 0px 3px var(--b1-color);
-	position: absolute;
+	position: relative;
 	z-index: 0;
 }
 
 #draw-screen {
 	height: 100%;
 	width: 100%;
+}
+#navigation-controls {
+	position: absolute;
+	top: var(--spacing-small);
+	right: var(--spacing-small);
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-medium);
+}
+#position-mouse {
+	position: absolute;
+	bottom: var(--spacing-small);
+	right: var(--spacing-small);
+	padding: var(--spacing-small) var(--spacing-medium);
+	border-radius: var(--border-radius);
+	font-size: var(--font-size-small);
+	pointer-events: none; /* Ignora cliques e eventos de mouse */
+	color: var(--b1-color);
 }
 
 #down-bar {

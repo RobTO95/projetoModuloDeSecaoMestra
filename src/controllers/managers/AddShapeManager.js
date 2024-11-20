@@ -1,5 +1,3 @@
-import { LShapeBeam, TShapeBeam } from "../../models/ShapesDefault";
-import { LShapeStrategy, TShapeStrategy } from "../../models/ShapeStrategy";
 export default class AddShapeManager {
 	constructor(shapeStrategy) {
 		this.shapeStrategy = shapeStrategy; // Estratégia de shape escolhida

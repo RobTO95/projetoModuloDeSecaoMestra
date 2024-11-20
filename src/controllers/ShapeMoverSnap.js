@@ -1,116 +1,114 @@
-import * as d3 from "d3";
 import { pointer } from "d3";
-import Snap from "../models/OSnap";
-import { getMouseSnapPosition } from "../utils/utils";
 import MoveShapeCommand from "./commands/MoveShapeCommand";
 
+/**
+ * Classe responsável por mover shapes com suporte a *snap* no SVG.
+ *
+ * Permite o movimento de shapes selecionados com precisão, ajustando a posição
+ * com base em pontos de *snap* próximos (e.g., pontos médios, extremidades) e
+ * registra cada movimento em uma pilha de comandos para suporte a Undo/Redo.
+ */
 export class ShapeMoverSnap {
-	constructor(shapeController, callBackFuntion) {
+	constructor(shapeController, callBackFunction) {
 		this.shapeController = shapeController;
-		this.firstPosition = [];
-		this.initialPointerPosition = [];
-		this.lastPosition = [];
+		this.firstPosition = null;
+		this.initialPointerPosition = null;
+		this.lastPosition = null;
 		this.svgContainer = this.shapeController.drawScreen;
 		this.gContainer = this.shapeController.shapesScreen;
-		this.callBackFuntion = callBackFuntion;
+		this.callBackFunction = callBackFunction;
 
+		this.svgContainer.style.touchAction = "none";
+
+		// Liga os métodos para manter o contexto da instância.
 		this.startMove = this.startMove.bind(this);
 		this.onMove = this.onMove.bind(this);
 		this.stopMove = this.stopMove.bind(this);
 
-		this.svgContainer.style.touchAction = "none";
-
+		// Inicia o evento de movimento ao pressionar no SVG.
 		this.svgContainer.addEventListener("pointerdown", this.startMove);
 	}
 
+	/**
+	 * Inicia o movimento de shapes selecionados e configura os pontos de snap.
+	 *
+	 * @param {PointerEvent} event - Evento de início de movimento (pointerdown).
+	 */
 	startMove(event) {
-		if (this.shapeController.getSelectShape().length === 0) {
-			return;
-		}
-		const shapesSelect = this.shapeController.shapes;
+		if (this.shapeController.getSelectShape().length === 0) return;
 
-		shapesSelect.forEach((shape) => {
-			this.shapeController.snap.detectSnapPoints(shape);
+		// Detecta pontos de snap para cada shape selecionado.
+		this.shapeController.shapes.forEach((shape) => {
+			this.shapeController.snap.detectSnapPoints(event);
 		});
 
-		const pointerPosition = {
-			type: "",
-			point: {
-				x: pointer(event, this.gContainer)[0],
-				y: pointer(event, this.gContainer)[1],
-			},
-		};
-		const snapPosition = this.shapeController.snap.snapTo(
-			pointerPosition.point
-		);
+		const pointerPosition = this._getEventPointerPosition(event);
+		const snapPosition = this.shapeController.snap.snapTo(pointerPosition);
 
 		this.initialPointerPosition = snapPosition
 			? [snapPosition.point.x, snapPosition.point.y]
-			: [pointerPosition.point.x, pointerPosition.point.y];
+			: [pointerPosition.x, pointerPosition.y];
 
 		this.shapeController.snap.clearSnapPoints();
-		const shapes = this.shapeController.shapes.filter(
-			(shape) => !this.shapeController.getSelectShape().includes(shape)
-		);
-		shapes.forEach((shape) => {
-			this.shapeController.snap.detectSnapPoints(shape);
-		});
 
+		// Detecta pontos de snap para os shapes não selecionados.
+		this.shapeController.shapes
+			.filter((shape) => !this.shapeController.getSelectShape().includes(shape))
+			.forEach((shape) => this.shapeController.snap.detectSnapPoints(event));
+
+		// Adiciona eventos para monitorar movimento e término.
 		this.svgContainer.addEventListener("pointermove", this.onMove);
 		this.svgContainer.addEventListener("pointerdown", this.stopMove);
-		this.firstPosition = [
-			this.initialPointerPosition[0],
-			this.initialPointerPosition[1],
-		];
-	}
-	onMove(event) {
-		// this.svgContainer.removeEventListener("pointerdown", this.startMove);
 
-		const pointerPosition = {
-			type: "",
-			point: {
-				x: pointer(event, this.gContainer)[0],
-				y: pointer(event, this.gContainer)[1],
-			},
-		};
-		const snapPosition = this.shapeController.snap.snapTo(
-			pointerPosition.point
-		);
+		if (!this.firstPosition) {
+			this.firstPosition = [...this.initialPointerPosition];
+		}
+	}
+
+	/**
+	 * Executa o movimento dos shapes conforme o cursor se move, ajustando a posição ao *snap*.
+	 *
+	 * @param {PointerEvent} event - Evento de movimento do cursor (pointermove).
+	 */
+	onMove(event) {
+		const pointerPosition = this._getEventPointerPosition(event);
+		const snapPosition = this.shapeController.snap.snapTo(pointerPosition);
+
 		const currentPointerPosition = snapPosition
 			? [snapPosition.point.x, snapPosition.point.y]
-			: [pointerPosition.point.x, pointerPosition.point.y];
+			: [pointerPosition.x, pointerPosition.y];
 
-		// Calcula o deslocamento do ponteiro em relação à posição inicial.
-		const dx = currentPointerPosition[0] - this.initialPointerPosition[0];
-		const dy = currentPointerPosition[1] - this.initialPointerPosition[1];
+		// Calcula o deslocamento do cursor e move os shapes selecionados.
+		const [dx, dy] = [
+			currentPointerPosition[0] - this.initialPointerPosition[0],
+			currentPointerPosition[1] - this.initialPointerPosition[1],
+		];
 
-		// Atualiza a posição de cada shape selecionado.
 		this.shapeController.getSelectShape().forEach((shape) => {
 			shape.position = [shape.position[0] + dx, shape.position[1] + dy];
 			shape.updatePath(); // Método que atualiza o caminho do SVG.
 		});
-		// Atualiza a posição inicial para o próximo movimento.
-		this.initialPointerPosition = currentPointerPosition;
+
+		this.initialPointerPosition = [...currentPointerPosition];
 	}
+
+	/**
+	 * Conclui o movimento e cria um comando para Undo/Redo se houve deslocamento.
+	 *
+	 * @param {PointerEvent} event - Evento de finalização do movimento (pointerdown).
+	 */
 	stopMove(event) {
-		const pointerPosition = {
-			type: "",
-			point: {
-				x: pointer(event, this.gContainer)[0],
-				y: pointer(event, this.gContainer)[1],
-			},
-		};
-		const snapPosition = this.shapeController.snap.snapTo(
-			pointerPosition.point
-		);
+		const pointerPosition = this._getEventPointerPosition(event);
+		const snapPosition = this.shapeController.snap.snapTo(pointerPosition);
+
 		this.lastPosition = snapPosition
 			? [snapPosition.point.x, snapPosition.point.y]
-			: [pointerPosition.point.x, pointerPosition.point.y];
+			: [pointerPosition.x, pointerPosition.y];
 
-		// Se houve movimentação, cria um comando para armazenar no stack de Undo.
 		if (
-			this.firstPosition[0] !== this.lastPosition[0] ||
-			this.firstPosition[1] !== this.lastPosition[1]
+			this.firstPosition &&
+			(this.firstPosition[0] !== this.lastPosition[0] ||
+				this.firstPosition[1] !== this.lastPosition[1])
 		) {
 			const command = new MoveShapeCommand(
 				this.shapeController.moveShapeManager,
@@ -120,11 +118,33 @@ export class ShapeMoverSnap {
 			);
 			this.shapeController.commandManager.undoStack.push(command);
 		}
-		// Atualiza o estado dos botões de Undo e Redo.
-		this.callBackFuntion();
+
+		this._resetState();
+		this.callBackFunction();
+	}
+
+	/**
+	 * Obtem a posição do ponteiro do evento, relativa ao contêiner SVG.
+	 *
+	 * @param {PointerEvent} event - Evento do ponteiro.
+	 * @returns {Object} - A posição do ponteiro com as propriedades { x, y }.
+	 */
+	_getEventPointerPosition(event) {
+		return {
+			x: pointer(event, this.gContainer)[0],
+			y: pointer(event, this.gContainer)[1],
+		};
+	}
+
+	/**
+	 * Reseta as variáveis de estado e remove os event listeners de movimento.
+	 */
+	_resetState() {
+		this.firstPosition = null;
+		this.initialPointerPosition = null;
+		this.lastPosition = null;
 
 		this.svgContainer.removeEventListener("pointermove", this.onMove);
 		this.svgContainer.removeEventListener("pointerdown", this.stopMove);
-		this.svgContainer.removeEventListener("pointercancel", this.stopMove);
 	}
 }

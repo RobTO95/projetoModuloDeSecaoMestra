@@ -28,12 +28,16 @@
 
 		<style>
 			.selected {
-				stroke: yellow;
-				stroke-width: 2px;
+				stroke: red;
+				stroke-width: 1px;
+				/* pointer-events: none; */
 			}
 			.disabled {
 				pointer-events: none; /* Desativa a interação */
 				opacity: 0.5; /* Torna o botão mais opaco */
+			}
+			.snap {
+				pointer-events: none;
 			}
 		</style>
 	</head>
@@ -185,6 +189,13 @@
 					<svg id="draw-screen">
 						<g id="shapes-screen"></g>
 					</svg>
+					<div id="navigation-controls">
+						<button class="button button-dark">Panoramic</button>
+						<button class="button button-dark">Zoom in</button>
+						<button class="button button-dark">Zoom out</button>
+						<button class="button button-dark">Zoom extends</button>
+					</div>
+					<div id="position-mouse"></div>
 				</section>
 			</div>
 			<section id="down-bar">
