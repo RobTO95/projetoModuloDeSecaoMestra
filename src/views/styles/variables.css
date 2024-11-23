@@ -28,6 +28,7 @@
 	--line-height-base: 1.5;
 
 	/* Espaçamentos */
+	--spacing-tiny: 0.25rem;
 	--spacing-small: 0.5rem;
 	--spacing-medium: 1rem;
 	--spacing-large: 1.5rem;

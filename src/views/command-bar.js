@@ -22,17 +22,21 @@ export function initializeCommandBar(shapeController) {
 		);
 
 		if (filteredCommands.length > 0) {
-			commandSuggestions.style.display = "flex";
-			commandSuggestions.style.flexDirection = "column-reverse";
+			commandSuggestions.style.display = "block";
+			const ulCommands = document.createElement("ul");
+			commandSuggestions.appendChild(ulCommands);
+			ulCommands.classList.add("suggestions-list");
+			ulCommands.style.display = "flex";
+			ulCommands.style.flexDirection = "column-reverse";
 
 			filteredCommands.forEach((command) => {
 				const suggestionItem = document.createElement("li");
 				suggestionItem.textContent = command;
 				suggestionItem.addEventListener("click", () => {
 					commandInput.value = command;
-					commandSuggestions.innerHTML = "";
+					ulCommands.innerHTML = "";
 				});
-				commandSuggestions.appendChild(suggestionItem);
+				ulCommands.appendChild(suggestionItem);
 			});
 		} else {
 			commandSuggestions.style.display = "none";

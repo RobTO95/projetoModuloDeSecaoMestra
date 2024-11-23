@@ -25,6 +25,7 @@ import Snap from "./models/OSnap.js";
 import { ShapeMoverSnap } from "./controllers/ShapeMoverSnap.js";
 import ShapeSelectionBrush from "./controllers/managers/SelectionBrushManager.js";
 import MouseTracker from "./models/MouseTracker.js";
+import CommandBar from "./models/CommandBar.js";
 
 // Elementos DOM
 // - Option bar
@@ -50,7 +51,7 @@ d3.select(shapesScreen).attr(
 );
 
 // Instancia de controllers --------------------------------------------------------------------------------------
-const shapeController = new ShapeController(drawScreen, shapesScreen);
+const shapeController = new ShapeController(shapesScreen);
 shapeController.loadShapes();
 // Salvar projeto ------------------------------------------------------------------------------------------------
 saveButton.addEventListener("click", (event) => {
@@ -348,6 +349,8 @@ confirmAddShapeButton.addEventListener("click", () => {
 cancelAddShapeButton.addEventListener("click", () => {
 	addShapeArea.style.display = "none";
 });
+
+/** End add shape */
 // ---------------------------------------------------------------------------------------------------------------
 /** Seleção de shapes */
 drawScreen.addEventListener("click", (event) => {
@@ -423,111 +426,13 @@ drawScreen.addEventListener("wheel", (event) => {
 });
 
 // ------------------------------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------------
-/**
- * OSnap
- *
- *
- *
- */
-
-// Exemplo de como usar a classe Snap ao mover shapes
-// const snapInstance = new Snap(shapesScreen);
-// drawScreen.addEventListener("mousemove", (event) => {
-// 	const positionMouse = getMousePosition(drawScreen, gridSize, event);
-// 	const cursorPosition = {
-// 		x: positionMouse[0],
-// 		y: positionMouse[1],
-// 	};
-// 	let snapPosition = snapInstance.snapTo(cursorPosition);
-// 	// console.log(snapPosition);
-// 	const shape = event.target;
-// 	const obShape = shapeController.selectionManager.selectedShapes.find(
-// 		(shapeOfList) => shapeOfList.shape === shape
-// 	);
-
-// 	snapInstance.detectSnapPoints(obShape);
-// 	if (snapPosition) {
-// 		renderSnapFeedback(snapPosition, shapesScreen);
-// 	}
-// });
-// Exemplo de renderização visual de pontos de snap
-
-function renderSnapFeedback(snapPoint, svgContainer) {
-	if (snapPoint) {
-		let snapElement = svgContainer.querySelectorAll(".snap");
-		snapElement.forEach((circle) => circle.remove());
-
-		d3.select(svgContainer)
-			.append("circle")
-			.attr("cx", snapPoint.point.x)
-			.attr("cy", snapPoint.point.y)
-			.attr("r", 5 / zoomLevel)
-			.attr("fill", "none")
-			.attr("stroke", "red")
-			.attr("stroke-width", 1 / zoomLevel)
-			.attr("class", "snap");
-	}
-}
-
-function mousePosition() {
-	drawScreen.addEventListener("mousemove", (event) => {
-		let point = d3.pointer(event, shapesScreen);
-		const x = point[0];
-		const y = point[1];
-		const cursorPosition = { x, y };
-		const shape = event.target;
-		const obShape = shapeController.listShapes.find(
-			(shapeOfList) => shapeOfList.shape === shape
-		);
-		// shapeController.snap.clearSnapPoints();
-		shapeController.snap.detectSnapPoints(obShape);
-
-		let snapPosition = shapeController.snap.snapTo(cursorPosition);
-		if (snapPosition) {
-			point = [snapPosition.x, snapPosition.y];
-			renderSnapFeedback(snapPosition, shapesScreen);
-		}
-		// console.log(point);
-		return point;
-	});
-}
-// mousePosition();
-
 const shapeMoverSnap = new ShapeMoverSnap(
 	shapeController,
 	updateUndoRedoButtons
 );
 
-// drawScreen.addEventListener("mousemove", (event) => {
-// 	console.log(
-// 		getMouseSnapPosition(
-// 			shapesScreen,
-// 			event,
-// 			shapeController.listShapes,
-// 			snapInstance
-// 		)
-// 	);
-// });
-// ------------------------------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------------
-
 // **********************************************************************************************************************************
-class PathCustom {
-	/**@param {HTMLElement} svgContainer  */
-	constructor(svgContainer) {
-		this.svgContainer = svgContainer;
-	}
-}
-
-// **********************************************************************************************************************************
-
-const shapeCustom = new PathCustom(shapesScreen);
-
-// shapeCustom.arc(50, 50, 100, 45, 135, false);
-
+// Snap feedback
 const mouseTracker = shapeController.mouseTracker;
 const mousePositionScreen = document.getElementById("position-mouse");
 drawScreen.addEventListener("pointermove", (event) => {
@@ -574,11 +479,56 @@ function renderSnapPoints(snapPoints, svgContainer) {
 	}
 }
 
-// drawScreen.addEventListener("mousemove", (event) => {
-// 	const element = event.target;
-// 	if (element.tagName === "path") {
-// 		console.log(element.getAttribute("d"));
-// 		console.log(element.getAttribute("transform"));
+// **********************************************************************************************************************************
+// Cursor style
+class CursorStyle {
+	/**@param {HTMLElement} svgContainer  */
+	constructor(svgContainer, shapeController) {
+		this.svgContainer = svgContainer;
+		this.cursor = null;
+		this.initCursor();
+		this.svgContainer.style.cursor = "none";
+		this.setupPointerMoveListener();
+	}
+	initCursor() {
+		const svgGroup = d3.select(this.svgContainer.querySelector("g"));
+		// this.svgContainer.style.cursor = cursor;
+		this.cursor = svgGroup.append("rect");
 
-// 	}
-// });
+		this.cursor
+			.attr("x", shapeController.mouseTracker.mousePosition.x - 5)
+			.attr("y", shapeController.mouseTracker.mousePosition.y - 5)
+			.attr("width", 10)
+			.attr("height", 10)
+			.attr("fill", "none")
+			.attr("stroke", "black")
+			.attr("stroke-width", 1)
+			.attr("transform", `translate(-5,-5)`)
+			.attr("class", "custom-cursor")
+			.style("pointer-events", "none"); // Impede que o cursor intercepte eventos.
+	}
+	setupPointerMoveListener() {
+		this.svgContainer.addEventListener("pointermove", (event) => {
+			const point = shapeController.mouseTracker.mousePosition;
+			this.updateCursorPosition(point.x, point.y);
+		});
+	}
+	updateCursorPosition(x, y) {
+		this.cursor.attr("x", x).attr("y", y);
+	}
+}
+
+const newCursor = new CursorStyle(drawScreen, shapeController);
+
+// **********************************************************************************************************************************
+
+const messageBar = document.getElementById("command-messages");
+const commandBar = new CommandBar(messageBar);
+
+commandBar.visibleOn();
+commandBar.writeMessage(
+	"<p>Messagem indicanto algum comando <button>clique aqui!</button>:</p>"
+);
+document.getElementById("command-input-bar").focus();
+// commandBar.visibleOff();
+shapeController.snap.onSnap();

@@ -10,17 +10,16 @@ import CustomShape from "../models/CustomShape.js";
 import Snap from "../models/OSnap.js";
 import MouseTracker from "../models/MouseTracker.js";
 export class ShapeController {
-	constructor(drawScreen, shapesScreen) {
-		this.drawScreen = drawScreen;
-		this.shapesScreen = shapesScreen;
-
+	constructor(gContainer) {
+		this.gContainer = gContainer;
+		this.svgContainer = gContainer.parentElement;
 		this.commandManager = new CommandManager();
 		this.addShapeManager = new AddShapeManager();
 		this.removeShapeManager = new RemoveShapeManager();
 		this.selectionManager = new SelectionManager();
 		this.moveShapeManager = new MoveShapeManager();
-		this.snap = new Snap(this.shapesScreen);
-		this.mouseTracker = new MouseTracker(shapesScreen);
+		this.snap = new Snap(this.gContainer);
+		this.mouseTracker = new MouseTracker(gContainer);
 		this.listShapes = [];
 	}
 
@@ -32,7 +31,7 @@ export class ShapeController {
 		const listShapesOnLC = JSON.parse(localStorage.getItem("shapes"));
 		if (listShapesOnLC) {
 			this.listShapes = listShapesOnLC.map((shapeData) => {
-				const shape = new CustomShape(this.shapesScreen);
+				const shape = new CustomShape(this.gContainer);
 				shape.data = shapeData.data;
 				shape.position = shapeData.position;
 				shape.angle = shapeData.angle;
@@ -75,7 +74,7 @@ export class ShapeController {
 		const command = new AddShapeCommand(
 			this.addShapeManager,
 			this.listShapes,
-			this.shapesScreen,
+			this.gContainer,
 			shapeStrategy,
 			dimensions,
 			position

@@ -184,9 +184,30 @@ main {
 	position: relative;
 	width: 60%;
 }
+#command-input-container {
+	display: flex;
+	align-items: center;
+	border-radius: var(--border-radius);
+	/* gap: var(--spacing-small); */
+	background-color: var(--white);
+	width: 100%;
+}
+
+#command-messages {
+	font-size: var(--font-size-small);
+	flex-shrink: 0;
+	padding: var(--spacing-small);
+	display: none;
+}
+
+#command-messages button {
+	padding: var(--spacing-tiny);
+	border: calc(var(--border-width) / 2) solid black;
+	border-radius: var(--border-radius);
+}
 
 #command-input-bar {
-	width: 100%;
+	flex-grow: 1;
 	padding: var(--spacing-small);
 	border: none;
 	outline: none;
@@ -225,6 +246,10 @@ main {
 }
 
 /* classes */
+.custom-cursor {
+	stroke: white;
+	mix-blend-mode: difference; /* Faz o contraste com o fundo */
+}
 
 /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 /* Rodapé */

@@ -7,7 +7,6 @@ export default class MoveShapeCommand extends Command {
 		this.selectedShapes = selectedShapes;
 		this.firstPosition = firstPosition;
 		this.lastPosition = lastPosition;
-		// this.shapeBackup = selectedShapes.map((shape) => ({ ...shape })); // Faz backup das propriedades necessárias
 	}
 
 	execute() {

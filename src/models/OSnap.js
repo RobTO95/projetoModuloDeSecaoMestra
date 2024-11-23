@@ -8,8 +8,10 @@ export default class Snap {
 	 * @param {HTMLElement} svgContainer - O container SVG onde a funcionalidade de snapping será aplicada.
 	 */
 	constructor(svgContainer) {
+		this.svgContainer = svgContainer;
 		this.snapPoints = []; // Array que armazena os pontos de snapping detectados.
 		this.snapRadius = 10; // Raio máximo para detectar o snapping.
+		this.snapOn = false;
 		this.activeSnapTypes = {
 			endPoint: true, // Ativa snapping nos pontos finais do caminho (`endPoint`).
 			midPoint: true, // (Futuro) Ativa snapping nos pontos médios do caminho.
@@ -19,12 +21,22 @@ export default class Snap {
 
 		// Liga o método detectSnapPoints ao evento `pointermove` no container SVG.
 		this.detectSnapPoints = this.detectSnapPoints.bind(this);
-		svgContainer.parentElement.addEventListener(
+	}
+
+	onSnap() {
+		this.snapOn = true;
+		this.svgContainer.parentElement.addEventListener(
 			"pointermove",
 			this.detectSnapPoints
 		);
 	}
-
+	offSnap() {
+		this.snapOn = false;
+		this.svgContainer.parentElement.removeEventListener(
+			"pointermove",
+			this.detectSnapPoints
+		);
+	}
 	/**
 	 * Limpa todos os pontos de snapping armazenados.
 	 */

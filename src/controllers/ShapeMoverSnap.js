@@ -14,8 +14,8 @@ export class ShapeMoverSnap {
 		this.firstPosition = null;
 		this.initialPointerPosition = null;
 		this.lastPosition = null;
-		this.svgContainer = this.shapeController.drawScreen;
-		this.gContainer = this.shapeController.shapesScreen;
+		this.svgContainer = this.shapeController.svgContainer;
+		this.gContainer = this.shapeController.gContainer;
 		this.callBackFunction = callBackFunction;
 
 		this.svgContainer.style.touchAction = "none";
@@ -37,26 +37,16 @@ export class ShapeMoverSnap {
 	startMove(event) {
 		if (this.shapeController.getSelectShape().length === 0) return;
 
-		// Detecta pontos de snap para cada shape selecionado.
-		this.shapeController.shapes.forEach((shape) => {
-			this.shapeController.snap.detectSnapPoints(event);
-		});
+		this.shapeController.snap.onSnap();
+		console.log(this.shapeController.snap.snapOn);
+		const pointerPosition = this.shapeController.mouseTracker.mousePosition;
 
-		const pointerPosition = this._getEventPointerPosition(event);
-		const snapPosition = this.shapeController.snap.snapTo(pointerPosition);
+		this.initialPointerPosition = [pointerPosition.x, pointerPosition.y];
 
-		this.initialPointerPosition = snapPosition
-			? [snapPosition.point.x, snapPosition.point.y]
-			: [pointerPosition.x, pointerPosition.y];
-
-		this.shapeController.snap.clearSnapPoints();
-
-		// Detecta pontos de snap para os shapes não selecionados.
-		this.shapeController.shapes
-			.filter((shape) => !this.shapeController.getSelectShape().includes(shape))
-			.forEach((shape) => this.shapeController.snap.detectSnapPoints(event));
-
+		// Ativa snap
+		this.shapeController;
 		// Adiciona eventos para monitorar movimento e término.
+
 		this.svgContainer.addEventListener("pointermove", this.onMove);
 		this.svgContainer.addEventListener("pointerdown", this.stopMove);
 

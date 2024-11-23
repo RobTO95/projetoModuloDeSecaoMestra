@@ -61,6 +61,7 @@ button {
 	flex-direction: column;
 	gap: var(--spacing-small);
 	overflow: hidden;
+	overflow-y: auto;
 }
 
 #confirm-add-shape-button {
