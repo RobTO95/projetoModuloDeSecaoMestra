@@ -16,6 +16,7 @@ export default class ShapeMover {
 		this.selectionManager = this.shapeController.selectionManager;
 		this.callBackFunction = callBackFunction;
 		this.moveMode = false;
+		this.copyMove = null;
 		this.startMove = this.startMove.bind(this);
 		this.onMove = this.onMove.bind(this);
 		this.stopMove = this.stopMove.bind(this);
@@ -31,25 +32,55 @@ export default class ShapeMover {
 		}
 
 		this.selectionManager.selectMode = false;
-		this.commandBar.writeMessage("Select the reference point");
+		this.commandBar.writeMessage("Point to move from:");
 		this.commandBar.visibleOn();
 		this.snap.onSnap();
 		this.svgContainer.addEventListener("pointerup", this.onMove);
+		this.copyMove = this.shapeController.selectionManager.getCopy();
+		this.shapeController.getSelectShape().map((element) => {
+			element.opacity = 0.2;
+		});
 	}
 
 	onMove() {
+		this.commandBar.writeMessage("Point to move to:");
 		this.initialPointerPosition = this._getPosition();
 		this.firstPosition = this._getPosition();
-		this.selectionManager.pointerEvents = false;
+		// this.selectionManager.pointerEvents = false;
 		this.svgContainer.addEventListener("pointermove", this._moveShapes);
 		this.svgContainer.addEventListener("pointerdown", this.stopMove);
 	}
 
 	stopMove() {
+		this.lastPosition = this._getPosition();
+
+		if (
+			this.firstPosition &&
+			(this.firstPosition[0] !== this.lastPosition[0] ||
+				this.firstPosition[1] !== this.lastPosition[1])
+		) {
+			this.shapeController.moveShape(this.firstPosition, this.lastPosition);
+		}
+		this.commandBar.clear();
+		this.commandBar.visibleOff();
 		this.moveMode = false;
 		this.selectionManager.selectMode = true;
-		this.selectionManager.pointerEvents = true;
+		this.copyMove.map((copy) => {
+			copy.shape.remove();
+		});
+		this.stopCommand();
+		this.callBackFunction();
+	}
+
+	stopCommand() {
+		this.initialPointerPosition = null;
+		this.firstPosition = null;
+		this.copyMove = null;
 		this.snap.offSnap();
+		this.snap.clearSnapPoints();
+		this.shapeController.getSelectShape().map((element) => {
+			element.opacity = 1;
+		});
 		this.svgContainer.removeEventListener("pointermove", this._moveShapes);
 		this.svgContainer.removeEventListener("pointerup", this.onMove);
 		this.svgContainer.removeEventListener("pointerdown", this.stopMove);
@@ -61,11 +92,12 @@ export default class ShapeMover {
 			currentPointerPosition[0] - this.initialPointerPosition[0],
 			currentPointerPosition[1] - this.initialPointerPosition[1],
 		];
-		this.shapeController.getSelectShape().forEach((shape) => {
+		this.copyMove.forEach((shape) => {
 			shape.position = [shape.position[0] + dx, shape.position[1] + dy];
 			shape.updatePath(); // Método que atualiza o caminho do SVG.
 		});
 		this.initialPointerPosition = [...currentPointerPosition];
+		/**IMPLEMENTAR O COMMAND MOVER PARA REFLETIR A MODANÇA NA PILHA DE COMANDOS */
 	}
 	_getPosition() {
 		const mousePosition = this.shapeController.mouseTracker.mousePosition;

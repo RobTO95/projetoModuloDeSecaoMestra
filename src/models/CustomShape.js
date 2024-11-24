@@ -8,7 +8,7 @@ import * as d3 from "d3";
  */
 export default class CustomShape {
 	#data; // Armazena os comandos de desenho da forma
-	#drawScreen; // Elemento onde a forma será desenhada
+	#container; // Elemento onde a forma será desenhada
 	#fill; // Cor de preenchimento da forma
 	#stroke; // Cor da borda da forma
 	#strokeWidth; // Espessura da borda da forma
@@ -18,15 +18,16 @@ export default class CustomShape {
 	#angle; // Ângulo de rotação da forma
 	#scale; // Escala da forma
 	#id; // Identificador único da forma
+	#opacity; // Transparência da forma (path)
 
 	/**
 	 * Construtor da classe CustomShape.
 	 * Inicializa a forma com valores padrão de posição, escala, cores e caminho.
 	 *
-	 * @param {HTMLElement} drawScreen - O elemento SVG onde a forma será desenhada.
+	 * @param {HTMLElement} container - O elemento SVG onde a forma será desenhada.
 	 */
-	constructor(drawScreen) {
-		this.#drawScreen = drawScreen;
+	constructor(container) {
+		this.#container = container;
 		this.#path = d3.path(); // Cria um novo caminho SVG
 		this.#data = []; // Armazena os comandos de desenho
 		this.#shape = null; // O elemento SVG será criado ao adicionar a forma
@@ -37,6 +38,7 @@ export default class CustomShape {
 		this.#angle = 0; // Ângulo de rotação inicial
 		this.#scale = [1, 1]; // Escala padrão
 		this.#id = null; // Identificador único da forma
+		this.#opacity = 1;
 		this.updatePath(); // Atualiza o caminho inicial
 	}
 
@@ -45,18 +47,18 @@ export default class CustomShape {
 	 * Obtém o elemento SVG onde a forma será desenhada.
 	 * @returns {HTMLElement} - O elemento SVG do desenho.
 	 */
-	get drawScreen() {
-		return this.#drawScreen;
+	get container() {
+		return this.#container;
 	}
 
 	/**
 	 * Define o elemento SVG onde a forma será desenhada.
 	 * Atualiza o caminho da forma após a mudança.
 	 *
-	 * @param {HTMLElement} newScreen - O novo elemento SVG de desenho.
+	 * @param {HTMLElement} newContainer - O novo elemento SVG de desenho.
 	 */
-	set drawScreen(newScreen) {
-		this.#drawScreen = newScreen;
+	set container(newContainer) {
+		this.#container = newContainer;
 		this.updatePath();
 	}
 
@@ -230,6 +232,20 @@ export default class CustomShape {
 		this.updatePath();
 	}
 
+	/**Obtém o valor da transparência da forma */
+	get opacity() {
+		return this.#opacity;
+	}
+
+	/**
+	 * Define a transparencia da forma.
+	 * @param {Number} value - novo valor de transparência.
+	 */
+	set opacity(value) {
+		this.#opacity = value;
+		this.updatePath();
+	}
+
 	// Métodos de manipulação do caminho
 
 	/**
@@ -242,7 +258,7 @@ export default class CustomShape {
 	}
 
 	removePath() {
-		this.#drawScreen.removeChild(this.#shape.node());
+		this.#container.removeChild(this.#shape.node());
 		this.#shape = null;
 	}
 
@@ -252,7 +268,7 @@ export default class CustomShape {
 	 */
 	updatePath() {
 		if (!this.#shape) {
-			this.#shape = d3.select(this.drawScreen).append("path");
+			this.#shape = d3.select(this.container).append("path");
 		}
 		this.#shape
 			.attr("d", this.#path.toString())
@@ -260,6 +276,7 @@ export default class CustomShape {
 			.attr("stroke", this.isClosed() ? "none" : this.#stroke)
 			// .attr("stroke", this.#stroke)
 			.attr("stroke-width", this.#strokeWidth)
+			.attr("opacity", this.#opacity)
 			.attr(
 				"transform",
 				`translate(${this.#position[0]}, ${this.#position[1]}) rotate(${

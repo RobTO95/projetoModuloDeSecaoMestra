@@ -85,7 +85,7 @@ export default class Snap {
 		let distanceMin = this.snapRadius; // Define a distância mínima inicial como o raio de snapping.
 
 		// Itera sobre os pontos de snapping detectados.
-		for (const snapPoint of this.snapPoints) {
+		this.snapPoints.map((snapPoint) => {
 			// Calcula a distância entre o cursor e o ponto de snapping.
 			const distance = this.calculateDistance(cursorPosition, snapPoint.point);
 
@@ -94,7 +94,8 @@ export default class Snap {
 				closestSnapPoint = snapPoint;
 				distanceMin = distance;
 			}
-		}
+		});
+
 		return closestSnapPoint;
 	}
 

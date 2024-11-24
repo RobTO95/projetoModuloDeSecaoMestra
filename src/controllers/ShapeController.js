@@ -48,6 +48,7 @@ export class ShapeController {
 				shape.fill = shapeData.fill;
 				shape.strokeColor = shapeData.strokeColor;
 				shape.strokeWidth = shapeData.strokeWidth;
+				shape.opacity = shapeData.opacity;
 				shape.id = shapeData.id;
 				return shape;
 			});
@@ -66,6 +67,7 @@ export class ShapeController {
 			fill: shape.fill,
 			strokeColor: shape.strokeColor,
 			strokeWidth: shape.strokeWidth,
+			opacity: shape.opacity,
 			id: shape.id,
 		}));
 		localStorage.setItem("shapes", JSON.stringify(listObjectsShape));

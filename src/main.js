@@ -431,7 +431,11 @@ drawScreen.addEventListener("wheel", (event) => {
 // 	shapeController,
 // 	updateUndoRedoButtons
 // );
-const moveShapes = new ShapeMover(shapeController);
+const moveShapes = new ShapeMover(shapeController, () => {
+	updateUndoRedoButtons();
+	let snapElements = shapesScreen.querySelectorAll(".snap");
+	snapElements.forEach((snapElement) => snapElement.remove());
+});
 moveButton.addEventListener("click", moveShapes.startMove);
 
 // **********************************************************************************************************************************
@@ -440,9 +444,6 @@ const mouseTracker = shapeController.mouseTracker;
 const mousePositionScreen = document.getElementById("position-mouse");
 drawScreen.addEventListener("pointermove", (event) => {
 	const positionSnap = shapeController.snap.snapTo(mouseTracker.mousePosition);
-	// const x = mouseTracker.mousePosition.x;
-	// const y = mouseTracker.mousePosition.y;
-	// const dataLength = shapeCustom.data.length - 1;
 	if (positionSnap) {
 		mouseTracker.mousePosition = { ...positionSnap.point };
 		renderSnapPoints([positionSnap], shapesScreen);

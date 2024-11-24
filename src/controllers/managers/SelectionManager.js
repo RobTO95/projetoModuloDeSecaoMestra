@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import CustomShape from "../../models/CustomShape";
 export default class SelectionManager {
 	#pointerEvents;
 	constructor() {
@@ -25,6 +26,41 @@ export default class SelectionManager {
 		return this.pointerEvents;
 	}
 
+	//Cria cópias dos shapes para modificação
+	getCopy() {
+		const shadowsCopy = [];
+		this.getSelectedShape().map((element) => {
+			const gContainer = element.container;
+
+			const elementObject = JSON.parse(
+				JSON.stringify({
+					data: element.data,
+					position: element.position,
+					angle: element.angle,
+					scale: element.scale,
+					fill: element.fill,
+					strokeColor: element.strokeColor,
+					strokeWidth: element.strokeWidth,
+				})
+			);
+
+			const copyShape = new CustomShape(gContainer);
+
+			copyShape.data = elementObject.data;
+			copyShape.position = elementObject.position;
+			copyShape.angle = elementObject.angle;
+			copyShape.scale = elementObject.scale;
+			copyShape.fill = elementObject.fill;
+			copyShape.strokeColor = elementObject.strokeColor;
+			copyShape.strokeWidth = elementObject.strokeWidth;
+			copyShape.regeneratePath();
+			this._applySelectClass(copyShape.shape);
+			copyShape.shape.style.pointerEvents = "none";
+			shadowsCopy.push(copyShape);
+		});
+		return shadowsCopy;
+	}
+
 	// Seleciona um shape
 	selectShape(shapeElement, listShapes = [], event) {
 		if (this.selectMode === false) {
@@ -49,10 +85,12 @@ export default class SelectionManager {
 	addToSelection(shape) {
 		if (!this.selectedShapes.includes(shape)) {
 			this.selectedShapes.push(shape);
-			d3.select(shape.shape).classed("selected", true); // Aplica classe CSS para visualização
+			this._applySelectClass(shape.shape);
 		}
 	}
-
+	_applySelectClass(elementPath) {
+		d3.select(elementPath).classed("selected", true); // Aplica classe CSS para visualização
+	}
 	// Remove um shape da seleção
 	removeFromSelection(shape) {
 		const index = this.selectedShapes.indexOf(shape);
