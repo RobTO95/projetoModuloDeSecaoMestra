@@ -1,7 +1,8 @@
 export default class CommandBar {
 	/**@param {HTMLDivElement} container  */
-	constructor(container) {
+	constructor(container, enterButton) {
 		this.container = container;
+		this.enterButton = enterButton;
 	}
 
 	/**@param {String} message  */

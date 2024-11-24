@@ -1,14 +1,35 @@
 import * as d3 from "d3";
 export default class SelectionManager {
+	#pointerEvents;
 	constructor() {
 		this.selectedShapes = [];
+		this.selectMode = true;
+		this.#pointerEvents = true;
 	}
 	getSelectedShape() {
 		return this.selectedShapes;
 	}
 
+	set pointerEvents(value) {
+		if (value) {
+			this.selectedShapes.forEach((shape) => {
+				shape.shape.style.pointerEvents = "all";
+			});
+		} else {
+			this.selectedShapes.forEach((shape) => {
+				shape.shape.style.pointerEvents = "none";
+			});
+		}
+	}
+	get pointerEvents() {
+		return this.pointerEvents;
+	}
+
 	// Seleciona um shape
 	selectShape(shapeElement, listShapes = [], event) {
+		if (this.selectMode === false) {
+			return;
+		}
 		const shape = listShapes.find(
 			(shape) => shape.id === Number(shapeElement.id.replace("shape-", ""))
 		);

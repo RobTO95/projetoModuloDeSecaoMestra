@@ -38,7 +38,6 @@ export class ShapeMoverSnap {
 		if (this.shapeController.getSelectShape().length === 0) return;
 
 		this.shapeController.snap.onSnap();
-		console.log(this.shapeController.snap.snapOn);
 		const pointerPosition = this.shapeController.mouseTracker.mousePosition;
 
 		this.initialPointerPosition = [pointerPosition.x, pointerPosition.y];

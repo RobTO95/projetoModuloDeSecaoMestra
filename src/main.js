@@ -39,6 +39,8 @@ const addCustomShapeButton = document.getElementById("addCustomShape-button");
 const undoButton = document.getElementById("undo-button");
 const redoButton = document.getElementById("redo-button");
 
+const messageBar = document.getElementById("command-messages");
+const enterButton = document.getElementById("command-input-enter");
 // Grid
 let gridSize = 0.001;
 
@@ -51,7 +53,11 @@ d3.select(shapesScreen).attr(
 );
 
 // Instancia de controllers --------------------------------------------------------------------------------------
-const shapeController = new ShapeController(shapesScreen);
+const shapeController = new ShapeController(
+	shapesScreen,
+	messageBar,
+	enterButton
+);
 shapeController.loadShapes();
 // Salvar projeto ------------------------------------------------------------------------------------------------
 saveButton.addEventListener("click", (event) => {
@@ -363,14 +369,6 @@ removeButton.addEventListener("click", (event) => {
 	updateUndoRedoButtons(); // Atualiza os botões após remover um shape
 });
 
-// // Inicializa o manipulador de movimentação de shapes ---------------------------------------------------------
-// const moveShape = new ShapeMover(
-// 	drawScreen,
-// 	shapeController,
-// 	gridSize,
-// 	updateUndoRedoButtons
-// );
-
 // Inicializa o estado dos botões --------------------------------------------------------------------------------
 updateUndoRedoButtons();
 
@@ -426,10 +424,15 @@ drawScreen.addEventListener("wheel", (event) => {
 });
 
 // ------------------------------------------------------------------------------------------------------------------------------------
-const shapeMoverSnap = new ShapeMoverSnap(
-	shapeController,
-	updateUndoRedoButtons
-);
+
+// Mover Shapes
+
+// const shapeMoverSnap = new ShapeMoverSnap(
+// 	shapeController,
+// 	updateUndoRedoButtons
+// );
+const moveShapes = new ShapeMover(shapeController);
+moveButton.addEventListener("click", moveShapes.startMove);
 
 // **********************************************************************************************************************************
 // Snap feedback
@@ -522,13 +525,12 @@ const newCursor = new CursorStyle(drawScreen, shapeController);
 
 // **********************************************************************************************************************************
 
-const messageBar = document.getElementById("command-messages");
-const commandBar = new CommandBar(messageBar);
+// const commandBar = new CommandBar(messageBar);
 
-commandBar.visibleOn();
-commandBar.writeMessage(
-	"<p>Messagem indicanto algum comando <button>clique aqui!</button>:</p>"
-);
-document.getElementById("command-input-bar").focus();
-// commandBar.visibleOff();
-shapeController.snap.onSnap();
+// commandBar.visibleOn();
+// commandBar.writeMessage(
+// 	"<p>Messagem indicanto algum comando <button>clique aqui!</button>:</p>"
+// );
+// document.getElementById("command-input-bar").focus();
+// // commandBar.visibleOff();
+// shapeController.snap.onSnap();

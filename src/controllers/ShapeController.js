@@ -9,8 +9,9 @@ import MoveShapeManager from "./managers/MoveShapeManager.js";
 import CustomShape from "../models/CustomShape.js";
 import Snap from "../models/OSnap.js";
 import MouseTracker from "../models/MouseTracker.js";
+import CommandBar from "../models/CommandBar.js";
 export class ShapeController {
-	constructor(gContainer) {
+	constructor(gContainer, messageBarContainer, enterButtonCommandBar) {
 		this.gContainer = gContainer;
 		this.svgContainer = gContainer.parentElement;
 		this.commandManager = new CommandManager();
@@ -20,6 +21,14 @@ export class ShapeController {
 		this.moveShapeManager = new MoveShapeManager();
 		this.snap = new Snap(this.gContainer);
 		this.mouseTracker = new MouseTracker(gContainer);
+		// Command Bar
+		this.messageBarContainer = messageBarContainer;
+		this.enterButtonCommandBar = enterButtonCommandBar;
+		this.commandBar = new CommandBar(
+			this.messageBarContainer,
+			this.enterButtonCommandBar
+		);
+
 		this.listShapes = [];
 	}
 
@@ -63,8 +72,10 @@ export class ShapeController {
 	}
 
 	selectShape(event) {
-		const shapeElement = event.target;
-		this.selectionManager.selectShape(shapeElement, this.listShapes, event);
+		if (this.selectionManager.selectMode === true) {
+			const shapeElement = event.target;
+			this.selectionManager.selectShape(shapeElement, this.listShapes, event);
+		}
 	}
 
 	getSelectShape() {
