@@ -3,12 +3,12 @@ import { pointer } from "d3";
 export default class MouseTracker {
 	#mousePosition;
 	#svgContainer;
+	#orthoMode;
 	constructor(svgContainer) {
 		this.#svgContainer = svgContainer;
 		this.#mousePosition = { x: null, y: null };
 		this.precision = 4;
 		this.updateMousePosition = this.updateMousePosition.bind(this);
-
 		this.#svgContainer.parentElement.addEventListener(
 			"pointermove",
 			this.updateMousePosition
@@ -25,9 +25,17 @@ export default class MouseTracker {
 	get svgContainer() {
 		return this.#svgContainer;
 	}
+
+	get orthoMode() {
+		return this.#orthoMode;
+	}
+
+	/**@param {Boolean} value  */
+	set orthoMode(value) {
+		this.#orthoMode = value;
+	}
 	updateMousePosition(event) {
 		const [x, y] = pointer(event, this.#svgContainer);
-
 		this.#mousePosition.x = x.toFixed(this.precision);
 		this.#mousePosition.y = y.toFixed(this.precision);
 	}

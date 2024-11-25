@@ -41,8 +41,6 @@ const redoButton = document.getElementById("redo-button");
 
 const messageBar = document.getElementById("command-messages");
 const enterButton = document.getElementById("command-input-enter");
-// Grid
-let gridSize = 0.001;
 
 // Desloca o ponto zero para o centro de drawScreen
 d3.select(shapesScreen).attr(
@@ -535,3 +533,44 @@ const newCursor = new CursorStyle(drawScreen, shapeController);
 // document.getElementById("command-input-bar").focus();
 // // commandBar.visibleOff();
 // shapeController.snap.onSnap();
+
+//-------------------------------------------------------------------------------------------------------------------------------------
+// Snap options
+
+const snapOptions = [
+	...document.getElementById("snap-options").querySelectorAll("input"),
+];
+
+function setSnapTypes(snapTypes) {
+	const key = "snapOptions";
+	const value = JSON.stringify(snapTypes);
+	localStorage.setItem(key, value);
+}
+
+function getSnapType(snapOptions) {
+	let snapTypesObject = JSON.parse(localStorage.getItem("snapOptions"));
+	snapOptions.forEach((snap) => {
+		if (Object.keys(snapTypesObject).includes(snap.id)) {
+			snap.checked = snapTypesObject[snap.id];
+		}
+	});
+	shapeController.snap.activeSnapTypes = snapTypesObject;
+}
+
+getSnapType(snapOptions);
+
+function handleSnapTypes(snapOptions) {
+	const snapTypes = {};
+	snapOptions.forEach((snap) => {
+		snapTypes[snap.id] = snap.checked;
+	});
+	return snapTypes;
+}
+
+snapOptions.forEach((snap) => {
+	snap.addEventListener("click", () => {
+		const snapTypes = handleSnapTypes(snapOptions);
+		setSnapTypes(snapTypes);
+		shapeController.snap.activeSnapTypes = snapTypes;
+	});
+});

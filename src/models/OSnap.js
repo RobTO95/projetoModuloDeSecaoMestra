@@ -15,8 +15,9 @@ export default class Snap {
 		this.activeSnapTypes = {
 			endPoint: true, // Ativa snapping nos pontos finais do caminho (`endPoint`).
 			midPoint: true, // (Futuro) Ativa snapping nos pontos médios do caminho.
-			center: true, // (Futuro) Ativa snapping no centro do elemento.
-			centroid: true, // (Futuro) Ativa snapping no centróide do elemento.
+			centerPoint: true, // (Futuro) Ativa snapping no centro do elemento.
+			centroidPoint: true, // (Futuro) Ativa snapping no centróide do elemento.
+			nearPoint: true, // (Futuro) Ativa snapping na borda do elemento.
 		};
 
 		// Liga o método detectSnapPoints ao evento `pointermove` no container SVG.
@@ -66,7 +67,7 @@ export default class Snap {
 			this.snapPoints.push(...endPoints);
 		}
 		// Detecta pontos de centroide ('centroid') se esse tipo de snapping estiver ativo.
-		if (this.activeSnapTypes.centroid) {
+		if (this.activeSnapTypes.centroidPoint) {
 			const centroidStrategy = new CentroidStrategy();
 			const centroidPoints = centroidStrategy.detectSnapPoints(element);
 

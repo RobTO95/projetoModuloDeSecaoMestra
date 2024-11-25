@@ -19,8 +19,10 @@ export class ShapeController {
 		this.removeShapeManager = new RemoveShapeManager();
 		this.selectionManager = new SelectionManager();
 		this.moveShapeManager = new MoveShapeManager();
+		// Snap and pointer
 		this.snap = new Snap(this.gContainer);
 		this.mouseTracker = new MouseTracker(gContainer);
+
 		// Command Bar
 		this.messageBarContainer = messageBarContainer;
 		this.enterButtonCommandBar = enterButtonCommandBar;

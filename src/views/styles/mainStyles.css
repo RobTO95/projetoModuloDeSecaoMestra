@@ -216,6 +216,32 @@ main {
 	font-size: var(--font-size-base);
 }
 
+#snap-options,
+#mouse-options {
+	display: flex;
+	flex-direction: row;
+	gap: var(--spacing-small);
+	margin: var(--spacing-small);
+}
+#snap-options,
+#mouse-options label {
+	font-size: var(--font-size-small);
+	color: var(--white);
+}
+
+#mouse-options div {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: var(--spacing-tiny);
+}
+#snap-options div {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: var(--spacing-tiny);
+}
+
 /* Estilo para a lista de sugestões como dropdown */
 .suggestions-list {
 	list-style-type: none;
@@ -250,6 +276,15 @@ main {
 	stroke: white;
 	mix-blend-mode: difference; /* Faz o contraste com o fundo */
 }
+
+.feedback-line {
+	stroke: white;
+	mix-blend-mode: difference;
+}
+
+/* #draw {
+	background-color: rgb(0, 0, 0);
+} */
 
 /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 /* Rodapé */
