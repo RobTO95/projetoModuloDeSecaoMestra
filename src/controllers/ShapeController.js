@@ -1,3 +1,4 @@
+import * as d3 from "d3";
 import CommandManager from "./commands/CommandManager.js";
 import AddShapeCommand from "./commands/AddShapeCommand.js";
 import RemoveShapeCommand from "./commands/RemoveShapeCommand.js";
@@ -79,6 +80,7 @@ export class ShapeController {
 		if (this.selectionManager.selectMode === true) {
 			const shapeElement = event.target;
 			this.selectionManager.selectShape(shapeElement, this.listShapes, event);
+			this.bringToFront();
 		}
 	}
 
@@ -120,6 +122,20 @@ export class ShapeController {
 			this.commandManager.executeCommand(command);
 		}
 	}
+
+	bringToFront() {
+		const selectShapes = this.getSelectShape();
+		selectShapes.map((shape) => {
+			d3.select(shape.shape).raise();
+		});
+	}
+	bringToBack() {
+		const selectShapes = this.getSelectShape();
+		selectShapes.map((shape) => {
+			d3.select(shape.shape).lower();
+		});
+	}
+
 	undo() {
 		this.commandManager.undo();
 	}

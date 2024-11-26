@@ -1,13 +1,7 @@
 import * as d3 from "d3";
-import {
-	getDrawScreenDimensions,
-	getMousePosition,
-	getMouseSnapPosition,
-} from "./utils/utils.js";
+import { getDrawScreenDimensions } from "./utils/utils.js";
 import { ShapeController } from "./controllers/ShapeController.js";
-import MoveShapeCommand from "./controllers/commands/MoveShapeCommand.js";
 import ShapeMover from "./controllers/ShapeMover.js";
-import CustomShape from "./models/CustomShape.js";
 import {
 	LShapeBeam,
 	Plate,
@@ -21,11 +15,7 @@ import {
 	TShapeStrategy,
 } from "./models/ShapeStrategy.js";
 import { initializeCommandBar } from "./views/command-bar.js";
-import Snap from "./models/OSnap.js";
-import { ShapeMoverSnap } from "./controllers/ShapeMoverSnap.js";
-import ShapeSelectionBrush from "./controllers/managers/SelectionBrushManager.js";
-import MouseTracker from "./models/MouseTracker.js";
-import CommandBar from "./models/CommandBar.js";
+import CursorStyle from "./models/CursorStyle.js";
 
 // Elementos DOM
 // - Option bar
@@ -483,44 +473,7 @@ function renderSnapPoints(snapPoints, svgContainer) {
 
 // **********************************************************************************************************************************
 // Cursor style
-class CursorStyle {
-	/**@param {HTMLElement} svgContainer  */
-	constructor(svgContainer, shapeController) {
-		this.svgContainer = svgContainer;
-		this.cursor = null;
-		this.initCursor();
-		this.svgContainer.style.cursor = "none";
-		this.setupPointerMoveListener();
-	}
-	initCursor() {
-		const svgGroup = d3.select(this.svgContainer.querySelector("g"));
-		// this.svgContainer.style.cursor = cursor;
-		this.cursor = svgGroup.append("rect");
-
-		this.cursor
-			.attr("x", shapeController.mouseTracker.mousePosition.x - 5)
-			.attr("y", shapeController.mouseTracker.mousePosition.y - 5)
-			.attr("width", 10)
-			.attr("height", 10)
-			.attr("fill", "none")
-			.attr("stroke", "black")
-			.attr("stroke-width", 1)
-			.attr("transform", `translate(-5,-5)`)
-			.attr("class", "custom-cursor")
-			.style("pointer-events", "none"); // Impede que o cursor intercepte eventos.
-	}
-	setupPointerMoveListener() {
-		this.svgContainer.addEventListener("pointermove", (event) => {
-			const point = shapeController.mouseTracker.mousePosition;
-			this.updateCursorPosition(point.x, point.y);
-		});
-	}
-	updateCursorPosition(x, y) {
-		this.cursor.attr("x", x).attr("y", y);
-	}
-}
-
-const newCursor = new CursorStyle(drawScreen, shapeController);
+const newCursor = new CursorStyle(shapesScreen, shapeController);
 
 // **********************************************************************************************************************************
 
@@ -549,12 +502,14 @@ function setSnapTypes(snapTypes) {
 
 function getSnapType(snapOptions) {
 	let snapTypesObject = JSON.parse(localStorage.getItem("snapOptions"));
-	snapOptions.forEach((snap) => {
-		if (Object.keys(snapTypesObject).includes(snap.id)) {
-			snap.checked = snapTypesObject[snap.id];
-		}
-	});
-	shapeController.snap.activeSnapTypes = snapTypesObject;
+	if (snapTypesObject) {
+		snapOptions.forEach((snap) => {
+			if (Object.keys(snapTypesObject).includes(snap.id)) {
+				snap.checked = snapTypesObject[snap.id];
+			}
+		});
+		shapeController.snap.activeSnapTypes = snapTypesObject;
+	}
 }
 
 getSnapType(snapOptions);

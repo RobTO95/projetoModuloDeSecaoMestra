@@ -1,5 +1,35 @@
 import * as d3 from "d3";
 
+/**
+ * Obtém a escala de um elemento SVG.
+ * @param {HTMLElement} svgElement - O elemento SVG ou grupo (<g>) a ser analisado.
+ * @returns {{ scaleX: number, scaleY: number }} - A escala nos eixos X e Y.
+ */
+export function getScaleSVG(svgElement) {
+	// Seleciona o elemento usando D3
+	const selection = d3.select(svgElement);
+
+	// Obtém o atributo "transform" como string
+	const transform = selection.attr("transform");
+
+	// Verifica se há transformação definida
+	if (!transform) {
+		return { scaleX: 1, scaleY: 1 }; // Retorna a escala padrão
+	}
+
+	// Expressão regular para capturar a escala
+	const scaleMatch = transform.match(/scale\(([^,]+),?([^)]+)?\)/);
+
+	if (scaleMatch) {
+		const scaleX = parseFloat(scaleMatch[1]); // Escala no eixo X
+		const scaleY = scaleMatch[2] ? parseFloat(scaleMatch[2]) : scaleX; // Escala no eixo Y ou usa X
+		return { scaleX, scaleY };
+	}
+
+	// Retorna escala padrão se nenhuma escala for encontrada
+	return { scaleX: 1, scaleY: 1 };
+}
+
 export function getDrawScreenDimensions(svgElement) {
 	const bbox = svgElement.getBoundingClientRect();
 	const width = bbox.width;

@@ -272,6 +272,27 @@ main {
 }
 
 /* classes */
+
+.cursor-style {
+	fill: none;
+	stroke-width: 1px;
+	stroke: gray;
+	mix-blend-mode: difference;
+}
+
+.selected {
+	stroke: yellow;
+	/* mix-blend-mode: difference; */
+}
+.disabled {
+	pointer-events: none; /* Desativa a interação */
+	opacity: 0.5; /* Torna o botão mais opaco */
+}
+.snap {
+	stroke: red;
+	pointer-events: none;
+}
+
 .custom-cursor {
 	stroke: white;
 	mix-blend-mode: difference; /* Faz o contraste com o fundo */
@@ -281,8 +302,8 @@ main {
 	stroke: white;
 	mix-blend-mode: difference;
 }
-
-/* #draw {
+/* 
+#draw {
 	background-color: rgb(0, 0, 0);
 } */
 
