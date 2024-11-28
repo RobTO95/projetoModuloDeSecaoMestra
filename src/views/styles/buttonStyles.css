@@ -13,25 +13,62 @@ button {
 }
 
 /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
 .button {
+	position: relative;
 	text-transform: uppercase;
 	font-style: bold;
 	font-weight: 600;
-	font-size: auto;
-	line-height: 1.25rem;
+	font-size: var(--font-size-small);
 	letter-spacing: 0;
-	border-radius: 0.25rem;
-	padding: 0.5rem 1rem;
-	/* margin: 1rem; */
+	border-radius: var(--border-radius);
 	cursor: pointer;
-	border: 1px solid;
 	transition: 0.3s ease;
 	text-align: center;
+	padding: var(--spacing-tiny);
+	height: var(--spacing-large);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	align-content: center;
 }
 
+.button img {
+	height: 100%;
+}
+
+/* Tooltip */
+.tooltip {
+	position: absolute;
+	bottom: 100%; /* Alinha o tooltip acima do botão */
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: var(--p3-color); /* Cor do fundo do tooltip */
+	color: var(--p1-color); /* Cor do texto do tooltip */
+	padding: var(--spacing-tiny) var(--spacing-small);
+	border-radius: var(--border-radius);
+	font-size: var(--font-size-tiny);
+	font-family: var(--font-primary);
+	font-weight: 500;
+	white-space: nowrap;
+	opacity: 0; /* Esconde o tooltip por padrão */
+	visibility: hidden;
+	transition: opacity 0.3s ease, transform 0.3s ease;
+	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+	z-index: 10;
+}
+
+/* Mostra o tooltip ao passar o mouse */
+.button:hover .tooltip {
+	opacity: 1;
+	visibility: visible;
+	transform: translateX(-50%) translateY(-5px);
+}
+
+/* Tipos de botões */
 .button-light {
 	background-color: transparent;
-	border: 1px solid var(--white);
+	/* border: 1px solid var(--white); */
 	color: var(--white);
 }
 
@@ -48,7 +85,7 @@ button {
 
 .button-dark {
 	background-color: transparent;
-	border: 1px solid var(--black);
+	/* border: 1px solid var(--black); */
 	color: var(--black);
 }
 
@@ -76,8 +113,34 @@ button {
 	background-color: var(--success-color);
 }
 
+#login {
+	/* border-radius: 100%; */
+	padding: calc(var(--spacing-tiny) / 2);
+}
+
+#login img {
+	padding: var(--spacing-tiny);
+}
+
+#save-button,
+#config-button {
+	background-color: var(--b2-color);
+	border-radius: 100%;
+	border: none;
+}
+
+#save-button:hover .tooltip,
+#config-button:hover .tooltip,
+#login .tooltip {
+	bottom: -95%;
+}
+
+/* Select */
+
 select {
-	padding: var(--spacing-small);
+	font: var(--font-primary);
+	font-size: var(--font-size-tiny);
+	padding: calc(var(--spacing-tiny) / 2);
 	border: var(--border-width) solid var(--p3-color);
 	border-radius: var(--border-radius);
 }

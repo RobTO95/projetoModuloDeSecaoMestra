@@ -41,65 +41,185 @@
 					/>
 				</a>
 				<div>
-					<a href="#">Home</a>
-					<a href="#">Projects</a>
-					<a href="#">Help</a>
+					<div>
+						<a href="#">Home</a>
+						<a href="#">Projects</a>
+						<a href="#">Help</a>
 
-					<button
-						id="login"
-						href="#"
-					>
-						Login
-					</button>
+						<button
+							id="login"
+							class="button button-light"
+							href="#"
+						>
+							<img
+								src="./views/components/button/login-button-icon.svg"
+								alt=""
+							/>
+							<span class="tooltip">Login</span>
+						</button>
+					</div>
+					<div>
+						<button
+							id="save-button"
+							class="button button-light"
+						>
+							<img
+								src="./views/components/button/save-button-icon.svg"
+								alt=""
+							/>
+							<span class="tooltip">save</span>
+						</button>
+						<button
+							id="config-button"
+							class="button button-light"
+						>
+							<img
+								src="./views/components/button/config-button-icon.svg"
+								alt=""
+							/>
+							<span class="tooltip">config</span>
+						</button>
+					</div>
 				</div>
 			</nav>
 		</header>
 		<main>
 			<section id="option-bar">
-				<button
-					id="save-button"
-					class="button button-light"
-				>
-					Save
-				</button>
+				<div>
+					<h2>Creation</h2>
+					<div>
+						<button
+							id="add-button"
+							class="button button-light"
+						>
+							<img
+								src="./views/components/button/add-button-icon.svg"
+								alt=""
+							/>
+							<span class="tooltip">Add</span>
+						</button>
+					</div>
+				</div>
+				<div>
+					<h2>Modification</h2>
+					<div>
+						<button
+							id="move-button"
+							class="button button-light icon-button"
+						>
+							<img
+								src="./views/components/button/move-button-icon.svg"
+								alt=""
+							/>
+							<span class="tooltip">Move</span>
+						</button>
+						<button
+							id="mirror-button"
+							class="button button-light icon-button"
+						>
+							<img
+								src="./views/components/button/mirror-button-icon.svg"
+								alt=""
+							/>
+							<span class="tooltip">Mirror</span>
+						</button>
+						<button
+							id="copy-button"
+							class="button button-light icon-button"
+						>
+							<img
+								src="./views/components/button/copy-button-icon.svg"
+								alt=""
+							/>
+							<span class="tooltip">Copy</span>
+						</button>
+						<button
+							id="remove-button"
+							class="button button-light"
+						>
+							<img
+								src="./views/components/button/remove-button-icon.svg"
+								alt=""
+							/>
+							<span class="tooltip">Remove</span>
+						</button>
+					</div>
+				</div>
+				<div>
+					<h2>Anotation</h2>
+					<div>
+						<button
+							id="cota-button"
+							class="button button-light"
+						>
+							<img
+								src="./views/components/button/dimension-button-icon.svg"
+								alt=""
+							/>
+							<span class="tooltip">Dimension</span>
+						</button>
+					</div>
+				</div>
+			</section>
+			<section id="layer-bar">
 				<button
 					id="undo-button"
 					class="button button-light"
 				>
-					Undo
+					<img
+						src="./views/components/button/undo-button-icon.svg"
+						alt=""
+					/>
+					<span class="tooltip">Undo</span>
 				</button>
 				<button
 					id="redo-button"
 					class="button button-light"
 				>
-					Redo
+					<img
+						src="./views/components/button/redo-button-icon.svg"
+						alt=""
+					/>
+					<span class="tooltip">Redo</span>
 				</button>
-				<button
-					id="add-button"
-					class="button button-light"
+				<select
+					name="layer"
+					id="select-layer"
 				>
-					Add
-				</button>
-				<button
-					id="remove-button"
-					class="button button-light"
-				>
-					Remove
-				</button>
-				<button
-					id="move-button"
-					class="button button-light"
-				>
-					Move
-				</button>
-				<button
-					id="addCustomShape-button"
-					class="button button-light"
-				>
-					Custom Shape
-				</button>
+					<option value="0">0</option>
+				</select>
+				<div id="navigation-controls">
+					<button class="button button-light">
+						<img
+							src="./views/components/button/panoramic-button-icon.svg"
+							alt=""
+						/>
+						<span class="tooltip">Panoramic</span>
+					</button>
+					<button class="button button-light">
+						<img
+							src="./views/components/button/zoomIn-button-icon.svg"
+							alt=""
+						/>
+						<span class="tooltip">Zoom in</span>
+					</button>
+					<button class="button button-light">
+						<img
+							src="./views/components/button/zoomOut-button-icon.svg"
+							alt=""
+						/>
+						<span class="tooltip">Zoom out</span>
+					</button>
+					<button class="button button-light">
+						<img
+							src="./views/components/button/zoomExtends-button-icon.svg"
+							alt=""
+						/>
+						<span class="tooltip">Zoom extends</span>
+					</button>
+				</div>
 			</section>
-			<div id="project-area">
+			<section id="project-area">
 				<section id="insert-shape-area">
 					<div id="added-shape-area">
 						<div>
@@ -134,57 +254,15 @@
 						</button>
 					</div>
 				</section>
-				<section id="top-bar">
-					<button
-						id="insert-line-button"
-						class="button button-dark"
-					>
-						Line
-					</button>
-					<button
-						id="insert-arc-button"
-						class="button button-dark"
-					>
-						Arc
-					</button>
-					<button
-						id="insert-quadraticCurve-button"
-						class="button button-dark"
-					>
-						Quadratic Curve
-					</button>
-					<button
-						id="insert-berzieCurve-button"
-						class="button button-dark"
-					>
-						Berzie Curve
-					</button>
-					<button
-						id="closePath-button"
-						class="button button-dark"
-					>
-						Close Path
-					</button>
-					<button
-						id="cancelInsertPath-button"
-						class="button button-dark"
-					>
-						Cancel
-					</button>
-				</section>
+
 				<section id="draw">
 					<svg id="draw-screen">
 						<g id="shapes-screen"></g>
 					</svg>
-					<div id="navigation-controls">
-						<button class="button button-dark">Panoramic</button>
-						<button class="button button-dark">Zoom in</button>
-						<button class="button button-dark">Zoom out</button>
-						<button class="button button-dark">Zoom extends</button>
-					</div>
+
 					<div id="position-mouse"></div>
 				</section>
-			</div>
+			</section>
 			<section id="down-bar">
 				<div class="command-input-container">
 					<div id="command-input-container">
@@ -254,7 +332,6 @@
 				</div>
 			</section>
 		</main>
-		<footer>TODOS OS DIREITOS RESERVADOS</footer>
 		<script
 			type="module"
 			src="main.js"
