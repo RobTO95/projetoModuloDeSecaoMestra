@@ -12,15 +12,14 @@ button {
 	cursor: pointer;
 }
 
-/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+/* ----------------------------------------------------------------------------------------------------------------------------------- */
 
 html,
 body {
-	margin: 0;
-	padding: 0;
 	width: 100%;
 	height: 100%;
-	overflow: hidden;
+	overflow-x: hidden;
+	overflow-y: visible;
 }
 
 body {
@@ -28,25 +27,28 @@ body {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	/* justify-content: space-between; */
 	background-color: var(--b4-color);
 }
 
+/* ----------------------------------------------------------------------------------------------------------------------------------- */
 /* Estilização da navbar */
-/* Tags */
+
+header {
+	width: 100%;
+	flex-shrink: 1;
+}
+
 nav {
 	font-family: var(--font-primary);
 	font-size: var(--font-size-small);
 	font-weight: 300;
-	min-height: 10dvh;
 	text-transform: uppercase;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	width: 100dvw;
 	justify-content: space-around;
 	background-color: var(--p1-color);
-	padding: var(--spacing-small) var(--spacing-xlarge);
+	padding: var(--spacing-tiny) 0;
 }
 nav div {
 	display: flex;
@@ -67,7 +69,6 @@ nav > div > div {
 	display: flex;
 	flex-direction: row;
 	gap: var(--spacing-small);
-	/* margin-left: var(--spacing-medium); */
 }
 
 nav > div > div:not(:last-child) {
@@ -95,25 +96,24 @@ nav div button:hover {
 	color: var(--p1-color);
 }
 
-/* ids */
 #logo > img {
 	height: var(--spacing-xlarge);
 }
 
-/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+/* ----------------------------------------------------------------------------------------------------------------------------------- */
 /* Estilização da main */
-/* tags */
 main {
+	flex-grow: 1;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	width: 100dvw;
-	margin: 0;
+	width: 100%;
 }
 
-/* ids */
+/* ----------------------------------------------------------------------------------------------------------------------------------- */
+
 #option-bar {
-	min-height: 10dvh;
+	flex-shrink: 1;
 	width: 100%;
 	padding: var(--spacing-small) 0;
 	background-color: var(--p2-color);
@@ -139,6 +139,8 @@ main {
 	flex-wrap: wrap;
 	gap: var(--spacing-medium);
 	justify-content: center;
+	padding: 0;
+	transition: 0.3s;
 }
 
 #option-bar h2 {
@@ -149,7 +151,10 @@ main {
 	color: var(--white);
 	margin: var(--spacing-tiny);
 }
+
+/* ----------------------------------------------------------------------------------------------------------------------------------- */
 #layer-bar {
+	flex-shrink: 1;
 	background-color: var(--p1-color);
 	display: flex;
 	gap: var(--spacing-medium);
@@ -161,10 +166,16 @@ main {
 	width: 30%;
 }
 
+#navigation-controls {
+	display: flex;
+	flex-direction: row;
+	gap: var(--spacing-medium);
+}
+/* ----------------------------------------------------------------------------------------------------------------------------------- */
 #project-area {
-	/* border: 5px solid red; */
+	flex-grow: 1;
+	height: 100%;
 	width: 100%;
-	justify-content: space-between;
 	position: relative;
 }
 
@@ -172,23 +183,16 @@ main {
 	width: 100%;
 	height: 100%;
 	background-color: var(--white);
-	border-radius: var(--border-radius-large);
-	box-shadow: 0px 0px 3px var(--b1-color);
-}
-
-#navigation-controls {
-	display: flex;
-	flex-direction: row;
-	gap: var(--spacing-medium);
 }
 #draw-screen {
 	height: 100%;
 	width: 100%;
 }
 
+/* ----------------------------------------------------------------------------------------------------------------------------------- */
 #position-mouse {
 	position: absolute;
-	bottom: var(--spacing-small);
+	top: var(--spacing-tiny);
 	right: var(--spacing-small);
 	padding: var(--spacing-small) var(--spacing-medium);
 	border-radius: var(--border-radius);
@@ -197,34 +201,70 @@ main {
 	color: var(--b1-color);
 }
 
-#down-bar {
+/* ----------------------------------------------------------------------------------------------------------------------------------- */
+#command-bar {
+	width: 100%;
+	position: absolute;
+	bottom: var(--spacing-tiny);
+	left: 50%;
+	transform: translateX(-50%);
 	display: flex;
 	align-items: center;
+	justify-content: center;
 	gap: var(--spacing-small);
-	width: 100%;
-	height: 6dvh;
-	background-color: var(--p1-color);
-	border-radius: var(--border-radius-large);
-	padding: var(--spacing-small);
-	position: relative; /* Para manter a posição de seus filhos */
+	flex-direction: row;
+	padding: 0 10dvw;
 }
 
 .command-input-container {
-	position: relative;
-	width: 60%;
+	flex-shrink: 2;
+	width: 100%;
 }
+
 #command-input-container {
+	flex-shrink: 1;
+	width: 100%;
 	display: flex;
 	align-items: center;
 	border-radius: var(--border-radius);
 	background-color: var(--white);
-	width: 100%;
+	border: 0.5px solid var(--b1-color);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-#command-messages {
+/* Estilo para a lista de sugestões como dropdown */
+#command-suggestions {
+	display: none;
+	z-index: 1000;
+	overflow-y: auto;
+	background-color: var(--b4-color);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	border-radius: var(--border-radius);
 	font-size: var(--font-size-small);
-	flex-shrink: 0;
-	padding: var(--spacing-small);
+}
+
+.suggestions-list {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.suggestions-list li {
+	padding: 8px;
+	cursor: pointer;
+}
+
+.suggestions-list li:hover {
+	background-color: #e6e6e6;
+}
+
+/* ----------------------------------------------------------------------------------------------------------------------------------- */
+/* Mensagens dos comandos */
+
+#command-messages {
+	flex-grow: 0;
+	font-size: var(--font-size-small);
+	padding: var(--spacing-tiny);
 	display: none;
 }
 
@@ -235,58 +275,98 @@ main {
 }
 
 #command-input-bar {
-	flex-grow: 1;
-	padding: var(--spacing-small);
-	border: none;
+	flex-grow: 2;
+	padding: var(--spacing-tiny);
 	outline: none;
+	border: none;
 	border-radius: var(--border-radius);
 	font-family: var(--font-primary);
-	font-size: var(--font-size-base);
+	font-size: var(--font-size-small);
 }
 
-#snap-options,
-#mouse-options {
+#command-input-enter {
+	border: 1px solid black;
+	padding: 0 var(--spacing-medium);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ----------------------------------------------------------------------------------------------------------------------------------- */
+
+#down-bar {
 	display: flex;
 	flex-direction: row;
-	gap: var(--spacing-small);
-	margin: var(--spacing-small);
+	flex-shrink: 1;
+	align-items: center;
+	width: 100%;
+	background-color: var(--p1-color);
+	gap: var(--spacing-xlarge);
+	padding: var(--spacing-tiny) var(--spacing-xlarge);
 }
-#snap-options,
-#mouse-options label {
+
+.container-float {
+	position: absolute;
+	bottom: 120%; /* Alinha o tooltip acima do botão */
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: var(--p3-color); /* Cor do fundo do tooltip */
+	color: var(--p1-color); /* Cor do texto do tooltip */
+	padding: var(--spacing-tiny) var(--spacing-small);
+	border-radius: var(--border-radius);
+	font-size: var(--font-size-tiny);
+	font-family: var(--font-primary);
+	font-weight: 500;
+	white-space: nowrap;
+	opacity: 0;
+	visibility: hidden;
+	transition: 0.3s ease;
+	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+	z-index: 10;
+}
+
+.container-float > div {
+	display: flex;
+	padding: var(--spacing-small) 0;
+	align-items: center;
+	gap: var(--spacing-tiny);
+	font-size: var(--font-size-small);
+	cursor: auto;
+}
+div:has(.container-float) {
+	cursor: pointer;
+	position: relative;
+	text-transform: uppercase;
 	font-size: var(--font-size-small);
 	color: var(--white);
 }
-
-#mouse-options div {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	gap: var(--spacing-tiny);
-}
-#snap-options div {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	gap: var(--spacing-tiny);
+div:has(.container-float):active > span {
+	background-color: var(--white);
+	color: var(--black);
+	mix-blend-mode: lighten;
+	opacity: 0.3;
 }
 
+div:has(.container-float):hover .container-float,
+div:has(.container-float):active .container-float {
+	opacity: 1;
+	visibility: visible;
+}
+
+/* ----------------------------------------------------------------------------------------------------------------------------------- */
 /* Estilo para a lista de sugestões como dropdown */
+
 .suggestions-list {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
-	border: 1px solid #ccc;
-	background-color: #fff;
+	background-color: var(--b4-color);
 	position: absolute;
-	bottom: 100%; /* Posiciona logo abaixo do input */
-	left: 0;
-	width: 100%;
-	max-height: 150px;
+	bottom: 100%;
 	overflow-y: auto;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	z-index: 1000; /* Certifique-se de que fica sobre outros elementos */
+	z-index: 9999;
 	border-radius: var(--border-radius);
-	display: none; /* Oculta até o usuário começar a digitar */
+	display: none;
+	font-size: var(--font-size-small);
 	/* flex-direction: column-reverse; */
 }
 
@@ -299,7 +379,8 @@ main {
 	background-color: #e6e6e6;
 }
 
-/* classes */
+/* ----------------------------------------------------------------------------------------------------------------------------------- */
+/* Diversos */
 
 .cursor-style {
 	fill: none;
@@ -335,8 +416,4 @@ main {
 	background-color: rgb(0, 0, 0);
 } */
 
-/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-/* Rodapé */
-footer {
-	height: 180px;
-}
+/* ----------------------------------------------------------------------------------------------------------------------------------- */

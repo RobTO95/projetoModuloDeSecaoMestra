@@ -17,7 +17,7 @@ button {
 .button {
 	position: relative;
 	text-transform: uppercase;
-	font-style: bold;
+	/* font-style: bold; */
 	font-weight: 600;
 	font-size: var(--font-size-small);
 	letter-spacing: 0;
@@ -53,7 +53,7 @@ button {
 	white-space: nowrap;
 	opacity: 0; /* Esconde o tooltip por padrão */
 	visibility: hidden;
-	transition: opacity 0.3s ease, transform 0.3s ease;
+	transition: 0.3s ease;
 	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 	z-index: 10;
 }

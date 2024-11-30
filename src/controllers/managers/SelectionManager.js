@@ -111,13 +111,15 @@ export default class SelectionManager {
 
 	// Limpa toda a seleção
 	clearSelection() {
-		this.selectedShapes.forEach((shape) => {
-			if (shape.shape) {
-				// Verifique se o path ainda existe
-				d3.select(shape.shape).classed("selected", false);
-			}
-		});
-		this.selectedShapes = [];
+		if (this.selectMode) {
+			this.selectedShapes.forEach((shape) => {
+				if (shape.shape) {
+					// Verifique se o path ainda existe
+					d3.select(shape.shape).classed("selected", false);
+				}
+			});
+			this.selectedShapes = [];
+		}
 	}
 
 	// Verifica se há shapes selecionados

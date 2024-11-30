@@ -47,6 +47,9 @@ button {
 
 #type-shape-add-current {
 	min-width: 100%;
+	font: var(--font-primary);
+	font-size: var(--font-size-small);
+	text-transform: uppercase;
 }
 #added-shape-area div {
 	display: flex;
@@ -86,4 +89,17 @@ button {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+	gap: var(--spacing-small);
+}
+
+#shape-dimensions-form label {
+	text-transform: uppercase;
+	font-size: var(--font-size-small);
+}
+
+#shape-dimensions-form input {
+	font: var(--font-primary);
+	font-size: var(--font-size-base);
+	font-weight: 300;
+	width: 100%;
 }

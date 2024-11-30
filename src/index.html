@@ -21,6 +21,7 @@
 			rel="stylesheet"
 			href="./views/styles/buttonStyles.css"
 		/>
+
 		<link
 			rel="stylesheet"
 			href="./views/styles/insertShapeArea.css"
@@ -149,7 +150,7 @@
 					<h2>Anotation</h2>
 					<div>
 						<button
-							id="cota-button"
+							id="dimension-button"
 							class="button button-light"
 						>
 							<img
@@ -157,6 +158,16 @@
 								alt=""
 							/>
 							<span class="tooltip">Dimension</span>
+						</button>
+						<button
+							id="angleDimension-button"
+							class="button button-light"
+						>
+							<img
+								src="./views/components/button/angleDimension-button-icon.svg"
+								alt=""
+							/>
+							<span class="tooltip">Angle</span>
 						</button>
 					</div>
 				</div>
@@ -254,7 +265,24 @@
 						</button>
 					</div>
 				</section>
-
+				<div id="command-bar">
+					<div class="command-input-container">
+						<div id="command-input-container">
+							<div id="command-messages"></div>
+							<input
+								id="command-input-bar"
+								type="text"
+							/>
+						</div>
+						<div id="command-suggestions"></div>
+					</div>
+					<button
+						id="command-input-enter"
+						class="button button-dark"
+					>
+						Enter
+					</button>
+				</div>
 				<section id="draw">
 					<svg id="draw-screen">
 						<g id="shapes-screen"></g>
@@ -263,71 +291,71 @@
 					<div id="position-mouse"></div>
 				</section>
 			</section>
+
 			<section id="down-bar">
-				<div class="command-input-container">
-					<div id="command-input-container">
-						<div id="command-messages"></div>
-						<input
-							id="command-input-bar"
-							type="text"
-						/>
-					</div>
-					<div id="command-suggestions"></div>
-				</div>
-				<button
-					id="command-input-enter"
-					class="button button-light"
-				>
-					Enter
-				</button>
-				<div id="mouse-options">
-					<div>
-						<input
-							id="ortho"
-							type="checkbox"
-						/>
-						<label for="ortho">Ortho</label>
+				<div id="cursor-options">
+					<span> Cursor</span>
+					<div class="container-float">
+						<div>
+							<input
+								id="ortho"
+								type="radio"
+								name="cursor"
+							/>
+							<label for="ortho">Ortho</label>
+						</div>
+						<div>
+							<input
+								id="polar"
+								type="radio"
+								name="cursor"
+							/>
+							<label for="ortho">Polar</label>
+						</div>
 					</div>
 				</div>
 				<div id="snap-options">
-					<div>
-						<input
-							id="endPoint"
-							type="checkbox"
-						/>
-						<label for="endPoint">End point</label>
-					</div>
+					<span> Snap </span>
+					<div class="container-float">
+						<div>
+							<input
+								id="endPoint"
+								type="checkbox"
+							/>
+							<label for="endPoint">End point</label>
+						</div>
 
-					<div>
-						<input
-							id="midPoint"
-							type="checkbox"
-						/>
-						<label for="midPoint">Mid point</label>
-					</div>
+						<div>
+							<input
+								id="midPoint"
+								type="checkbox"
+							/>
+							<label for="midPoint">Mid point</label>
+						</div>
 
-					<div>
-						<input
-							id="centerPoint"
-							type="checkbox"
-						/>
-						<label for="centerPoint">Center</label>
-					</div>
+						<div>
+							<input
+								id="centerPoint"
+								type="checkbox"
+							/>
+							<label for="centerPoint">Center</label>
+						</div>
 
-					<div>
-						<input
-							id="quadrantPoint"
-							type="checkbox"
-						/>
-						<label for="quandrant">Quadrant</label>
-					</div>
+						<div>
+							<input
+								id="quadrantPoint"
+								type="checkbox"
+							/>
+							<label for="quandrant">Quadrant</label>
+						</div>
 
-					<div>
-						<input
-							id="centroidPoint"
-							type="checkbox"
-						/>
-						<label for="centroid">Centroid</label>
+						<div>
+							<input
+								id="centroidPoint"
+								type="checkbox"
+							/>
+							<label for="centroid">Centroid</label>
+						</div>
 					</div>
 				</div>
 			</section>
