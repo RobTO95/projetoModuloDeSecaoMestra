@@ -125,40 +125,98 @@ function createShapeInputs(shapeType) {
 		case "Plate":
 			currentStrategyCreateShape = new PlateStrategy();
 			shapeForm.innerHTML = `
-				<label>Length: <input type="number" id="length" value="100"></label>
-				<label>Thickness: <input type="number" id="thickness" value="6.35"></label>
+				<div>
+				
+				<label>Length:</label>
+				<input type="number" id="length" value="100">
+				</div>
+				<div>
+				<label>Thickness:</label>
+				<input type="number" id="thickness" value="6.35">
+				</div>
 			`;
 			break;
 		case "RadiusPlate":
 			currentStrategyCreateShape = new RadiusPlateStrategy();
 			shapeForm.innerHTML = `
-				<label>Radius: <input type="number" id="radius" value="100"></label>
-				<label>Thickness: <input type="number" id="thickness" value="6.35"></label>
-				<label>Start angle: <input type="number" id="startAngle" value="180"></label>
-				<label>End angle: <input type="number" id="endAngle" value="270"></label>
-				<label>Clockwise Orientation: <input type="checkbox" id="orientation"></label>
+				<div>
+				<label>Radius:</label>
+				<input type="number" id="radius" value="100">
+				</div>
+				<div>
+				<label>Thickness: </label>
+				<input type="number" id="thickness" value="6.35">
+				</div>
+				<div>
+				<label>Start angle: </label>
+				<input type="number" id="startAngle" value="180">
+				</div>
+				<div>
+				<label>End angle: </label>
+				<input type="number" id="endAngle" value="270">
+				</div>
+				<div>
+				<label>Clockwise Orientation:</label>
+				<input type="checkbox" id="orientation">
+				</div>
 			`;
 			break;
 		case "LShapeBeam":
 			currentStrategyCreateShape = new LShapeStrategy();
 			shapeForm.innerHTML = `
-				<label>Leg Length 1: <input type="number" id="legLength1" value="100"></label>
-				<label>Leg Length 2: <input type="number" id="legLength2" value="100"></label>
-				<label>Thickness 1: <input type="number" id="thickness1" value="6.35"></label>
-				<label>Thickness 2: <input type="number" id="thickness2" value="6.35"></label>
-				<label>Radius 1: <input type="number" id="radius1" value="5"></label>
-				<label>Radius 2: <input type="number" id="radius2" value="5"></label>
-				<label>Radius 3: <input type="number" id="radius3" value="5"></label>
-				<label>Radius 4: <input type="number" id="radius4" value="5"></label>
+				<div>
+				<label>Leg Length 1: </label>
+				<input type="number" id="legLength1" value="100">
+				</div>
+				<div>
+				<label>Leg Length 2: </label>
+				<input type="number" id="legLength2" value="100">
+				</div>
+				<div>
+				<label>Thickness 1: </label>
+				<input type="number" id="thickness1" value="6.35">
+				</div>
+				<div>
+				<label>Thickness 2: </label>
+				<input type="number" id="thickness2" value="6.35">
+				</div>
+				<div>
+				<label>Radius 1: </label>
+				<input type="number" id="radius1" value="5">
+				</div>
+				<div>
+				<label>Radius 2: </label>
+				<input type="number" id="radius2" value="5">
+				</div>
+				<div>
+				<label>Radius 3: </label>
+				<input type="number" id="radius3" value="5">
+				</div>
+				<div>
+				<label>Radius 4: </label>
+				<input type="number" id="radius4" value="5">
+				</div>
 			`;
 			break;
 		case "TShapeBeam":
 			currentStrategyCreateShape = new TShapeStrategy();
 			shapeForm.innerHTML = `
-				<label>Soul Length: <input type="number" id="soulLength" value="100"></label>
-				<label>Soul Thickness: <input type="number" id="soulThickness" value="6.35"></label>
-				<label>Flange Length: <input type="number" id="flangeLength" value="100"></label>
-				<label>Flange Thickness: <input type="number" id="flangeThickness" value="6.35"></label>
+				<div>
+				<label>Soul Length:</label>
+				<input type="number" id="soulLength" value="100">
+				</div>
+				<div>
+				<label>Soul Thickness:</label>
+				<input type="number" id="soulThickness" value="6.35">
+				</div>
+				<div>
+				<label>Flange Length:</label>
+				<input type="number" id="flangeLength" value="100">
+				</div>
+				<div>
+				<label>Flange Thickness:</label>
+				<input type="number" id="flangeThickness" value="6.35">
+				</div>
 			`;
 			break;
 		// Adicione outros cases aqui para novos tipos de shapes

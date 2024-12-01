@@ -7,11 +7,6 @@
 	padding: 0;
 }
 
-button {
-	all: unset;
-	cursor: pointer;
-}
-
 /* ----------------------------------------------------------------------------------------------------------------------------------- */
 
 html,
@@ -20,6 +15,8 @@ body {
 	height: 100%;
 	overflow-x: hidden;
 	overflow-y: visible;
+	margin: 0;
+	padding: 0;
 }
 
 body {
@@ -46,7 +43,7 @@ nav {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	justify-content: space-around;
+	justify-content: space-evenly;
 	background-color: var(--p1-color);
 	padding: var(--spacing-tiny) 0;
 }
@@ -128,7 +125,7 @@ main {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	padding: 0 var(--spacing-small);
+	padding: 0 var(--spacing-tiny);
 }
 #option-bar > div:not(:last-child) {
 	border-right: var(--border-width) solid var(--b2-color);
@@ -149,7 +146,7 @@ main {
 	font-weight: 400;
 	font-size: var(--font-size-small);
 	color: var(--white);
-	margin: var(--spacing-tiny);
+	margin-bottom: var(--spacing-tiny);
 }
 
 /* ----------------------------------------------------------------------------------------------------------------------------------- */
@@ -331,22 +328,22 @@ main {
 	font-size: var(--font-size-small);
 	cursor: auto;
 }
-div:has(.container-float) {
+button:has(.container-float) {
 	cursor: pointer;
 	position: relative;
 	text-transform: uppercase;
 	font-size: var(--font-size-small);
 	color: var(--white);
 }
-div:has(.container-float):active > span {
+button:has(.container-float):active > span {
 	background-color: var(--white);
 	color: var(--black);
 	mix-blend-mode: lighten;
 	opacity: 0.3;
 }
 
-div:has(.container-float):hover .container-float,
-div:has(.container-float):active .container-float {
+button:has(.container-float):hover .container-float,
+button:has(.container-float):active .container-float {
 	opacity: 1;
 	visibility: visible;
 }

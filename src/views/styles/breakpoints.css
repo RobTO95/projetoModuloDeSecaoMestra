@@ -1,0 +1,138 @@
+/* 320px — 480px: dispositivos móveis */
+@media (max-width: 480px) {
+	nav {
+		padding: 0;
+		justify-content: space-evenly;
+	}
+
+	nav > div {
+		font-size: var(--font-size-tiny);
+		padding: 0;
+		gap: 0;
+	}
+
+	nav #logo > img {
+		height: var(--spacing-large);
+	}
+
+	#login img {
+		padding: calc(var(--spacing-tiny) / 2);
+	}
+
+	.button:has(img) {
+		font-size: var(--font-size-tiny);
+		height: var(--spacing-medium);
+		padding: calc(var(--spacing-tiny) / 2);
+		margin: 0;
+	}
+
+	#option-bar {
+		padding: var(--spacing-tiny) 0;
+	}
+
+	#option-bar > div > h2 {
+		font-size: var(--font-size-tiny);
+	}
+
+	#insert-shape-area {
+		padding: 0 var(--spacing-tiny);
+	}
+
+	#type-shape-add-current {
+		font-size: var(--font-size-tiny);
+	}
+
+	#added-shape-area div {
+		margin: var(--font-size-tiny) 0;
+	}
+
+	#shape-dimensions-form label {
+		font-size: var(--font-size-tiny);
+	}
+
+	#shape-dimensions-form input {
+		font-size: var(--font-size-small);
+	}
+
+	div:has(.container-float) {
+		font-size: var(--font-size-tiny);
+	}
+	select {
+		font-size: var(--font-size-tiny);
+	}
+}
+
+/* 481px — 768px: iPads, tablets */
+@media (min-width: 481px) and (max-width: 768px) {
+}
+
+/* 769px — 1024px: telas pequenas, laptops */
+
+@media (min-width: 769px) and (max-width: 1024px) {
+}
+
+/* 1025px — 1200px: desktops, telas grandes */
+@media (min-width: 1025px) and (max-width: 1200px) {
+}
+
+/* 1201px e acima —  telas muito grandes, TVs */
+@media (min-width: 1201px) {
+	nav > div {
+		font-size: var(--font-size-base);
+	}
+
+	nav #logo > img {
+		height: calc(var(--spacing-xlarge) * 1.5);
+	}
+
+	nav > div > div {
+		gap: var(--spacing-medium);
+		padding: 0 var(--spacing-medium);
+	}
+
+	.button:has(img) {
+		font-size: var(--font-size-base);
+		height: var(--spacing-xlarge);
+		padding: var(--spacing-tiny);
+		margin: 0;
+	}
+
+	#option-bar {
+		padding: var(--spacing-small) 0;
+	}
+
+	#option-bar h2 {
+		font-size: var(--font-size-base);
+		margin-bottom: var(--spacing-medium);
+	}
+
+	.tooltip {
+		font-size: var(--font-size-small);
+	}
+
+	select {
+		font-size: var(--font-size-base);
+	}
+
+	#command-input-bar,
+	#command-input-enter {
+		font-size: var(--font-size-base);
+		padding: var(--spacing-tiny) var(--spacing-small);
+	}
+
+	.button {
+		font-size: var(--font-size-base);
+	}
+
+	.suggestions-list {
+		font-size: var(--font-size-base);
+	}
+
+	#command-messages {
+		font-size: var(--font-size-base);
+	}
+
+	#position-mouse {
+		font-size: var(--font-size-base);
+	}
+}
